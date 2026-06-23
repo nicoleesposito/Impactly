@@ -1,0 +1,35 @@
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.addBtn {
+  align-self: flex-end;
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--color-primary);
+  border-radius: 14px;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.invited {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.invitedHeading {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1);
+}

@@ -1,0 +1,17 @@
+.bar {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.segment {
+  flex: 1;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background: var(--color-neutral);
+  opacity: 0.5;
+}
+
+.done {
+  background: var(--color-primary);
+  opacity: 1;
+}
