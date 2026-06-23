@@ -1,0 +1,2 @@
+# Supabase CLI config — to be initialised with `supabase init`.
+project_id = "impactly"

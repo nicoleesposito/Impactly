@@ -1,0 +1,2 @@
+-- Migration: 0007_staff
+-- Schema + RLS to be defined in the data-layer section.

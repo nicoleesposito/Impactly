@@ -1,0 +1,2 @@
+-- Migration: 0004_attendance
+-- Schema + RLS to be defined in the data-layer section.

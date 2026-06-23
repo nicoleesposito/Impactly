@@ -1,0 +1,2 @@
+-- Migration: 0008_notifications
+-- Schema + RLS to be defined in the data-layer section.

@@ -1,0 +1,44 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-tint);
+}
+
+.wordmark {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--text-lg);
+  color: var(--color-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.iconBtn {
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Hide the wordmark in the top bar on desktop — it lives in the sidebar there */
+@media (min-width: 1024px) {
+  .wordmark {
+    visibility: hidden;
+  }
+}

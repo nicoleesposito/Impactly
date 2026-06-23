@@ -1,0 +1,2 @@
+-- Migration: 0003_beneficiaries
+-- Schema + RLS to be defined in the data-layer section.

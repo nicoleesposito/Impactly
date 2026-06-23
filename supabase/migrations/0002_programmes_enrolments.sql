@@ -1,0 +1,2 @@
+-- Migration: 0002_programmes_enrolments
+-- Schema + RLS to be defined in the data-layer section.

@@ -1,0 +1,27 @@
+/* App-wide base styles. Component styles live in co-located CSS Modules. */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Temporary placeholder styling for stubbed screens in this scaffold. */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  padding: var(--space-6);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}

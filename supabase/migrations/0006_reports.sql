@@ -1,0 +1,2 @@
+-- Migration: 0006_reports
+-- Schema + RLS to be defined in the data-layer section.

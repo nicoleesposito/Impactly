@@ -1,0 +1,26 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.greeting {
+  font-size: var(--text-2xl);
+}
+
+.meta {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+@media (min-width: 1024px) {
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

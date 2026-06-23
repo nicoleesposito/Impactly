@@ -1,0 +1,33 @@
+/*
+ * Dark mode (NEXT-007; visible in the Figma frames).
+ * Applied by toggling `data-theme="dark"` on <html> via ThemeContext.
+ * Only colour tokens are overridden — spacing, radii and type are shared.
+ */
+[data-theme='dark'] {
+  --color-primary: #d65b6e;
+  --color-primary-hover: #e06c7e;
+  --color-primary-active: #c14a5d;
+  --color-on-primary: #ffffff;
+
+  --color-bg: #161214;
+  --color-surface: #211c1e;
+  --color-surface-tint: #2a2024;
+  --color-border: #352c30;
+
+  --color-text: #f4eff0;
+  --color-text-secondary: #b8acaf;
+  --color-text-muted: #8a7e82;
+
+  --color-success: #5fbf7e;
+  --color-success-bg: #1c3326;
+  --color-warning: #e0a24e;
+  --color-warning-bg: #36291a;
+  --color-danger: #e8675f;
+  --color-danger-bg: #3a1f1d;
+  --color-neutral: #9aa1ad;
+  --color-neutral-bg: #262528;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
