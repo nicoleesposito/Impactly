@@ -57,3 +57,12 @@ ol {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+select:focus,
+select:focus-visible {
+  outline: none;
+}
