@@ -34,6 +34,12 @@
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   font-size: var(--text-base);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.input:focus {
+  border-color: var(--color-primary);
 }
 
 .input::placeholder {
