@@ -7,6 +7,7 @@ import SelectField from '../../../components/ui/SelectField/index.js';
 import { useOnboarding } from '../OnboardingContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ORG_TYPES, COUNTRIES, BENEFICIARY_RANGES } from '../../../constants/onboarding.js';
+import styles from './Step2Organisation.module.css';
 
 export default function Step2Organisation() {
   const navigate = useNavigate();
@@ -72,6 +73,10 @@ export default function Step2Organisation() {
         onChange={update('size')}
         error={errors.size}
       />
+      <p className={styles.trialNote}>
+        All organisations get a free 1-month Pro trial with unlimited beneficiaries.
+        After the trial, plans supporting more than 300 beneficiaries require a paid subscription.
+      </p>
       <TextField
         label="Beneficiaries"
         value={org.beneficiaryLabel}

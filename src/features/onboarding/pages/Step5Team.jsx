@@ -5,6 +5,7 @@ import WizardFooter from '../components/WizardFooter.jsx';
 import PersonRow from '../components/PersonRow.jsx';
 import TextField from '../../../components/ui/TextField/index.js';
 import SelectField from '../../../components/ui/SelectField/index.js';
+import { ChevronDown } from '../../../components/icons.jsx';
 import { useOnboarding } from '../OnboardingContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { INVITE_ROLES } from '../../../constants/onboarding.js';
@@ -37,6 +38,8 @@ export default function Step5Team() {
     setRole('staff');
   }
 
+  const list = data.team;
+
   return (
     <OnboardingShell
       step={5}
@@ -48,6 +51,27 @@ export default function Step5Team() {
           onBack={() => navigate(ROUTES.onboardingBeneficiaries)}
           onContinue={() => navigate(ROUTES.onboardingComplete)}
         />
+      }
+      afterFooter={
+        list.length > 0 ? (
+          <div className={styles.afterList}>
+            <div className={styles.nudge} aria-hidden="true">
+              <ChevronDown />
+            </div>
+            <section>
+              <h2 className={styles.listHeading}>Invited members</h2>
+              {list.map((m) => (
+                <PersonRow
+                  key={m.id}
+                  initials={m.email.charAt(0).toUpperCase()}
+                  title={m.email}
+                  subtitle={roleLabel(m.role)}
+                  onRemove={() => removeTeamMember(m.id)}
+                />
+              ))}
+            </section>
+          </div>
+        ) : null
       }
     >
       <ul className={styles.legend}>
@@ -77,21 +101,6 @@ export default function Step5Team() {
       <button type="button" className={styles.addBtn} onClick={handleAdd}>
         + Add
       </button>
-
-      {data.team.length > 0 && (
-        <section className={styles.invited}>
-          <h2 className={styles.invitedHeading}>Invited members</h2>
-          {data.team.map((m) => (
-            <PersonRow
-              key={m.id}
-              initials={m.email.charAt(0).toUpperCase()}
-              title={m.email}
-              subtitle={roleLabel(m.role)}
-              onRemove={() => removeTeamMember(m.id)}
-            />
-          ))}
-        </section>
-      )}
     </OnboardingShell>
   );
 }

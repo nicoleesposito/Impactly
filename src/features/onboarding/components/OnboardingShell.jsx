@@ -11,6 +11,7 @@ export default function OnboardingShell({
   children,
   footer,
   below,
+  afterFooter,
 }) {
   return (
     <div className={styles.shell}>
@@ -30,6 +31,8 @@ export default function OnboardingShell({
         {footer}
         {below && <div className={styles.below}>{below}</div>}
       </footer>
+
+      {afterFooter && <div className={styles.afterFooter}>{afterFooter}</div>}
     </div>
   );
 }

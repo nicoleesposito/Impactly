@@ -3,12 +3,15 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 // Holds wizard data across the 6 steps so Back/refresh never loses input
 // (FR-002, EDGE-004). Persisted to sessionStorage for the duration of setup.
 // No backend writes here — submission is wired in the onboarding/auth section.
+// TODO(auth): add lightweight async email-availability check on Step 1 (read-only
+// Supabase lookup, not account creation) so duplicate-email errors surface early
+// rather than at Step 6 submission.
 
 const STORAGE_KEY = 'impactly-onboarding';
 
 const DEFAULT_DATA = {
   account: { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' },
-  organisation: { name: '', type: '', country: '', size: '', beneficiaryLabel: 'Students' },
+  organisation: { name: '', type: '', country: '', size: '', beneficiaryLabel: 'Beneficiaries' },
   template: null,
   beneficiaries: [],
   team: [],

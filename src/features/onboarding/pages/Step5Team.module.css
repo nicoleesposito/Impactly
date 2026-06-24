@@ -21,15 +21,28 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.invited {
+/* ── After-footer list ─────────────────────────────── */
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+.afterList {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  margin-top: var(--space-2);
 }
 
-.invitedHeading {
+.nudge {
+  display: flex;
+  justify-content: flex-end;
+  color: var(--color-primary);
+  animation: bounceDown 1.2s ease-in-out infinite;
+}
+
+.listHeading {
   font-size: var(--text-base);
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-1);
+  margin-bottom: var(--space-2);
 }

@@ -52,3 +52,7 @@
   font-weight: var(--font-weight-semibold);
   text-decoration: underline;
 }
+
+.afterFooter {
+  padding-bottom: var(--space-10);
+}

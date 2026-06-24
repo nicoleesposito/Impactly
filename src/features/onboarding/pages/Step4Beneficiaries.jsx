@@ -4,7 +4,7 @@ import OnboardingShell from '../components/OnboardingShell.jsx';
 import WizardFooter from '../components/WizardFooter.jsx';
 import PersonRow from '../components/PersonRow.jsx';
 import TextField from '../../../components/ui/TextField/index.js';
-import { Upload } from '../../../components/icons.jsx';
+import { Upload, ChevronDown } from '../../../components/icons.jsx';
 import { useOnboarding } from '../OnboardingContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import styles from './Step4Beneficiaries.module.css';
@@ -15,6 +15,14 @@ function initials(first, last) {
   return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
 }
 
+// Auto-inserts slashes: 4 digits → yyyy, 6 digits → yyyy/mm, 8 digits → yyyy/mm/dd
+function formatDob(raw) {
+  const digits = raw.replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 4) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 4)}/${digits.slice(4)}`;
+  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
+}
+
 export default function Step4Beneficiaries() {
   const navigate = useNavigate();
   const { data, addBeneficiary, removeBeneficiary } = useOnboarding();
@@ -22,6 +30,10 @@ export default function Step4Beneficiaries() {
   const [errors, setErrors] = useState({});
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
+  function handleDobChange(e) {
+    setForm((f) => ({ ...f, dob: formatDob(e.target.value) }));
+  }
 
   function handleAdd() {
     const next = {};
@@ -39,6 +51,8 @@ export default function Step4Beneficiaries() {
     setForm(EMPTY);
   }
 
+  const list = data.beneficiaries;
+
   return (
     <OnboardingShell
       step={4}
@@ -50,6 +64,27 @@ export default function Step4Beneficiaries() {
           onBack={() => navigate(ROUTES.onboardingTemplate)}
           onContinue={() => navigate(ROUTES.onboardingTeam)}
         />
+      }
+      afterFooter={
+        list.length > 0 ? (
+          <div className={styles.afterList}>
+            <div className={styles.nudge} aria-hidden="true">
+              <ChevronDown />
+            </div>
+            <section>
+              <h2 className={styles.listHeading}>Added beneficiaries</h2>
+              {list.map((b) => (
+                <PersonRow
+                  key={b.id}
+                  initials={initials(b.firstName, b.lastName)}
+                  title={`${b.firstName} ${b.lastName}`}
+                  subtitle={b.dob || undefined}
+                  onRemove={() => removeBeneficiary(b.id)}
+                />
+              ))}
+            </section>
+          </div>
+        ) : null
       }
     >
       {/* CSV import (parsing wired in the beneficiaries section) */}
@@ -83,27 +118,13 @@ export default function Step4Beneficiaries() {
         label="Date of birth"
         placeholder="yyyy/mm/dd"
         value={form.dob}
-        onChange={update('dob')}
+        onChange={handleDobChange}
+        inputMode="numeric"
       />
 
       <button type="button" className={styles.addBtn} onClick={handleAdd}>
         + Add
       </button>
-
-      {data.beneficiaries.length > 0 && (
-        <section className={styles.added}>
-          <h2 className={styles.addedHeading}>Added beneficiaries</h2>
-          {data.beneficiaries.map((b) => (
-            <PersonRow
-              key={b.id}
-              initials={initials(b.firstName, b.lastName)}
-              title={`${b.firstName} ${b.lastName}`}
-              subtitle={b.dob || undefined}
-              onRemove={() => removeBeneficiary(b.id)}
-            />
-          ))}
-        </section>
-      )}
     </OnboardingShell>
   );
 }
