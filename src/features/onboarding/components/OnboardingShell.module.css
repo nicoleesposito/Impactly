@@ -4,12 +4,14 @@
   flex-direction: column;
   gap: var(--space-5);
   padding-top: var(--space-8);
+  min-height: 0;
 }
 
 .head {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  flex-shrink: 0;
 }
 
 .eyebrow {
@@ -26,21 +28,33 @@
   color: var(--color-text-secondary);
 }
 
+/* scrollable middle — form content and after-footer list both live here */
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: none;
+}
+
+.scrollArea::-webkit-scrollbar {
+  display: none;
+}
+
 .body {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
 }
 
-/* stays pinned to viewport bottom whether content is short or overflows */
-.footer {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-  background: var(--color-surface);
-  margin-top: auto;
+.afterFooter {
   padding-top: var(--space-6);
-  padding-bottom: var(--space-6);
+  padding-bottom: var(--space-8);
+}
+
+/* always at the same position — never shifts between steps */
+.footer {
+  flex-shrink: 0;
+  padding: var(--space-4) 0 var(--space-6);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -56,10 +70,4 @@
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
   text-decoration: underline;
-}
-
-.afterFooter {
-  /* top clearance prevents list items hiding behind sticky footer (~96px tall) */
-  padding-top: 100px;
-  padding-bottom: var(--space-8);
 }

@@ -25,14 +25,15 @@ export default function OnboardingShell({
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       </header>
 
-      <div className={styles.body}>{children}</div>
+      <div className={styles.scrollArea}>
+        <div className={styles.body}>{children}</div>
+        {afterFooter && <div className={styles.afterFooter}>{afterFooter}</div>}
+      </div>
 
       <footer className={styles.footer}>
         {footer}
         {below && <div className={styles.below}>{below}</div>}
       </footer>
-
-      {afterFooter && <div className={styles.afterFooter}>{afterFooter}</div>}
     </div>
   );
 }

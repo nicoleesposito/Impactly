@@ -1,8 +1,9 @@
 .wrap {
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
   display: flex;
   justify-content: center;
-  padding: var(--space-4) var(--space-5) var(--space-6);
+  padding: var(--space-4) var(--space-5) 0;
   background: var(--color-surface);
 }
 
@@ -11,4 +12,5 @@
   max-width: var(--content-max);
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
