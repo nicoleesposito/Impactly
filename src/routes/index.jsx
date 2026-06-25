@@ -18,12 +18,25 @@ import Step4Beneficiaries from '../features/onboarding/pages/Step4Beneficiaries.
 import Step5Team from '../features/onboarding/pages/Step5Team.jsx';
 import Step6Confirmation from '../features/onboarding/pages/Step6Confirmation.jsx';
 
-// App (bottom-nav destinations wired; deeper screens added in later sections)
+// App — bottom-nav destinations
 import Today from '../features/dashboard/pages/Today.jsx';
 import AttendanceMulti from '../features/attendance/pages/AttendanceMulti.jsx';
 import BeneficiaryList from '../features/beneficiaries/pages/BeneficiaryList.jsx';
 import ReportsList from '../features/reports/pages/ReportsList.jsx';
 import More from '../features/more/pages/More.jsx';
+
+// Manage
+import FundersList from '../features/funders/pages/FundersList.jsx';
+import GrantsTracker from '../features/grants/pages/GrantsTracker.jsx';
+import StaffList from '../features/staff/pages/StaffList.jsx';
+import Templates from '../features/programmes/pages/Templates.jsx';
+
+// Settings
+import OrganisationSettings from '../features/settings/pages/OrganisationSettings.jsx';
+import UsersAndPermissions from '../features/settings/pages/UsersAndPermissions.jsx';
+import Integrations from '../features/settings/pages/Integrations.jsx';
+import Billing from '../features/settings/pages/Billing.jsx';
+import PersonalSettings from '../features/settings/pages/PersonalSettings.jsx';
 
 export const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/home" replace /> },
@@ -58,11 +71,24 @@ export const router = createBrowserRouter([
       {
         element: <AppShell />,
         children: [
-          { path: '/home', element: <Today /> },
+          { path: '/home',       element: <Today /> },
           { path: '/attendance', element: <AttendanceMulti /> },
-          { path: '/students', element: <BeneficiaryList /> },
-          { path: '/reports', element: <ReportsList /> },
-          { path: '/more', element: <More /> },
+          { path: '/students',   element: <BeneficiaryList /> },
+          { path: '/reports',    element: <ReportsList /> },
+          { path: '/more',       element: <More /> },
+
+          // Manage
+          { path: '/funders',   element: <FundersList /> },
+          { path: '/grants',    element: <GrantsTracker /> },
+          { path: '/staff',     element: <StaffList /> },
+          { path: '/templates', element: <Templates /> },
+
+          // Settings
+          { path: '/settings/organisation', element: <OrganisationSettings /> },
+          { path: '/settings/users',        element: <UsersAndPermissions /> },
+          { path: '/settings/integrations', element: <Integrations /> },
+          { path: '/settings/billing',      element: <Billing /> },
+          { path: '/settings/personal',     element: <PersonalSettings /> },
         ],
       },
     ],
@@ -70,3 +96,4 @@ export const router = createBrowserRouter([
 
   { path: '*', element: <Navigate to="/home" replace /> },
 ]);
+
