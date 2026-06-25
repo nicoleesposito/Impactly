@@ -30,6 +30,7 @@ export const ROUTES = {
   grants: '/grants',
   grantAdd: '/grants/add',
   staff: '/staff',
+  staffInvite: '/staff/invite',
   staffProfile: '/staff/:id',
   more: '/more',
   templates: '/templates',
