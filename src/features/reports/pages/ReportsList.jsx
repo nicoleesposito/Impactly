@@ -1,91 +1,139 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
-import SectionCard from '../../dashboard/components/SectionCard.jsx';
+import { useOrg } from '../../../context/OrgContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
-import { FileText, CalendarDays, Plus } from '../../../components/icons.jsx';
+import { FileText, Search, ArrowRight } from '../../../components/icons.jsx';
 import styles from './ReportsList.module.css';
 
 // Reports hub (FR-010).
-// Empty-state-first: arrays are empty for a new organisation and fill in as the
-// user creates and schedules reports. Wired to live Supabase queries later.
+// Grouped by status: Due soon → In progress → Completed.
+// Empty-state-first: the reports array is empty for a new organisation and fills
+// in as the user creates reports. Wired to live Supabase queries in a later section.
 const reports = [];
-const scheduled = [];
+
+const GROUPS = [
+  { key: 'due-soon',    label: 'Due soon'    },
+  { key: 'in-progress', label: 'In progress' },
+  { key: 'completed',   label: 'Completed'   },
+];
 
 export default function ReportsList() {
+  const { org } = useOrg();
+  const [query, setQuery] = useState('');
+
+  const programmeCount = org?.programmes?.length ?? 0;
+  const subtitle = [
+    org?.name,
+    `${programmeCount} ${programmeCount === 1 ? 'programme' : 'programmes'}`,
+  ].filter(Boolean).join(' · ');
+
+  const term = query.trim().toLowerCase();
+  const visible = term
+    ? reports.filter(
+        (r) =>
+          r.title.toLowerCase().includes(term) ||
+          r.programme?.toLowerCase().includes(term),
+      )
+    : reports;
+
+  function groupReports(status) {
+    return visible.filter((r) => r.status === status);
+  }
+
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.heading}>
-          <h1 className={styles.title}>Reports</h1>
-          <p className={styles.meta}>{reports.length} total</p>
+      {/* Header */}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Reports</h1>
+        <div className={styles.headerActions}>
+          <Link to={ROUTES.reportBuilder.replace(':id', 'builder')} className={styles.btnSecondary}>
+            Builder
+          </Link>
+          <Link to={ROUTES.reportBuilder.replace(':id', 'new')} className={styles.btnPrimary}>
+            + New
+          </Link>
         </div>
-        <Link to={ROUTES.reportBuilder.replace(':id', 'new')} className={styles.create}>
-          <Plus /> New report
-        </Link>
-      </header>
+      </div>
 
-      <section className={styles.stats} aria-label="Summary">
-        <StatTile label="Total reports" value={reports.length} />
-        <StatTile label="Drafts" value={reports.filter((r) => r.status === 'draft').length} />
-        <StatTile label="Submitted" value={reports.filter((r) => r.status === 'submitted').length} />
-        <StatTile label="Scheduled" value={scheduled.length} />
-      </section>
+      {/* Subtitle + filter */}
+      <div className={styles.subRow}>
+        <p className={styles.meta}>{subtitle}</p>
+        <button type="button" className={styles.filterBtn}>Filter</button>
+      </div>
 
-      <SectionCard
-        title="All reports"
-        action={
-          reports.length > 0 && (
-            <Link to={ROUTES.reportsScheduled} className={styles.viewAll}>
-              View scheduled
-            </Link>
-          )
-        }
-      >
-        {reports.length === 0 ? (
-          <EmptyState
-            icon={<FileText />}
-            title="No reports yet"
-            hint="Create your first report to start tracking and sharing your organisation's impact."
-          />
-        ) : (
-          reports.map((r) => (
-            <Link key={r.id} to={ROUTES.reportBuilder.replace(':id', r.id)} className={styles.row}>
-              <span className={styles.rowIcon}>
-                <FileText />
-              </span>
-              <span className={styles.rowText}>
-                <span className={styles.rowName}>{r.title}</span>
-                <span className={styles.rowSub}>{r.programme}</span>
-              </span>
-              <span className={`${styles.status} ${styles[r.status]}`}>{r.status}</span>
-            </Link>
-          ))
-        )}
-      </SectionCard>
+      {/* Search */}
+      <label className={styles.searchField}>
+        <span className={styles.searchIcon} aria-hidden="true"><Search /></span>
+        <input
+          type="search"
+          className={styles.searchInput}
+          placeholder="Search ..."
+          aria-label="Search reports"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </label>
 
-      <SectionCard title="Scheduled reports">
-        {scheduled.length === 0 ? (
-          <EmptyState
-            icon={<CalendarDays />}
-            title="No scheduled reports"
-            hint="Set up automated reports to be generated and sent on a recurring basis."
-          />
-        ) : (
-          scheduled.map((s) => (
-            <div key={s.id} className={styles.row}>
-              <span className={styles.rowIcon}>
-                <CalendarDays />
-              </span>
-              <span className={styles.rowText}>
-                <span className={styles.rowName}>{s.title}</span>
-                <span className={styles.rowSub}>Next: {s.nextRun}</span>
-              </span>
-              <span className={styles.rowMeta}>{s.frequency}</span>
-            </div>
-          ))
-        )}
-      </SectionCard>
+      {/* Grouped sections */}
+      {reports.length === 0 ? (
+        <EmptyState
+          icon={<FileText />}
+          title="No reports yet"
+          hint="Create your first report to start tracking and sharing your organisation's impact."
+        />
+      ) : (
+        GROUPS.map(({ key, label }) => {
+          const items = groupReports(key);
+          if (items.length === 0) return null;
+          return (
+            <section key={key} className={styles.group}>
+              <h2 className={styles.groupLabel}>{label}</h2>
+              <ul className={styles.cardList}>
+                {items.map((r) => (
+                  <ReportCard key={r.id} report={r} />
+                ))}
+              </ul>
+            </section>
+          );
+        })
+      )}
     </div>
+  );
+}
+
+function ReportCard({ report: r }) {
+  const pct = r.progress ?? 0;
+  return (
+    <li className={styles.card}>
+      <div className={styles.cardTop}>
+        <span className={styles.cardName}>
+          <span
+            className={styles.dot}
+            style={{ background: r.color || 'var(--color-neutral)' }}
+            aria-hidden="true"
+          />
+          {r.title}
+        </span>
+        {r.urgent && <span className={styles.urgentBadge}>Urgent</span>}
+      </div>
+      {r.subtitle && <p className={styles.cardSub}>{r.subtitle}</p>}
+      <div className={styles.bar} aria-hidden="true">
+        <span
+          className={styles.barFill}
+          style={{ width: `${pct}%`, background: r.color || 'var(--color-primary)' }}
+        />
+      </div>
+      <div className={styles.cardFoot}>
+        <span className={styles.pct}>{pct}% complete</span>
+        <Link
+          to={ROUTES.reportBuilder.replace(':id', r.id)}
+          className={styles.arrowBtn}
+          aria-label={`Open ${r.title}`}
+        >
+          <ArrowRight size={16} />
+        </Link>
+      </div>
+    </li>
   );
 }
