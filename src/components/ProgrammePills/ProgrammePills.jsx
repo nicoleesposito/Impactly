@@ -1,21 +1,26 @@
 import { useProgrammeFilter } from '../../context/ProgrammeFilterContext.jsx';
+import { useOrg } from '../../context/OrgContext.jsx';
 import styles from './ProgrammePills.module.css';
 
-// Persistent programme context strip (FR-014). Placeholder programmes until the
-// programmes data layer is wired; colour is always paired with a text label (§17.3).
-const PROGRAMMES = [
-  { id: 'all', label: 'All', color: null },
-  { id: 'literacy', label: 'Literacy', color: 'var(--programme-literacy)' },
-  { id: 'digital', label: 'Digital skills', color: 'var(--programme-digital)' },
-  { id: 'ecd', label: 'ECD', color: 'var(--programme-ecd)' },
-];
-
+// Persistent programme context strip (FR-014). Starts with just "All" for a new
+// organisation; real programmes are added by the user and read from the org.
+// Colour is always paired with a text label (§17.3).
 export default function ProgrammePills() {
   const { activeProgramme, setActiveProgramme } = useProgrammeFilter();
+  const { org } = useOrg();
+
+  const programmes = [
+    { id: 'all', label: 'All', color: null },
+    ...(org?.programmes ?? []).map((p) => ({
+      id: p.id,
+      label: p.name,
+      color: p.color ?? null,
+    })),
+  ];
 
   return (
     <div className={styles.strip} role="tablist" aria-label="Programme filter">
-      {PROGRAMMES.map((p) => (
+      {programmes.map((p) => (
         <button
           key={p.id}
           type="button"
