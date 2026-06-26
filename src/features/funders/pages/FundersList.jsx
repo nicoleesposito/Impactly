@@ -1,14 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
+import { useFunders } from '../../../context/FundersContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, Users } from '../../../components/icons.jsx';
 import styles from './FundersList.module.css';
 
 // Funders & Donors (PDF p.10).
-// Data-driven and empty for a new organisation; the list fills in as funders are
-// added. Wired to live Supabase queries in a later section.
-const funders = [];
+// Reads funders from FundersContext — empty for a new organisation, fills in as
+// funders are added via the Add form (p.8). Wired to Supabase in a later section.
 
 function initials(name = '') {
   return name
@@ -22,6 +22,7 @@ function initials(name = '') {
 
 export default function FundersList() {
   const navigate = useNavigate();
+  const { funders } = useFunders();
 
   const totalFunders = funders.length;
   const activeGrants = funders.filter((f) => f.status === 'Active').length;
