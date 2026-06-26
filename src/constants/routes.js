@@ -35,6 +35,7 @@ export const ROUTES = {
   staffProfile: '/staff/:id',
   more: '/more',
   templates: '/templates',
+  programmeAdd: '/programmes/add',
 
   // Settings
   settingsOrganisation: '/settings/organisation',

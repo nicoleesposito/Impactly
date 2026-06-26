@@ -1,11 +1,14 @@
+import { useNavigate } from 'react-router-dom';
 import { useProgrammeFilter } from '../../context/ProgrammeFilterContext.jsx';
 import { useOrg } from '../../context/OrgContext.jsx';
+import { ROUTES } from '../../constants/routes.js';
 import styles from './ProgrammePills.module.css';
 
 // Persistent programme context strip (FR-014). Starts with just "All" for a new
 // organisation; real programmes are added by the user and read from the org.
 // Colour is always paired with a text label (§17.3).
 export default function ProgrammePills() {
+  const navigate = useNavigate();
   const { activeProgramme, setActiveProgramme } = useProgrammeFilter();
   const { org } = useOrg();
 
@@ -37,7 +40,7 @@ export default function ProgrammePills() {
           {p.label}
         </button>
       ))}
-      <button type="button" className={styles.add}>
+      <button type="button" className={styles.add} onClick={() => navigate(ROUTES.programmeAdd)}>
         + Add Programme
       </button>
     </div>

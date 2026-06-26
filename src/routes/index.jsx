@@ -35,6 +35,7 @@ import StaffList from '../features/staff/pages/StaffList.jsx';
 import InviteStaff from '../features/staff/pages/InviteStaff.jsx';
 import Permissions from '../features/staff/pages/Permissions.jsx';
 import Templates from '../features/programmes/pages/Templates.jsx';
+import AddProgramme from '../features/programmes/pages/AddProgramme.jsx';
 import AddGrant from '../features/grants/pages/AddGrant.jsx';
 
 // Settings
@@ -94,6 +95,7 @@ export const router = createBrowserRouter([
           { path: '/staff/invite',      element: <InviteStaff /> },   // before /staff/:id
           { path: '/staff/permissions', element: <Permissions /> },   // before /staff/:id
           { path: '/templates',         element: <Templates /> },
+          { path: '/programmes/add',    element: <AddProgramme /> },
 
           // Settings
           { path: '/settings/organisation',         element: <OrganisationSettings /> },
