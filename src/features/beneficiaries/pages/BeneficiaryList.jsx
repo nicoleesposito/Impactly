@@ -3,16 +3,12 @@ import { Link } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
+import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { Users, Search, Plus } from '../../../components/icons.jsx';
 import styles from './BeneficiaryList.module.css';
 
-// Beneficiaries (students) list (FR-005).
-//
-// Mirrors the Today dashboard's data-driven approach: this array is empty for a
-// new organisation, so the page renders its empty state. As the user adds people
-// — here, via onboarding import or the Add button — the rows replace the empty
-// state automatically. Wired to live Supabase queries in a later section.
+// Beneficiaries (students) list (FR-005). Wired to Supabase in a later section.
 const beneficiaries = [];
 
 function fullName(b) {
@@ -25,13 +21,20 @@ function initials(b) {
 
 export default function BeneficiaryList() {
   const { beneficiaryLabel } = useOrg();
+  const { activeProgramme } = useProgrammeFilter();
   const [query, setQuery] = useState('');
 
   const label = beneficiaryLabel || 'Beneficiaries';
+
+  // Filter by active programme pill (matches on programme_id UUID)
+  const programmeFiltered = activeProgramme !== 'all'
+    ? beneficiaries.filter((b) => b.programmeId === activeProgramme)
+    : beneficiaries;
+
   const term = query.trim().toLowerCase();
   const visible = term
-    ? beneficiaries.filter((b) => fullName(b).toLowerCase().includes(term))
-    : beneficiaries;
+    ? programmeFiltered.filter((b) => fullName(b).toLowerCase().includes(term))
+    : programmeFiltered;
 
   return (
     <div className={styles.page}>
@@ -39,7 +42,7 @@ export default function BeneficiaryList() {
         <div className={styles.heading}>
           <h1 className={styles.title}>{label}</h1>
           <p className={styles.meta}>
-            {beneficiaries.length} {beneficiaries.length === 1 ? 'person' : 'people'}
+            {programmeFiltered.length} {programmeFiltered.length === 1 ? 'person' : 'people'}
           </p>
         </div>
         <Link to={ROUTES.studentAdd} className={styles.add}>
@@ -48,8 +51,8 @@ export default function BeneficiaryList() {
       </header>
 
       <section className={styles.stats} aria-label="Summary">
-        <StatTile label={`Total ${label.toLowerCase()}`} value={beneficiaries.length} />
-        <StatTile label="Active" value={beneficiaries.length} />
+        <StatTile label={`Total ${label.toLowerCase()}`} value={programmeFiltered.length} />
+        <StatTile label="Active" value={programmeFiltered.length} />
       </section>
 
       <label className={styles.searchField}>
@@ -66,7 +69,7 @@ export default function BeneficiaryList() {
         />
       </label>
 
-      {beneficiaries.length === 0 ? (
+      {programmeFiltered.length === 0 ? (
         <EmptyState
           icon={<Users />}
           title={`No ${label.toLowerCase()} yet`}

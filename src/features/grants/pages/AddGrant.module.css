@@ -120,6 +120,10 @@
   border-color: var(--color-primary);
 }
 
+.placeholder {
+  color: var(--color-text-muted);
+}
+
 .selectWrap::after {
   content: '';
   position: absolute;

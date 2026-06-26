@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useScheduledReports, ONE_TIME } from '../../../context/ScheduledReportsContext.jsx';
+import { useOrg } from '../../../context/OrgContext.jsx';
+import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, CalendarDays } from '../../../components/icons.jsx';
 import styles from './ScheduledReports.module.css';
@@ -23,9 +25,19 @@ function avatarColor(name = '') {
 export default function ScheduledReports() {
   const navigate = useNavigate();
   const { scheduledReports, toggleScheduledReport } = useScheduledReports();
+  const { org } = useOrg();
+  const { activeProgramme } = useProgrammeFilter();
 
-  const sending = scheduledReports.filter((r) => r.frequency === ONE_TIME);
-  const recurring = scheduledReports.filter((r) => r.frequency !== ONE_TIME);
+  const activeProgrammeName = activeProgramme !== 'all'
+    ? (org?.programmes?.find((p) => p.id === activeProgramme)?.name ?? null)
+    : null;
+
+  const filtered = activeProgrammeName
+    ? scheduledReports.filter((r) => r.programme === activeProgrammeName)
+    : scheduledReports;
+
+  const sending = filtered.filter((r) => r.frequency === ONE_TIME);
+  const recurring = filtered.filter((r) => r.frequency !== ONE_TIME);
 
   return (
     <div className={styles.page}>
@@ -43,7 +55,7 @@ export default function ScheduledReports() {
         </button>
       </header>
 
-      {scheduledReports.length === 0 ? (
+      {filtered.length === 0 ? (
         <EmptyState
           icon={<CalendarDays />}
           title="No scheduled reports"

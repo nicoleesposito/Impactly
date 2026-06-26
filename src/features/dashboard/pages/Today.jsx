@@ -4,6 +4,7 @@ import SectionCard from '../components/SectionCard.jsx';
 import EmptyState from '../components/EmptyState.jsx';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
+import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ArrowRight, FileText, CalendarDays, BarChart } from '../../../components/icons.jsx';
 import styles from './Today.module.css';
@@ -30,14 +31,21 @@ function todayLabel() {
 export default function Today() {
   const { user } = useAuth();
   const { org } = useOrg();
+  const { activeProgramme } = useProgrammeFilter();
 
   const firstName =
     user?.user_metadata?.first_name || user?.user_metadata?.full_name?.split(' ')[0] || 'there';
   const programmeCount = org?.programmes?.length ?? 0;
 
+  const activeProgrammeName = activeProgramme !== 'all'
+    ? (org?.programmes?.find((p) => p.id === activeProgramme)?.name ?? null)
+    : null;
+
   const metaParts = [
     org?.name,
-    `${programmeCount} ${programmeCount === 1 ? 'programme' : 'programmes'}`,
+    activeProgrammeName
+      ? activeProgrammeName
+      : `${programmeCount} ${programmeCount === 1 ? 'programme' : 'programmes'}`,
     todayLabel(),
   ].filter(Boolean);
 

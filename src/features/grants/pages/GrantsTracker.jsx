@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useGrants } from '../../../context/GrantsContext.jsx';
+import { useOrg } from '../../../context/OrgContext.jsx';
+import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, FileText } from '../../../components/icons.jsx';
 import styles from './GrantsTracker.module.css';
@@ -27,10 +29,21 @@ const STATUS_CLASS = {
 export default function GrantsTracker() {
   const navigate = useNavigate();
   const { grants } = useGrants();
+  const { org } = useOrg();
+  const { activeProgramme } = useProgrammeFilter();
   const [filter, setFilter] = useState('All');
 
-  const visible =
-    filter === 'All' ? grants : grants.filter((g) => g.filter === filter);
+  const activeProgrammeName = activeProgramme !== 'all'
+    ? (org?.programmes?.find((p) => p.id === activeProgramme)?.name ?? null)
+    : null;
+
+  const programmeFiltered = activeProgrammeName
+    ? grants.filter((g) => g.programme === activeProgrammeName)
+    : grants;
+
+  const visible = filter === 'All'
+    ? programmeFiltered
+    : programmeFiltered.filter((g) => g.filter === filter);
 
   return (
     <div className={styles.page}>
@@ -43,10 +56,10 @@ export default function GrantsTracker() {
       </header>
 
       <section className={styles.stats} aria-label="Summary">
-        <StatTile label="Open applications" value={grants.filter((g) => g.filter === 'Open').length} />
-        <StatTile label="Pending decision" value={grants.filter((g) => g.filter === 'Pending').length} />
-        <StatTile label="Awarded (YTD)" value={`R${grants.filter((g) => g.filter === 'Awarded').length === 0 ? '0' : grants.filter((g) => g.filter === 'Awarded').length}`} />
-        <StatTile label="Unsuccessful" value={grants.filter((g) => g.status === 'Unsuccessful').length} />
+        <StatTile label="Open applications" value={programmeFiltered.filter((g) => g.filter === 'Open').length} />
+        <StatTile label="Pending decision" value={programmeFiltered.filter((g) => g.filter === 'Pending').length} />
+        <StatTile label="Awarded (YTD)" value={`R${programmeFiltered.filter((g) => g.filter === 'Awarded').length === 0 ? '0' : programmeFiltered.filter((g) => g.filter === 'Awarded').length}`} />
+        <StatTile label="Unsuccessful" value={programmeFiltered.filter((g) => g.status === 'Unsuccessful').length} />
       </section>
 
       <div className={styles.filters} role="tablist" aria-label="Grant filter">

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGrants } from '../../../context/GrantsContext.jsx';
+import { useOrg } from '../../../context/OrgContext.jsx';
+import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ChevronLeft } from '../../../components/icons.jsx';
 import styles from './AddGrant.module.css';
 
@@ -30,11 +32,19 @@ function CalendarIcon() {
 export default function AddGrant() {
   const navigate = useNavigate();
   const { addGrant } = useGrants();
+  const { org } = useOrg();
+  const { activeProgramme } = useProgrammeFilter();
+
+  const programmes = org?.programmes ?? [];
+  // Pre-select the active pill programme when opening the form
+  const preselected = activeProgramme !== 'all'
+    ? (programmes.find((p) => p.id === activeProgramme)?.name ?? '')
+    : '';
 
   const [form, setForm] = useState({
     grantName: '',
     funder: '',
-    programme: '',
+    programme: preselected,
     amount: '',
     period: '',
     dueDate: '',
@@ -116,13 +126,19 @@ export default function AddGrant() {
             onChange={update('funder')}
             aria-label="Funder"
           />
-          <input
-            className={styles.input}
-            placeholder="Linked programme"
-            value={form.programme}
-            onChange={update('programme')}
-            aria-label="Linked programme"
-          />
+          <div className={styles.selectWrap}>
+            <select
+              className={`${styles.select} ${!form.programme ? styles.placeholder : ''}`}
+              value={form.programme}
+              onChange={update('programme')}
+              aria-label="Linked programme"
+            >
+              <option value="">Linked programme (optional)</option>
+              {programmes.map((p) => (
+                <option key={p.id} value={p.name}>{p.name}</option>
+              ))}
+            </select>
+          </div>
           <input
             className={styles.input}
             placeholder="Amount requested"
