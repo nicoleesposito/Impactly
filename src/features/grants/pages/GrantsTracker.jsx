@@ -2,14 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
+import { useGrants } from '../../../context/GrantsContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, FileText } from '../../../components/icons.jsx';
 import styles from './GrantsTracker.module.css';
-
-// Grants tracker (PDF p.11).
-// Filter pills + grants grouped by stage. Data-driven and empty for a new
-// organisation; wired to live Supabase queries in a later section.
-const grants = [];
 
 const FILTERS = ['All', 'Open', 'Submitted', 'Awarded', 'Pending'];
 
@@ -30,6 +26,7 @@ const STATUS_CLASS = {
 
 export default function GrantsTracker() {
   const navigate = useNavigate();
+  const { grants } = useGrants();
   const [filter, setFilter] = useState('All');
 
   const visible =
@@ -46,10 +43,10 @@ export default function GrantsTracker() {
       </header>
 
       <section className={styles.stats} aria-label="Summary">
-        <StatTile label="Open applications" value="0" />
-        <StatTile label="Pending decision" value="0" />
-        <StatTile label="Awarded (YTD)" value="R0" />
-        <StatTile label="Unsuccessful" value="0" />
+        <StatTile label="Open applications" value={grants.filter((g) => g.filter === 'Open').length} />
+        <StatTile label="Pending decision" value={grants.filter((g) => g.filter === 'Pending').length} />
+        <StatTile label="Awarded (YTD)" value={`R${grants.filter((g) => g.filter === 'Awarded').length === 0 ? '0' : grants.filter((g) => g.filter === 'Awarded').length}`} />
+        <StatTile label="Unsuccessful" value={grants.filter((g) => g.status === 'Unsuccessful').length} />
       </section>
 
       <div className={styles.filters} role="tablist" aria-label="Grant filter">
