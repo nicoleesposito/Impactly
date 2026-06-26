@@ -40,6 +40,7 @@ export default function ProgrammePills() {
           {p.label}
         </button>
       ))}
+      <span className={styles.spacer} aria-hidden="true" />
       <button type="button" className={styles.add} onClick={() => navigate(ROUTES.programmeAdd)}>
         + Add Programme
       </button>
