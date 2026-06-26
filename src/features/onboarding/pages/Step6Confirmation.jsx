@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import StepProgress from '../components/StepProgress.jsx';
 import { Check } from '../../../components/icons.jsx';
 import { useOnboarding } from '../OnboardingContext.jsx';
+import { useOrg } from '../../../context/OrgContext.jsx';
 import { supabase } from '../../../lib/supabase.js';
 import { ROUTES } from '../../../constants/routes.js';
 import styles from './Step6Confirmation.module.css';
@@ -10,6 +11,7 @@ import styles from './Step6Confirmation.module.css';
 export default function Step6Confirmation() {
   const navigate = useNavigate();
   const { data, reset } = useOnboarding();
+  const { setOrg } = useOrg();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [emailPending, setEmailPending] = useState(false);
@@ -46,6 +48,18 @@ export default function Step6Confirmation() {
       setError(signUpError.message);
       return;
     }
+
+    // Seed OrgContext with the organisation details from onboarding so
+    // settings pages and the More tab are pre-filled immediately.
+    setOrg({
+      name: data.organisation.name,
+      type: data.organisation.type,
+      country: data.organisation.country,
+      size: data.organisation.size,
+      beneficiaryLabel: data.organisation.beneficiaryLabel || 'Students',
+      programmes: [],
+      // TODO(org): persist to Supabase organisations table and load on next sign-in.
+    });
 
     reset();
 
