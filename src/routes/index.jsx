@@ -24,6 +24,7 @@ import AttendanceMulti from '../features/attendance/pages/AttendanceMulti.jsx';
 import BeneficiaryList from '../features/beneficiaries/pages/BeneficiaryList.jsx';
 import ReportsList from '../features/reports/pages/ReportsList.jsx';
 import ScheduledReports from '../features/reports/pages/ScheduledReports.jsx';
+import ScheduleReport from '../features/reports/pages/ScheduleReport.jsx';
 import More from '../features/more/pages/More.jsx';
 
 // Manage
@@ -79,8 +80,9 @@ export const router = createBrowserRouter([
           { path: '/home',       element: <Today /> },
           { path: '/attendance', element: <AttendanceMulti /> },
           { path: '/students',   element: <BeneficiaryList /> },
-          { path: '/reports',           element: <ReportsList /> },
-          { path: '/reports/scheduled', element: <ScheduledReports /> }, // before /reports/:id
+          { path: '/reports',              element: <ReportsList /> },
+          { path: '/reports/scheduled',    element: <ScheduledReports /> },  // before /reports/:id
+          { path: '/reports/schedule/new', element: <ScheduleReport /> },    // before /reports/:id
           { path: '/more',       element: <More /> },
 
           // Manage
