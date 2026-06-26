@@ -19,11 +19,9 @@ const SECTIONS = [
   {
     heading: 'Settings',
     items: [
-      { label: 'Organisation', to: ROUTES.settingsOrganisation, hint: 'Profile, logo, and details' },
-      { label: 'Users & roles',to: ROUTES.settingsUsers,        hint: 'Invite and manage access'   },
-      { label: 'Integrations', to: ROUTES.settingsIntegrations, hint: 'Connect external tools'     },
-      { label: 'Billing',      to: ROUTES.settingsBilling,      hint: 'Plan and payment details'   },
-      { label: 'Personal',     to: ROUTES.settingsPersonal,     hint: 'Your account settings'      },
+      { label: 'Organisation',       to: ROUTES.settingsOrganisation, hint: 'Profile, logo, and details' },
+      { label: 'Integrations & App', to: ROUTES.settingsIntegrations, hint: 'Connect apps, billing, and templates' },
+      { label: 'Personal',           to: ROUTES.settingsPersonal,     hint: 'Your account settings'      },
     ],
   },
 ];

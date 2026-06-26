@@ -1,0 +1,188 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── Back header ──────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--color-text);
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ── Plan card ────────────────────────────────────── */
+.planCard {
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.planHead {
+  padding: var(--space-4);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.planName {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.planPrice {
+  font-size: var(--text-sm);
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.planBody {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.planIncludesLabel {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.includesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.includeItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-base);
+}
+
+.checkIcon {
+  display: inline-flex;
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.upgrade {
+  margin-top: var(--space-1);
+  align-self: flex-start;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.upgrade:hover {
+  background: var(--color-primary-hover);
+}
+
+/* ── Generic card ─────────────────────────────────── */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+}
+
+.cardTitle {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.muted {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ── Usage ────────────────────────────────────────── */
+.usageRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-base);
+}
+
+.usageValue {
+  font-weight: var(--font-weight-semibold);
+}
+
+.bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+}
+
+/* ── Outline button ───────────────────────────────── */
+.outlineBtn {
+  align-self: stretch;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.outlineBtn:hover {
+  background: var(--color-danger-bg);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── Billing details ──────────────────────────────── */
+.detailList {
+  display: flex;
+  flex-direction: column;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  font-size: var(--text-base);
+}
+
+.detailRow:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.detailRow dt {
+  color: var(--color-text-secondary);
+}
+
+.detailRow dd {
+  font-weight: var(--font-weight-medium);
+  text-align: right;
+}

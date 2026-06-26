@@ -41,6 +41,7 @@ export default function StaffList() {
           <ChevronLeft size={24} />
         </button>
         <h1 className={styles.title}>Staff</h1>
+        <Link to={ROUTES.staffPermissions} className={styles.secondary}>Permissions</Link>
         <Link to={ROUTES.staffInvite} className={styles.add}>+ Invite</Link>
       </header>
 

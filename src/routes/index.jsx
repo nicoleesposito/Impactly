@@ -31,12 +31,13 @@ import AddFunder from '../features/funders/pages/AddFunder.jsx';
 import GrantsTracker from '../features/grants/pages/GrantsTracker.jsx';
 import StaffList from '../features/staff/pages/StaffList.jsx';
 import InviteStaff from '../features/staff/pages/InviteStaff.jsx';
+import Permissions from '../features/staff/pages/Permissions.jsx';
 import Templates from '../features/programmes/pages/Templates.jsx';
 import AddGrant from '../features/grants/pages/AddGrant.jsx';
 
 // Settings
 import OrganisationSettings from '../features/settings/pages/OrganisationSettings.jsx';
-import UsersAndPermissions from '../features/settings/pages/UsersAndPermissions.jsx';
+import OrganisationDetails from '../features/settings/pages/OrganisationDetails.jsx';
 import Integrations from '../features/settings/pages/Integrations.jsx';
 import Billing from '../features/settings/pages/Billing.jsx';
 import PersonalSettings from '../features/settings/pages/PersonalSettings.jsx';
@@ -85,16 +86,17 @@ export const router = createBrowserRouter([
           { path: '/funders/add',    element: <AddFunder /> }, // before /funders/:id
           { path: '/grants',         element: <GrantsTracker /> },
           { path: '/grants/add',     element: <AddGrant /> },        // before /grants/:id
-          { path: '/staff',          element: <StaffList /> },
-          { path: '/staff/invite',   element: <InviteStaff /> }, // before /staff/:id
-          { path: '/templates',      element: <Templates /> },
+          { path: '/staff',             element: <StaffList /> },
+          { path: '/staff/invite',      element: <InviteStaff /> },   // before /staff/:id
+          { path: '/staff/permissions', element: <Permissions /> },   // before /staff/:id
+          { path: '/templates',         element: <Templates /> },
 
           // Settings
-          { path: '/settings/organisation', element: <OrganisationSettings /> },
-          { path: '/settings/users',        element: <UsersAndPermissions /> },
-          { path: '/settings/integrations', element: <Integrations /> },
-          { path: '/settings/billing',      element: <Billing /> },
-          { path: '/settings/personal',     element: <PersonalSettings /> },
+          { path: '/settings/organisation',         element: <OrganisationSettings /> },
+          { path: '/settings/organisation/details', element: <OrganisationDetails /> },
+          { path: '/settings/integrations',         element: <Integrations /> },
+          { path: '/settings/billing',              element: <Billing /> },
+          { path: '/settings/personal',             element: <PersonalSettings /> },
         ],
       },
     ],

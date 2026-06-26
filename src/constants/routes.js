@@ -31,13 +31,14 @@ export const ROUTES = {
   grantAdd: '/grants/add',
   staff: '/staff',
   staffInvite: '/staff/invite',
+  staffPermissions: '/staff/permissions',
   staffProfile: '/staff/:id',
   more: '/more',
   templates: '/templates',
 
   // Settings
   settingsOrganisation: '/settings/organisation',
-  settingsUsers: '/settings/users',
+  settingsOrganisationDetails: '/settings/organisation/details',
   settingsPersonal: '/settings/personal',
   settingsIntegrations: '/settings/integrations',
   settingsBilling: '/settings/billing',
