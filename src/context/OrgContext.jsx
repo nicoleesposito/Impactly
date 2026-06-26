@@ -76,10 +76,13 @@ export function OrgProvider({ children }) {
 
     const tempId = `temp-${Date.now()}`;
     const optimistic = { id: tempId, ...programme };
-    setOrg((prev) => prev
-      ? { ...prev, programmes: [...(prev.programmes ?? []), optimistic] }
-      : prev,
-    );
+
+    // Always append — even if org hasn't fully loaded, build a shell so the
+    // pill bar shows the new pill immediately.
+    setOrg((prev) => {
+      const base = prev ?? { id: orgId, name: '', type: '', country: '', size: '', beneficiaryLabel: 'Students', programmes: [] };
+      return { ...base, programmes: [...(base.programmes ?? []), optimistic] };
+    });
 
     const { data, error } = await supabase.from('programmes').insert({
       org_id: orgId,
@@ -90,6 +93,7 @@ export function OrgProvider({ children }) {
     }).select().single();
 
     if (data) {
+      // Swap temp record for the persisted one (real UUID)
       setOrg((prev) => prev
         ? { ...prev, programmes: prev.programmes.map((p) => p.id === tempId ? dbToProgramme(data) : p) }
         : prev,
@@ -98,7 +102,7 @@ export function OrgProvider({ children }) {
     }
 
     if (error) {
-      // Rollback
+      // Rollback on failure
       setOrg((prev) => prev
         ? { ...prev, programmes: prev.programmes.filter((p) => p.id !== tempId) }
         : prev,
