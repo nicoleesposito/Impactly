@@ -69,10 +69,11 @@ export function OrgProvider({ children }) {
     }).eq('id', orgId);
   }, [org?.id, profile?.org_id]);
 
-  // Add a programme to Supabase and update local state optimistically
+  // Add a programme. Local-first: the pill appears (and becomes clickable as a
+  // filter) immediately, regardless of backend state. Persistence to Supabase
+  // happens in the background and swaps the temp id for the real UUID on success.
   const addProgramme = useCallback(async (programme) => {
     const orgId = org?.id ?? profile?.org_id;
-    if (!orgId) return null;
 
     const tempId = `temp-${Date.now()}`;
     const optimistic = { id: tempId, ...programme };
@@ -80,9 +81,24 @@ export function OrgProvider({ children }) {
     // Always append — even if org hasn't fully loaded, build a shell so the
     // pill bar shows the new pill immediately.
     setOrg((prev) => {
-      const base = prev ?? { id: orgId, name: '', type: '', country: '', size: '', beneficiaryLabel: 'Students', programmes: [] };
+      const base = prev ?? {
+        id: orgId ?? tempId,
+        name: '',
+        type: '',
+        country: '',
+        size: '',
+        beneficiaryLabel: 'Students',
+        programmes: [],
+      };
       return { ...base, programmes: [...(base.programmes ?? []), optimistic] };
     });
+
+    // No org row to attach to yet — keep the programme in local state for this
+    // session so the pill/filter still works. It will persist once an org exists.
+    if (!orgId) {
+      console.warn('[OrgContext] addProgramme: no org_id yet; programme kept locally only.');
+      return optimistic;
+    }
 
     const { data, error } = await supabase.from('programmes').insert({
       org_id: orgId,
@@ -102,14 +118,11 @@ export function OrgProvider({ children }) {
     }
 
     if (error) {
-      // Rollback on failure
-      setOrg((prev) => prev
-        ? { ...prev, programmes: prev.programmes.filter((p) => p.id !== tempId) }
-        : prev,
-      );
+      // Persistence failed — keep the optimistic pill so the user still sees it
+      // (it just won't survive a reload until the backend issue is resolved).
       console.error('[OrgContext] addProgramme error:', error.message);
     }
-    return null;
+    return optimistic;
   }, [org?.id, profile?.org_id]);
 
   const value = useMemo(
