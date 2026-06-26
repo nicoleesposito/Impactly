@@ -1,32 +1,80 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { supabase } from '../lib/supabase.js';
+import { useAuth } from './AuthContext.jsx';
 
-// Funders & donors context (FR-013).
-// Holds the funder list across the Add form (p.8) and the Funders list (p.10).
-// addFunder() prepends a new funder so it appears immediately. Wired to the
-// Supabase `funders` table in a later section.
 const FundersContext = createContext({
   funders: [],
-  addFunder: () => {},
+  addFunder: async () => {},
 });
 
+function dbToFunder(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    type: row.type ?? '',
+    contactName: row.contact_name ?? '',
+    contactEmail: row.contact_email ?? '',
+    status: row.status,
+    reportDue: row.report_due,
+    notes: row.notes ?? '',
+    createdAt: row.created_at,
+  };
+}
+
 export function FundersProvider({ children }) {
+  const { profile } = useAuth();
   const [funders, setFunders] = useState([]);
 
-  function addFunder(funder) {
-    const record = {
-      id: crypto.randomUUID(),
+  useEffect(() => {
+    const orgId = profile?.org_id;
+    if (!orgId) { setFunders([]); return; }
+
+    supabase
+      .from('funders')
+      .select('*')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => setFunders(data ? data.map(dbToFunder) : []));
+  }, [profile?.org_id]);
+
+  const addFunder = useCallback(async (funder) => {
+    const orgId = profile?.org_id;
+    if (!orgId) return null;
+
+    const tempId = `temp-${Date.now()}`;
+    const optimistic = {
+      id: tempId,
       status: 'Active',
       reportDue: false,
       createdAt: new Date().toISOString(),
       ...funder,
     };
-    setFunders((prev) => [record, ...prev]);
-    // TODO(funders): persist to Supabase `funders` table.
-    return record;
-  }
+    setFunders((prev) => [optimistic, ...prev]);
 
-  const value = useMemo(() => ({ funders, addFunder }), [funders]);
+    const { data, error } = await supabase.from('funders').insert({
+      org_id: orgId,
+      name: funder.name,
+      type: funder.type || null,
+      contact_name: funder.contactName || null,
+      contact_email: funder.contactEmail || null,
+      status: 'Active',
+      report_due: false,
+      notes: funder.notes || null,
+    }).select().single();
 
+    if (data) {
+      setFunders((prev) => prev.map((f) => f.id === tempId ? dbToFunder(data) : f));
+      return dbToFunder(data);
+    }
+
+    if (error) {
+      setFunders((prev) => prev.filter((f) => f.id !== tempId));
+      console.error('[FundersContext] addFunder error:', error.message);
+    }
+    return null;
+  }, [profile?.org_id]);
+
+  const value = useMemo(() => ({ funders, addFunder }), [funders, addFunder]);
   return <FundersContext.Provider value={value}>{children}</FundersContext.Provider>;
 }
 

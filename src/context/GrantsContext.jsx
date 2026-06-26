@@ -1,13 +1,52 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { supabase } from '../lib/supabase.js';
+import { useAuth } from './AuthContext.jsx';
 
 const GrantsContext = createContext(null);
 
+function dbToGrant(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    funder: row.funder ?? '',
+    programme: row.programme ?? '',
+    amount: row.amount ?? '',
+    period: row.period ?? '',
+    dueDate: row.due_date ?? '',
+    reminder: row.reminder ?? '',
+    subtitle: row.subtitle ?? '',
+    remaining: row.remaining ?? '',
+    status: row.status,
+    group: row.group_label,
+    filter: row.filter,
+    progress: row.progress,
+    createdAt: row.created_at,
+  };
+}
+
 export function GrantsProvider({ children }) {
+  const { profile } = useAuth();
   const [grants, setGrants] = useState([]);
 
-  function addGrant(grant) {
-    const record = {
-      id: crypto.randomUUID(),
+  useEffect(() => {
+    const orgId = profile?.org_id;
+    if (!orgId) { setGrants([]); return; }
+
+    supabase
+      .from('grants')
+      .select('*')
+      .eq('org_id', orgId)
+      .order('created_at', { ascending: false })
+      .then(({ data }) => setGrants(data ? data.map(dbToGrant) : []));
+  }, [profile?.org_id]);
+
+  const addGrant = useCallback(async (grant) => {
+    const orgId = profile?.org_id;
+    if (!orgId) return null;
+
+    const tempId = `temp-${Date.now()}`;
+    const optimistic = {
+      id: tempId,
       status: 'Draft',
       group: 'draft',
       filter: 'Open',
@@ -15,12 +54,38 @@ export function GrantsProvider({ children }) {
       createdAt: new Date().toISOString(),
       ...grant,
     };
-    setGrants((prev) => [record, ...prev]);
-    // TODO(grants): persist to Supabase
-    return record;
-  }
+    setGrants((prev) => [optimistic, ...prev]);
 
-  const value = useMemo(() => ({ grants, addGrant }), [grants]);
+    const { data, error } = await supabase.from('grants').insert({
+      org_id: orgId,
+      title: grant.title,
+      funder: grant.funder || null,
+      programme: grant.programme || null,
+      amount: grant.amount || null,
+      period: grant.period || null,
+      due_date: grant.dueDate || null,
+      reminder: grant.reminder || null,
+      subtitle: grant.subtitle || null,
+      remaining: grant.remaining || null,
+      status: 'Draft',
+      group_label: 'draft',
+      filter: 'Open',
+      progress: 0,
+    }).select().single();
+
+    if (data) {
+      setGrants((prev) => prev.map((g) => g.id === tempId ? dbToGrant(data) : g));
+      return dbToGrant(data);
+    }
+
+    if (error) {
+      setGrants((prev) => prev.filter((g) => g.id !== tempId));
+      console.error('[GrantsContext] addGrant error:', error.message);
+    }
+    return null;
+  }, [profile?.org_id]);
+
+  const value = useMemo(() => ({ grants, addGrant }), [grants, addGrant]);
   return <GrantsContext.Provider value={value}>{children}</GrantsContext.Provider>;
 }
 

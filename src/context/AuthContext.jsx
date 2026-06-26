@@ -1,16 +1,18 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase.js';
 
-// Session + role + org context. Wraps Supabase Auth (email/password + Google OAuth).
 const AuthContext = createContext({
   session: null,
   user: null,
+  profile: null,
   role: null,
   loading: true,
+  refreshProfile: async () => {},
 });
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,10 +34,34 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  // Role/org are stored in app metadata / a profile row; wired in the auth section.
-  const role = session?.user?.app_metadata?.role ?? null;
+  // Fetch profile row whenever the signed-in user changes
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId) { setProfile(null); return; }
 
-  const value = { session, user: session?.user ?? null, role, loading };
+    supabase
+      .from('profiles')
+      .select('org_id, role, first_name, last_name')
+      .eq('id', userId)
+      .single()
+      .then(({ data }) => setProfile(data ?? null));
+  }, [session?.user?.id]);
+
+  // Exposed so onboarding can force a re-fetch after creating the org
+  const refreshProfile = useCallback(async () => {
+    const userId = session?.user?.id;
+    if (!userId) return;
+    const { data } = await supabase
+      .from('profiles')
+      .select('org_id, role, first_name, last_name')
+      .eq('id', userId)
+      .single();
+    setProfile(data ?? null);
+  }, [session?.user?.id]);
+
+  const role = profile?.role ?? session?.user?.app_metadata?.role ?? null;
+
+  const value = { session, user: session?.user ?? null, profile, role, loading, refreshProfile };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

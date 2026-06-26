@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import StepProgress from '../components/StepProgress.jsx';
 import { Check } from '../../../components/icons.jsx';
 import { useOnboarding } from '../OnboardingContext.jsx';
-import { useOrg } from '../../../context/OrgContext.jsx';
+import { useAuth } from '../../../context/AuthContext.jsx';
 import { supabase } from '../../../lib/supabase.js';
 import { ROUTES } from '../../../constants/routes.js';
 import styles from './Step6Confirmation.module.css';
@@ -11,7 +11,7 @@ import styles from './Step6Confirmation.module.css';
 export default function Step6Confirmation() {
   const navigate = useNavigate();
   const { data, reset } = useOnboarding();
-  const { setOrg } = useOrg();
+  const { refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [emailPending, setEmailPending] = useState(false);
@@ -27,10 +27,44 @@ export default function Step6Confirmation() {
       : null,
   ].filter(Boolean);
 
+  async function createOrgAndSeed(orgId) {
+    const promises = [];
+
+    if (data.beneficiaries.length > 0) {
+      promises.push(
+        supabase.from('beneficiaries').insert(
+          data.beneficiaries.map((b) => ({
+            org_id: orgId,
+            first_name: b.firstName ?? b.name ?? 'Unknown',
+            last_name: b.lastName ?? null,
+            date_of_birth: b.dob ?? null,
+            gender: b.gender ?? null,
+          })),
+        ),
+      );
+    }
+
+    if (data.team.length > 0) {
+      promises.push(
+        supabase.from('staff_invites').insert(
+          data.team.map((m) => ({
+            org_id: orgId,
+            email: m.email,
+            access_level: m.accessLevel ?? 'Staff',
+            role: m.role ?? null,
+          })),
+        ),
+      );
+    }
+
+    await Promise.all(promises);
+  }
+
   async function handleGoToToday() {
     setError('');
     setLoading(true);
 
+    // 1. Create auth user
     const { data: authData, error: signUpError } = await supabase.auth.signUp({
       email: data.account.email,
       password: data.account.password,
@@ -42,32 +76,48 @@ export default function Step6Confirmation() {
       },
     });
 
-    setLoading(false);
-
     if (signUpError) {
+      setLoading(false);
       setError(signUpError.message);
       return;
     }
 
-    // Seed OrgContext with the organisation details from onboarding so
-    // settings pages and the More tab are pre-filled immediately.
-    setOrg({
-      name: data.organisation.name,
-      type: data.organisation.type,
-      country: data.organisation.country,
-      size: data.organisation.size,
-      beneficiaryLabel: data.organisation.beneficiaryLabel || 'Students',
-      programmes: [],
-      // TODO(org): persist to Supabase organisations table and load on next sign-in.
-    });
-
-    reset();
-
     if (authData.session) {
-      // Email confirmation disabled — signed in immediately
+      // Email confirmation disabled — session is live; create org now.
+      const { data: orgId, error: orgError } = await supabase.rpc('create_organisation', {
+        p_name: data.organisation.name,
+        p_type: data.organisation.type || null,
+        p_country: data.organisation.country || null,
+        p_size: data.organisation.size || null,
+        p_beneficiary_label: data.organisation.beneficiaryLabel || 'Students',
+      });
+
+      if (orgError) {
+        setLoading(false);
+        setError(orgError.message);
+        return;
+      }
+
+      await createOrgAndSeed(orgId);
+      // Reload profile so OrgContext picks up the new org_id
+      await refreshProfile();
+
+      reset();
+      setLoading(false);
       navigate(ROUTES.home);
     } else {
-      // Email confirmation enabled — ask user to verify before proceeding
+      // Email confirmation enabled — save org details for post-confirmation setup.
+      sessionStorage.setItem('impactly-pending-org', JSON.stringify({
+        name: data.organisation.name,
+        type: data.organisation.type,
+        country: data.organisation.country,
+        size: data.organisation.size,
+        beneficiaryLabel: data.organisation.beneficiaryLabel || 'Students',
+        beneficiaries: data.beneficiaries,
+        team: data.team,
+      }));
+      reset();
+      setLoading(false);
       setEmailPending(true);
     }
   }

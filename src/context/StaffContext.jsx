@@ -1,48 +1,112 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase.js';
+import { useAuth } from './AuthContext.jsx';
 
-// Staff & invites context (FR-012).
-// pendingInvites: sent but not yet accepted. activeStaff: accepted + on roster.
-// addInvite() saves to the pending_invites table and queues an email via Supabase
-// Edge Function (invite-staff). The Edge Function calls
-// supabase.auth.admin.inviteUserByEmail() server-side with the service-role key.
 const StaffContext = createContext({
   activeStaff: [],
   pendingInvites: [],
   addInvite: async () => {},
-  removeInvite: () => {},
+  removeInvite: async () => {},
 });
 
+function dbToInvite(row) {
+  return {
+    id: row.id,
+    email: row.email,
+    accessLevel: row.access_level,
+    role: row.role ?? null,
+    sentAt: row.sent_at,
+    acceptedAt: row.accepted_at ?? null,
+  };
+}
+
+function dbToStaff(row) {
+  return {
+    id: row.id,
+    firstName: row.first_name ?? '',
+    lastName: row.last_name ?? '',
+    role: row.role,
+    orgId: row.org_id,
+  };
+}
+
 export function StaffProvider({ children }) {
+  const { profile } = useAuth();
   const [activeStaff, setActiveStaff] = useState([]);
   const [pendingInvites, setPendingInvites] = useState([]);
 
-  async function addInvite({ email, accessLevel, role }) {
-    const invite = {
-      id: crypto.randomUUID(),
+  useEffect(() => {
+    const orgId = profile?.org_id;
+    if (!orgId) {
+      setActiveStaff([]);
+      setPendingInvites([]);
+      return;
+    }
+
+    // Load pending invites
+    supabase
+      .from('staff_invites')
+      .select('*')
+      .eq('org_id', orgId)
+      .is('accepted_at', null)
+      .order('sent_at', { ascending: false })
+      .then(({ data }) => setPendingInvites(data ? data.map(dbToInvite) : []));
+
+    // Load active staff (all profiles in this org except the current user)
+    supabase
+      .from('profiles')
+      .select('id, first_name, last_name, role, org_id')
+      .eq('org_id', orgId)
+      .then(({ data }) => setActiveStaff(data ? data.map(dbToStaff) : []));
+  }, [profile?.org_id]);
+
+  const addInvite = useCallback(async ({ email, accessLevel, role }) => {
+    const orgId = profile?.org_id;
+    if (!orgId) return null;
+
+    const tempId = `temp-${Date.now()}`;
+    const optimistic = {
+      id: tempId,
       email: email.trim().toLowerCase(),
       accessLevel,
       role: role || null,
       sentAt: new Date().toISOString(),
+      acceptedAt: null,
     };
+    setPendingInvites((prev) => [...prev, optimistic]);
 
-    // Persist locally first so the UI is responsive.
-    setPendingInvites((prev) => [...prev, invite]);
+    const { data, error } = await supabase.from('staff_invites').insert({
+      org_id: orgId,
+      email: email.trim().toLowerCase(),
+      access_level: accessLevel,
+      role: role || null,
+    }).select().single();
 
-    // TODO(staff): persist to `pending_invites` table and trigger email via Edge Function.
-    // await supabase.functions.invoke('invite-staff', { body: { email, accessLevel, role } });
+    if (data) {
+      setPendingInvites((prev) => prev.map((i) => i.id === tempId ? dbToInvite(data) : i));
+      // TODO: trigger invite email via Edge Function:
+      // await supabase.functions.invoke('invite-staff', { body: { inviteId: data.id } });
+      return dbToInvite(data);
+    }
 
-    return invite;
-  }
+    if (error) {
+      setPendingInvites((prev) => prev.filter((i) => i.id !== tempId));
+      console.error('[StaffContext] addInvite error:', error.message);
+    }
+    return null;
+  }, [profile?.org_id]);
 
-  function removeInvite(id) {
+  const removeInvite = useCallback(async (id) => {
     setPendingInvites((prev) => prev.filter((i) => i.id !== id));
-    // TODO(staff): delete from `pending_invites` table.
-  }
+    const { error } = await supabase.from('staff_invites').delete().eq('id', id);
+    if (error) {
+      console.error('[StaffContext] removeInvite error:', error.message);
+    }
+  }, []);
 
   const value = useMemo(
     () => ({ activeStaff, pendingInvites, addInvite, removeInvite }),
-    [activeStaff, pendingInvites],
+    [activeStaff, pendingInvites, addInvite, removeInvite],
   );
 
   return <StaffContext.Provider value={value}>{children}</StaffContext.Provider>;

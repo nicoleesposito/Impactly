@@ -1,29 +1,125 @@
-import { createContext, useContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { supabase } from '../lib/supabase.js';
+import { useAuth } from './AuthContext.jsx';
 
-// Organisation context, incl. the configurable beneficiary label (BR-006)
-// that renames "Students" across navigation, headings and reports.
 const OrgContext = createContext({
   org: null,
+  orgLoading: false,
   beneficiaryLabel: 'Students',
   setOrg: () => {},
+  saveOrg: async () => {},
+  addProgramme: async () => {},
 });
 
-export function OrgProvider({ children }) {
-  const [org, setOrg] = useState(null);
+function dbToProgramme(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description ?? '',
+    color: row.color ?? null,
+    shortLabel: row.short_label ?? '',
+  };
+}
 
-  const addProgramme = useCallback((programme) => {
-    const record = { id: crypto.randomUUID(), ...programme };
+export function OrgProvider({ children }) {
+  const { profile } = useAuth();
+  const [org, setOrg] = useState(null);
+  const [orgLoading, setOrgLoading] = useState(false);
+
+  // Load org + programmes from Supabase whenever the user's org_id changes
+  useEffect(() => {
+    const orgId = profile?.org_id;
+    if (!orgId) { setOrg(null); return; }
+
+    setOrgLoading(true);
+
+    Promise.all([
+      supabase.from('organisations').select('*').eq('id', orgId).single(),
+      supabase.from('programmes').select('*').eq('org_id', orgId).order('created_at'),
+    ]).then(([{ data: orgData }, { data: programmes }]) => {
+      if (orgData) {
+        setOrg({
+          id: orgData.id,
+          name: orgData.name,
+          type: orgData.type ?? '',
+          country: orgData.country ?? '',
+          size: orgData.size ?? '',
+          beneficiaryLabel: orgData.beneficiary_label ?? 'Students',
+          programmes: (programmes ?? []).map(dbToProgramme),
+        });
+      }
+      setOrgLoading(false);
+    });
+  }, [profile?.org_id]);
+
+  // Persist org settings changes and update local state
+  const saveOrg = useCallback(async (updates) => {
+    const orgId = org?.id ?? profile?.org_id;
+    if (!orgId) return;
+
+    // Optimistic local update
+    setOrg((prev) => (prev ? { ...prev, ...updates } : prev));
+
+    await supabase.from('organisations').update({
+      name: updates.name,
+      type: updates.type,
+      country: updates.country,
+      size: updates.size,
+      beneficiary_label: updates.beneficiaryLabel,
+    }).eq('id', orgId);
+  }, [org?.id, profile?.org_id]);
+
+  // Add a programme to Supabase and update local state optimistically
+  const addProgramme = useCallback(async (programme) => {
+    const orgId = org?.id ?? profile?.org_id;
+    if (!orgId) return null;
+
+    const tempId = `temp-${Date.now()}`;
+    const optimistic = { id: tempId, ...programme };
     setOrg((prev) => prev
-      ? { ...prev, programmes: [...(prev.programmes ?? []), record] }
-      : { programmes: [record] },
+      ? { ...prev, programmes: [...(prev.programmes ?? []), optimistic] }
+      : prev,
     );
-    return record;
-  }, []);
+
+    const { data, error } = await supabase.from('programmes').insert({
+      org_id: orgId,
+      name: programme.name,
+      description: programme.description || null,
+      color: programme.color || null,
+      short_label: programme.shortLabel || null,
+    }).select().single();
+
+    if (data) {
+      setOrg((prev) => prev
+        ? { ...prev, programmes: prev.programmes.map((p) => p.id === tempId ? dbToProgramme(data) : p) }
+        : prev,
+      );
+      return dbToProgramme(data);
+    }
+
+    if (error) {
+      // Rollback
+      setOrg((prev) => prev
+        ? { ...prev, programmes: prev.programmes.filter((p) => p.id !== tempId) }
+        : prev,
+      );
+      console.error('[OrgContext] addProgramme error:', error.message);
+    }
+    return null;
+  }, [org?.id, profile?.org_id]);
 
   const value = useMemo(
-    () => ({ org, setOrg, addProgramme, beneficiaryLabel: org?.beneficiaryLabel ?? 'Students' }),
-    [org, addProgramme],
+    () => ({
+      org,
+      orgLoading,
+      setOrg,
+      saveOrg,
+      addProgramme,
+      beneficiaryLabel: org?.beneficiaryLabel ?? 'Students',
+    }),
+    [org, orgLoading, saveOrg, addProgramme],
   );
+
   return <OrgContext.Provider value={value}>{children}</OrgContext.Provider>;
 }
 

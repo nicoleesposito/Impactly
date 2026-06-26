@@ -10,7 +10,7 @@ import styles from './OrganisationDetails.module.css';
 // saves back via setOrg. Pre-filled from onboarding when available.
 export default function OrganisationDetails() {
   const navigate = useNavigate();
-  const { org, setOrg } = useOrg();
+  const { org, saveOrg } = useOrg();
 
   const [form, setForm] = useState({
     name: org?.name ?? '',
@@ -28,8 +28,7 @@ export default function OrganisationDetails() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setOrg((prev) => ({ ...(prev ?? {}), ...form }));
-    // TODO(org): persist to Supabase
+    saveOrg(form);
     setSaved(true);
   }
 
