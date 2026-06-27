@@ -6,11 +6,6 @@ import { COUNTRIES } from '../../../constants/onboarding.js';
 import { ChevronLeft } from '../../../components/icons.jsx';
 import styles from './AddFunder.module.css';
 
-// Add Funder / Donor (PDF p.8).
-// Captures organisation details, primary contact, linked programmes, and
-// reporting preferences. On submit the funder is added to FundersContext and
-// appears in the Funders list (p.10).
-
 const FUNDER_TYPES = [
   'Government',
   'Corporate / Foundation',
@@ -31,13 +26,15 @@ export default function AddFunder() {
     orgName: '',
     funderType: '',
     country: '',
+    address: '',
+    registrationId: '',
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
     roleTitle: '',
   });
-  const [linked, setLinked] = useState([]); // programme ids
+  const [linked, setLinked] = useState([]);
   const [requireReports, setRequireReports] = useState(false);
   const [sendCopies, setSendCopies] = useState(true);
   const [error, setError] = useState('');
@@ -59,27 +56,19 @@ export default function AddFunder() {
     }
     setError('');
 
-    const linkedNames = programmes
-      .filter((p) => linked.includes(p.id))
-      .map((p) => p.shortLabel || p.name);
+    const fullName = [form.firstName.trim(), form.lastName.trim()].filter(Boolean).join(' ');
 
     addFunder({
       name: form.orgName.trim(),
-      funderType: form.funderType,
-      country: form.country,
-      contact: {
-        firstName: form.firstName.trim(),
-        lastName: form.lastName.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        roleTitle: form.roleTitle.trim(),
-      },
-      programmes: linked,
-      // Subtitle on the list reads "programme · status"; keep the first linked
-      // programme name handy for that row (amount is added later when known).
-      programme: linkedNames[0] || null,
-      requireReports,
-      sendCopies,
+      type: form.funderType,
+      address: form.address.trim(),
+      registrationId: form.registrationId.trim(),
+      contactName: fullName,
+      contactEmail: form.email.trim(),
+      contactRole: form.roleTitle.trim(),
+      phone: form.phone.trim(),
+      linkedProgrammes: linked,
+      notes: '',
     });
 
     navigate(-1);
@@ -127,6 +116,20 @@ export default function AddFunder() {
               {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
+          <input
+            className={styles.input}
+            placeholder="Physical address"
+            value={form.address}
+            onChange={update('address')}
+            aria-label="Address"
+          />
+          <input
+            className={styles.input}
+            placeholder="Registration / NPO number"
+            value={form.registrationId}
+            onChange={update('registrationId')}
+            aria-label="Registration number"
+          />
         </fieldset>
 
         {/* Primary contact */}

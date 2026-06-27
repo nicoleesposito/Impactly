@@ -2,13 +2,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useFunders } from '../../../context/FundersContext.jsx';
+import { useGrants } from '../../../context/GrantsContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, Users } from '../../../components/icons.jsx';
 import styles from './FundersList.module.css';
-
-// Funders & Donors (PDF p.10).
-// Reads funders from FundersContext — empty for a new organisation, fills in as
-// funders are added via the Add form (p.8). Wired to Supabase in a later section.
 
 function initials(name = '') {
   return name
@@ -20,13 +17,36 @@ function initials(name = '') {
     .toUpperCase();
 }
 
+function parseAmount(v) {
+  if (!v) return 0;
+  return Number(String(v).replace(/[^0-9.]/g, '')) || 0;
+}
+
+function fmtAmt(n) {
+  if (n >= 1_000_000) return `R${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}m`;
+  if (n >= 1_000) return `R${Math.round(n / 1_000)}k`;
+  return `R${n}`;
+}
+
 export default function FundersList() {
   const navigate = useNavigate();
   const { funders } = useFunders();
+  const { grants } = useGrants();
 
   const totalFunders = funders.length;
-  const activeGrants = funders.filter((f) => f.status === 'Active').length;
+  const activeGrants = grants.filter((g) => g.status === 'Active').length;
   const reportsDue = funders.filter((f) => f.reportDue).length;
+
+  const currentYear = new Date().getFullYear();
+  const fundingYTD = grants
+    .filter((g) => g.createdAt && new Date(g.createdAt).getFullYear() === currentYear)
+    .reduce((sum, g) => sum + parseAmount(g.amount), 0);
+
+  function funderTotal(f) {
+    return grants
+      .filter((g) => g.funder && g.funder.toLowerCase() === f.name.toLowerCase())
+      .reduce((sum, g) => sum + parseAmount(g.amount), 0);
+  }
 
   return (
     <div className={styles.page}>
@@ -42,7 +62,7 @@ export default function FundersList() {
         <StatTile label="Total funders" value={totalFunders} />
         <StatTile label="Active grants" value={activeGrants} />
         <StatTile label="Reports due" value={reportsDue} />
-        <StatTile label="Funding YTD" value="R0" />
+        <StatTile label="Funding YTD" value={fundingYTD > 0 ? fmtAmt(fundingYTD) : 'R0'} />
       </section>
 
       {funders.length === 0 ? (
@@ -53,21 +73,27 @@ export default function FundersList() {
         />
       ) : (
         <ul className={styles.list}>
-          {funders.map((f) => (
-            <li key={f.id}>
-              <Link to={ROUTES.funderProfile.replace(':id', f.id)} className={styles.row}>
-                <span className={styles.avatar} aria-hidden="true">{initials(f.name)}</span>
-                <span className={styles.rowText}>
-                  <span className={styles.rowName}>{f.name}</span>
-                  <span className={styles.rowSub}>
-                    {[f.amount, f.programme, f.status].filter(Boolean).join(' · ')}
+          {funders.map((f) => {
+            const total = funderTotal(f);
+            const subtitleParts = [
+              total > 0 ? fmtAmt(total) : null,
+              f.type || null,
+              f.status,
+            ].filter(Boolean);
+            return (
+              <li key={f.id}>
+                <Link to={ROUTES.funderProfile.replace(':id', f.id)} className={styles.row}>
+                  <span className={styles.avatar} aria-hidden="true">{initials(f.name)}</span>
+                  <span className={styles.rowText}>
+                    <span className={styles.rowName}>{f.name}</span>
+                    <span className={styles.rowSub}>{subtitleParts.join(' · ')}</span>
                   </span>
-                </span>
-                {f.reportDue && <span className={styles.dueBadge}>Report Due</span>}
-                <span className={styles.arrow} aria-hidden="true"><ArrowRight size={16} /></span>
-              </Link>
-            </li>
-          ))}
+                  {f.reportDue && <span className={styles.dueBadge}>Report Due</span>}
+                  <span className={styles.arrow} aria-hidden="true"><ArrowRight size={16} /></span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

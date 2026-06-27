@@ -33,6 +33,7 @@ import More from '../features/more/pages/More.jsx';
 // Manage
 import FundersList from '../features/funders/pages/FundersList.jsx';
 import AddFunder from '../features/funders/pages/AddFunder.jsx';
+import FunderProfile from '../features/funders/pages/FunderProfile.jsx';
 import GrantsTracker from '../features/grants/pages/GrantsTracker.jsx';
 import StaffList from '../features/staff/pages/StaffList.jsx';
 import InviteStaff from '../features/staff/pages/InviteStaff.jsx';
@@ -98,7 +99,8 @@ export const router = createBrowserRouter([
 
           // Manage
           { path: '/funders',        element: <FundersList /> },
-          { path: '/funders/add',    element: <AddFunder /> }, // before /funders/:id
+          { path: '/funders/add',    element: <AddFunder /> },    // before /funders/:id
+          { path: '/funders/:id',    element: <FunderProfile /> },
           { path: '/grants',         element: <GrantsTracker /> },
           { path: '/grants/add',     element: <AddGrant /> },        // before /grants/:id
           { path: '/staff',             element: <StaffList /> },

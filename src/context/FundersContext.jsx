@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext.jsx';
 const FundersContext = createContext({
   funders: [],
   addFunder: async () => {},
+  updateFunder: async () => {},
 });
 
 function dbToFunder(row) {
@@ -14,6 +15,11 @@ function dbToFunder(row) {
     type: row.type ?? '',
     contactName: row.contact_name ?? '',
     contactEmail: row.contact_email ?? '',
+    contactRole: row.contact_role ?? '',
+    address: row.address ?? '',
+    phone: row.phone ?? '',
+    registrationId: row.registration_id ?? '',
+    linkedProgrammes: row.linked_programmes ?? [],
     status: row.status,
     reportDue: row.report_due,
     notes: row.notes ?? '',
@@ -46,6 +52,11 @@ export function FundersProvider({ children }) {
       id: tempId,
       status: 'Active',
       reportDue: false,
+      address: '',
+      phone: '',
+      registrationId: '',
+      contactRole: '',
+      linkedProgrammes: [],
       createdAt: new Date().toISOString(),
       ...funder,
     };
@@ -57,6 +68,11 @@ export function FundersProvider({ children }) {
       type: funder.type || null,
       contact_name: funder.contactName || null,
       contact_email: funder.contactEmail || null,
+      contact_role: funder.contactRole || null,
+      address: funder.address || null,
+      phone: funder.phone || null,
+      registration_id: funder.registrationId || null,
+      linked_programmes: funder.linkedProgrammes ?? [],
       status: 'Active',
       report_due: false,
       notes: funder.notes || null,
@@ -74,7 +90,26 @@ export function FundersProvider({ children }) {
     return null;
   }, [profile?.org_id]);
 
-  const value = useMemo(() => ({ funders, addFunder }), [funders, addFunder]);
+  const updateFunder = useCallback(async (id, patch) => {
+    setFunders((prev) => prev.map((f) => f.id === id ? { ...f, ...patch } : f));
+    const colMap = {
+      notes: 'notes',
+      address: 'address',
+      phone: 'phone',
+      registrationId: 'registration_id',
+      contactName: 'contact_name',
+      contactEmail: 'contact_email',
+      contactRole: 'contact_role',
+    };
+    const dbPatch = {};
+    for (const [k, col] of Object.entries(colMap)) {
+      if (k in patch) dbPatch[col] = patch[k];
+    }
+    const { error } = await supabase.from('funders').update(dbPatch).eq('id', id);
+    if (error) console.error('[FundersContext] updateFunder error:', error.message);
+  }, []);
+
+  const value = useMemo(() => ({ funders, addFunder, updateFunder }), [funders, addFunder, updateFunder]);
   return <FundersContext.Provider value={value}>{children}</FundersContext.Provider>;
 }
 
