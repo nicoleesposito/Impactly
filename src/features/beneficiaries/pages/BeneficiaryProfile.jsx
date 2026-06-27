@@ -2,8 +2,11 @@ import { useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
-import { ChevronLeft, Pencil, FileText, Plus } from '../../../components/icons.jsx';
+import { ChevronLeft, Pencil, FileText, Plus, Close } from '../../../components/icons.jsx';
 import styles from './BeneficiaryProfile.module.css';
+
+const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
+const RELATION_OPTIONS = ['Mother', 'Father', 'Guardian', 'Grandparent', 'Sibling', 'Other'];
 
 function initials(b) {
   return `${b.firstName?.[0] ?? ''}${b.lastName?.[0] ?? ''}`.toUpperCase();
@@ -23,11 +26,24 @@ function formatDate(val) {
 export default function BeneficiaryProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { beneficiaries, addStoryImages } = useBeneficiaries();
+  const { beneficiaries, updateBeneficiary, deleteBeneficiary } = useBeneficiaries();
   const { org } = useOrg();
 
-  const [uploadingImages, setUploadingImages] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [form, setForm] = useState(null);
+  // URLs to keep (user can remove from this list)
+  const [keepImageUrls, setKeepImageUrls] = useState([]);
+  const [keepDocUrls, setKeepDocUrls] = useState([]);
+  // New files picked during this edit session
+  const [newImageFiles, setNewImageFiles] = useState([]);
+  const [newImagePreviews, setNewImagePreviews] = useState([]);
+  const [newDocFiles, setNewDocFiles] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const imageInputRef = useRef(null);
+  const docInputRef = useRef(null);
 
   const b = beneficiaries.find((x) => x.id === id);
   const programmes = org?.programmes ?? [];
@@ -48,18 +64,281 @@ export default function BeneficiaryProfile() {
 
   const enrolledProgramme = programmes.find((p) => p.id === b.programmeId) ?? null;
 
-  const allImages = (b.storyImageUrls ?? []);
+  function startEdit() {
+    setForm({
+      firstName: b.firstName,
+      lastName: b.lastName,
+      dob: b.dob,
+      gender: b.gender,
+      address: b.address,
+      idNumber: b.idNumber,
+      emergencyContactName: b.emergencyContactName,
+      emergencyContactDob: b.emergencyContactDob,
+      emergencyContactRelation: b.emergencyContactRelation,
+      storyQuotes: b.storyQuotes,
+      programmeId: b.programmeId ?? '',
+    });
+    setKeepImageUrls([...(b.storyImageUrls ?? [])]);
+    setKeepDocUrls([...(b.documentUrls ?? [])]);
+    setNewImageFiles([]);
+    setNewImagePreviews([]);
+    setNewDocFiles([]);
+    setIsEditing(true);
+  }
 
-  async function handleImagesChange(e) {
+  function cancelEdit() {
+    newImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    setIsEditing(false);
+    setForm(null);
+  }
+
+  const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  function handleImagesChange(e) {
     const files = Array.from(e.target.files);
-    if (!files.length) return;
-    setUploadingImages(true);
-    await addStoryImages(b.id, files);
-    setUploadingImages(false);
-    // clear the input so the same file can be re-selected if needed
+    setNewImageFiles((prev) => [...prev, ...files]);
+    setNewImagePreviews((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
     e.target.value = '';
   }
 
+  function removeKeepImage(url) {
+    setKeepImageUrls((prev) => prev.filter((u) => u !== url));
+  }
+
+  function removeNewImage(index) {
+    URL.revokeObjectURL(newImagePreviews[index]);
+    setNewImageFiles((prev) => prev.filter((_, i) => i !== index));
+    setNewImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function handleDocChange(e) {
+    const file = e.target.files[0];
+    if (file) setNewDocFiles((prev) => [...prev, file]);
+    e.target.value = '';
+  }
+
+  function removeKeepDoc(url) {
+    setKeepDocUrls((prev) => prev.filter((u) => u !== url));
+  }
+
+  function removeNewDoc(index) {
+    setNewDocFiles((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    await updateBeneficiary(b.id, {
+      ...form,
+      programmeId: form.programmeId || null,
+      storyImageUrls: keepImageUrls,
+      documentUrls: keepDocUrls,
+      newImageFiles,
+      newDocFiles,
+    });
+    newImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    setSaving(false);
+    setIsEditing(false);
+    setForm(null);
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+    await deleteBeneficiary(b.id);
+    navigate(-1);
+  }
+
+  // ── Edit mode ───────────────────────────────────────
+  if (isEditing && form) {
+    const allDocCount = keepDocUrls.length + newDocFiles.length;
+    return (
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <button type="button" className={styles.back} onClick={cancelEdit} aria-label="Cancel edit">
+            <ChevronLeft size={24} />
+          </button>
+          <h1 className={styles.title}>Edit profile</h1>
+        </header>
+
+        {/* Personal details */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Personal details</h2>
+          <div className={styles.editCard}>
+            <input className={styles.editInput} placeholder="First name" value={form.firstName} onChange={update('firstName')} aria-label="First name" />
+            <input className={styles.editInput} placeholder="Last name" value={form.lastName} onChange={update('lastName')} aria-label="Last name" />
+            <div className={styles.editFieldGroup}>
+              <label className={styles.editLabel}>Date of birth</label>
+              <input type="date" className={styles.editInput} value={form.dob} onChange={update('dob')} aria-label="Date of birth" />
+            </div>
+            <div className={styles.editSelectWrap}>
+              <select
+                className={`${styles.editSelect} ${!form.gender ? styles.editPlaceholder : ''}`}
+                value={form.gender}
+                onChange={update('gender')}
+                aria-label="Gender"
+              >
+                <option value="">Gender (optional)</option>
+                {GENDER_OPTIONS.map((g) => <option key={g} value={g}>{g}</option>)}
+              </select>
+            </div>
+            <input className={styles.editInput} placeholder="Address" value={form.address} onChange={update('address')} aria-label="Address" />
+            <input className={styles.editInput} placeholder="ID number" value={form.idNumber} onChange={update('idNumber')} aria-label="ID number" inputMode="numeric" />
+          </div>
+        </section>
+
+        {/* Emergency contact */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Emergency contact</h2>
+          <div className={styles.editCard}>
+            <input className={styles.editInput} placeholder="Full name" value={form.emergencyContactName} onChange={update('emergencyContactName')} aria-label="Emergency contact name" />
+            <div className={styles.editFieldGroup}>
+              <label className={styles.editLabel}>Date of birth</label>
+              <input type="date" className={styles.editInput} value={form.emergencyContactDob} onChange={update('emergencyContactDob')} aria-label="Emergency contact date of birth" />
+            </div>
+            <div className={styles.editSelectWrap}>
+              <select
+                className={`${styles.editSelect} ${!form.emergencyContactRelation ? styles.editPlaceholder : ''}`}
+                value={form.emergencyContactRelation}
+                onChange={update('emergencyContactRelation')}
+                aria-label="Relation"
+              >
+                <option value="">Relation (optional)</option>
+                {RELATION_OPTIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+              </select>
+            </div>
+          </div>
+        </section>
+
+        {/* Programme */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Programme</h2>
+          <div className={styles.editCard}>
+            <div className={styles.editSelectWrap}>
+              <select
+                className={`${styles.editSelect} ${!form.programmeId ? styles.editPlaceholder : ''}`}
+                value={form.programmeId}
+                onChange={update('programmeId')}
+                aria-label="Linked programme"
+              >
+                <option value="">No programme</option>
+                {programmes.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            </div>
+          </div>
+        </section>
+
+        {/* Documents */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Forms &amp; consent documents</h2>
+          <div className={styles.editCard}>
+            {keepDocUrls.map((url, i) => (
+              <div key={url} className={`${styles.docEditRow} ${i < keepDocUrls.length - 1 || newDocFiles.length > 0 ? styles.docBorder : ''}`}>
+                <span className={styles.docLabel}><FileText size={16} /> Document {i + 1}</span>
+                <div className={styles.docActions}>
+                  <a href={url} target="_blank" rel="noopener noreferrer" className={styles.viewLink}>View</a>
+                  <button type="button" className={styles.removeDocBtn} onClick={() => removeKeepDoc(url)} aria-label="Remove document">
+                    <Close size={14} />
+                  </button>
+                </div>
+              </div>
+            ))}
+            {newDocFiles.map((f, i) => (
+              <div key={f.name + i} className={`${styles.docEditRow} ${i < newDocFiles.length - 1 ? styles.docBorder : ''}`}>
+                <span className={styles.docLabel}><FileText size={16} /> {f.name}</span>
+                <button type="button" className={styles.removeDocBtn} onClick={() => removeNewDoc(i)} aria-label="Remove document">
+                  <Close size={14} />
+                </button>
+              </div>
+            ))}
+            {allDocCount === 0 && <p className={styles.emptyHint}>No documents yet.</p>}
+            <button
+              type="button"
+              className={styles.addDocBtn}
+              onClick={() => docInputRef.current?.click()}
+            >
+              <Plus size={14} /> Add document
+            </button>
+            <input
+              ref={docInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx"
+              className={styles.fileInputHidden}
+              onChange={handleDocChange}
+              aria-label="Upload document"
+            />
+          </div>
+        </section>
+
+        {/* Story content */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Story content</h2>
+          <div className={styles.editCard}>
+            <p className={styles.subLabel}>IMAGES</p>
+            <div className={styles.imageGrid}>
+              {keepImageUrls.map((url, i) => (
+                <div key={url} className={styles.imageThumb}>
+                  <img src={url} alt={`Story image ${i + 1}`} className={styles.thumbImg} />
+                  <button type="button" className={styles.removeImg} onClick={() => removeKeepImage(url)} aria-label="Remove image">×</button>
+                </div>
+              ))}
+              {newImagePreviews.map((url, i) => (
+                <div key={url} className={styles.imageThumb}>
+                  <img src={url} alt={`New image ${i + 1}`} className={styles.thumbImg} />
+                  <button type="button" className={styles.removeImg} onClick={() => removeNewImage(i)} aria-label="Remove image">×</button>
+                </div>
+              ))}
+              <button type="button" className={styles.addImageBtn} onClick={() => imageInputRef.current?.click()} aria-label="Add image">
+                <Plus size={20} />
+              </button>
+              <input ref={imageInputRef} type="file" accept="image/*" multiple className={styles.fileInputHidden} onChange={handleImagesChange} aria-label="Story images" />
+            </div>
+
+            <p className={styles.subLabel}>QUOTES</p>
+            <textarea
+              className={styles.editTextarea}
+              placeholder='e.g. "This programme changed my life."'
+              value={form.storyQuotes}
+              onChange={update('storyQuotes')}
+              aria-label="Story quotes"
+              rows={3}
+            />
+          </div>
+        </section>
+
+        {/* Save / Cancel */}
+        <div className={styles.actionRow}>
+          <button type="button" className={styles.cancelBtn} onClick={cancelEdit} disabled={saving}>
+            Cancel
+          </button>
+          <button type="button" className={styles.saveBtn} onClick={handleSave} disabled={saving}>
+            {saving ? 'Saving…' : 'Save changes'}
+          </button>
+        </div>
+
+        {/* Delete student */}
+        <div className={styles.deleteZone}>
+          {!confirmDelete ? (
+            <button type="button" className={styles.dangerBtn} onClick={() => setConfirmDelete(true)}>
+              Delete student
+            </button>
+          ) : (
+            <div className={styles.confirmBox}>
+              <p className={styles.confirmText}>This will permanently delete the student and all their data. Are you sure?</p>
+              <div className={styles.confirmRow}>
+                <button type="button" className={styles.cancelBtn} onClick={() => setConfirmDelete(false)} disabled={deleting}>
+                  Cancel
+                </button>
+                <button type="button" className={styles.dangerBtn} onClick={handleDelete} disabled={deleting}>
+                  {deleting ? 'Deleting…' : 'Yes, delete'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── View mode ───────────────────────────────────────
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -76,7 +355,7 @@ export default function BeneficiaryProfile() {
           <p className={styles.name}>{fullName(b)}</p>
           {b.status && <p className={styles.status}>{b.status}</p>}
         </div>
-        <button type="button" className={styles.editBtn} aria-label="Edit profile">
+        <button type="button" className={styles.editBtn} onClick={startEdit} aria-label="Edit profile">
           <Pencil size={16} /> Edit
         </button>
       </div>
@@ -136,7 +415,7 @@ export default function BeneficiaryProfile() {
         </div>
       </section>
 
-      {/* Forms & consent documents */}
+      {/* Documents */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Forms &amp; consent documents</h2>
         <div className={styles.detailCard}>
@@ -145,17 +424,8 @@ export default function BeneficiaryProfile() {
           ) : (
             (b.documentUrls ?? []).map((url, i) => (
               <div key={url} className={`${styles.docRow} ${i < (b.documentUrls.length - 1) ? styles.docBorder : ''}`}>
-                <span className={styles.docLabel}>
-                  <FileText size={16} /> Document {i + 1}
-                </span>
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.viewLink}
-                >
-                  View PDF
-                </a>
+                <span className={styles.docLabel}><FileText size={16} /> Document {i + 1}</span>
+                <a href={url} target="_blank" rel="noopener noreferrer" className={styles.viewLink}>View PDF</a>
               </div>
             ))
           )}
@@ -168,37 +438,20 @@ export default function BeneficiaryProfile() {
         <div className={styles.detailCard}>
           <p className={styles.subLabel}>IMAGES</p>
           <div className={styles.imageGrid}>
-            {allImages.map((url, i) => (
+            {(b.storyImageUrls ?? []).map((url, i) => (
               <div key={url} className={styles.imageThumb}>
                 <img src={url} alt={`Story image ${i + 1}`} className={styles.thumbImg} />
               </div>
             ))}
-            <button
-              type="button"
-              className={`${styles.addImageBtn} ${uploadingImages ? styles.uploading : ''}`}
-              onClick={() => !uploadingImages && imageInputRef.current?.click()}
-              aria-label={uploadingImages ? 'Uploading…' : 'Add image'}
-              disabled={uploadingImages}
-            >
-              {uploadingImages ? <span className={styles.spinner} /> : <Plus size={20} />}
-            </button>
-            <input
-              ref={imageInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className={styles.fileInputHidden}
-              onChange={handleImagesChange}
-              aria-label="Story images"
-            />
+            {(b.storyImageUrls ?? []).length === 0 && (
+              <p className={styles.emptyHintInline}>No images yet — tap Edit to add some.</p>
+            )}
           </div>
-
           <p className={styles.subLabel}>QUOTES</p>
-          {b.storyQuotes ? (
-            <p className={styles.quoteText}>"{b.storyQuotes}"</p>
-          ) : (
-            <p className={styles.emptyHint}>No quotes yet.</p>
-          )}
+          {b.storyQuotes
+            ? <p className={styles.quoteText}>"{b.storyQuotes}"</p>
+            : <p className={styles.emptyHint}>No quotes yet.</p>
+          }
         </div>
       </section>
     </div>

@@ -108,45 +108,75 @@ export function BeneficiariesProvider({ children }) {
     return null;
   }, [profile?.org_id]);
 
-  // Upload new images, merge with existing URLs, and persist to Supabase.
-  const addStoryImages = useCallback(async (beneficiaryId, newFiles) => {
-    if (!newFiles?.length) return;
-
-    const uploaded = await Promise.all(
-      newFiles.map((f) => uploadFile('beneficiary-images', f)),
+  // Update all fields of a beneficiary.
+  // Pass storyImageUrls/documentUrls as the URLs to KEEP (after user removals),
+  // plus newImageFiles/newDocFiles for new uploads.
+  const updateBeneficiary = useCallback(async (id, updates) => {
+    const newImageUrls = await Promise.all(
+      (updates.newImageFiles ?? []).map((f) => uploadFile('beneficiary-images', f)),
     ).then((urls) => urls.filter(Boolean));
 
-    if (!uploaded.length) return;
+    const newDocUrls = await Promise.all(
+      (updates.newDocFiles ?? []).map((f) => uploadFile('beneficiary-docs', f)),
+    ).then((urls) => urls.filter(Boolean));
 
-    // Merge with the beneficiary's current URLs
-    const current = beneficiaries.find((b) => b.id === beneficiaryId);
-    const merged = [...(current?.storyImageUrls ?? []), ...uploaded];
+    const finalImageUrls = [...(updates.storyImageUrls ?? []), ...newImageUrls];
+    const finalDocUrls = [...(updates.documentUrls ?? []), ...newDocUrls];
 
     // Optimistic update
     setBeneficiaries((prev) =>
-      prev.map((b) => b.id === beneficiaryId ? { ...b, storyImageUrls: merged } : b),
+      prev.map((b) => b.id === id
+        ? { ...b, ...updates, storyImageUrls: finalImageUrls, documentUrls: finalDocUrls }
+        : b,
+      ),
     );
 
     const { data, error } = await supabase
       .from('beneficiaries')
-      .update({ story_image_urls: merged })
-      .eq('id', beneficiaryId)
+      .update({
+        first_name: updates.firstName,
+        last_name: updates.lastName || null,
+        date_of_birth: updates.dob || null,
+        gender: updates.gender || null,
+        address: updates.address || null,
+        id_number: updates.idNumber || null,
+        emergency_contact_name: updates.emergencyContactName || null,
+        emergency_contact_dob: updates.emergencyContactDob || null,
+        emergency_contact_relation: updates.emergencyContactRelation || null,
+        document_urls: finalDocUrls,
+        story_image_urls: finalImageUrls,
+        story_quotes: updates.storyQuotes || null,
+        programme_id: updates.programmeId || null,
+      })
+      .eq('id', id)
       .select()
       .single();
 
     if (data) {
       setBeneficiaries((prev) =>
-        prev.map((b) => b.id === beneficiaryId ? dbToBeneficiary(data) : b),
+        prev.map((b) => b.id === id ? dbToBeneficiary(data) : b),
       );
+      return dbToBeneficiary(data);
     }
+
     if (error) {
-      console.error('[BeneficiariesContext] addStoryImages error:', error.message);
+      console.error('[BeneficiariesContext] updateBeneficiary error:', error.message);
     }
-  }, [beneficiaries]);
+    return null;
+  }, []);
+
+  const deleteBeneficiary = useCallback(async (id) => {
+    setBeneficiaries((prev) => prev.filter((b) => b.id !== id));
+
+    const { error } = await supabase.from('beneficiaries').delete().eq('id', id);
+    if (error) {
+      console.error('[BeneficiariesContext] deleteBeneficiary error:', error.message);
+    }
+  }, []);
 
   const value = useMemo(
-    () => ({ beneficiaries, addBeneficiary, addStoryImages }),
-    [beneficiaries, addBeneficiary, addStoryImages],
+    () => ({ beneficiaries, addBeneficiary, updateBeneficiary, deleteBeneficiary }),
+    [beneficiaries, addBeneficiary, updateBeneficiary, deleteBeneficiary],
   );
   return <BeneficiariesContext.Provider value={value}>{children}</BeneficiariesContext.Provider>;
 }
