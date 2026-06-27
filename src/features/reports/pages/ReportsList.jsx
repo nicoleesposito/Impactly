@@ -2,15 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
-import { ROUTES } from '../../../constants/routes.js';
+import { useReports } from '../../../context/ReportsContext.jsx';
 import { FileText, Search, ArrowRight } from '../../../components/icons.jsx';
 import styles from './ReportsList.module.css';
 
 // Reports hub (FR-010).
 // Grouped by status: Due soon → In progress → Completed.
-// Empty-state-first: the reports array is empty for a new organisation and fills
-// in as the user creates reports. Wired to live Supabase queries in a later section.
-const reports = [];
+// Wired to live Supabase data via ReportsContext.
 
 const GROUPS = [
   { key: 'due-soon',    label: 'Due soon'    },
@@ -18,8 +16,18 @@ const GROUPS = [
   { key: 'completed',   label: 'Completed'   },
 ];
 
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-ZA', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
 export default function ReportsList() {
   const { org } = useOrg();
+  const { reports } = useReports();
   const [query, setQuery] = useState('');
 
   const programmeCount = org?.programmes?.length ?? 0;
@@ -33,7 +41,7 @@ export default function ReportsList() {
     ? reports.filter(
         (r) =>
           r.title.toLowerCase().includes(term) ||
-          r.programme?.toLowerCase().includes(term),
+          (r.funder ?? '').toLowerCase().includes(term),
       )
     : reports;
 
@@ -47,10 +55,7 @@ export default function ReportsList() {
       <div className={styles.header}>
         <h1 className={styles.title}>Reports</h1>
         <div className={styles.headerActions}>
-          <Link to={ROUTES.reportBuilder.replace(':id', 'builder')} className={styles.btnSecondary}>
-            Builder
-          </Link>
-          <Link to={ROUTES.reportBuilder.replace(':id', 'new')} className={styles.btnPrimary}>
+          <Link to="/reports/new" className={styles.btnPrimary}>
             + New
           </Link>
         </div>
@@ -103,31 +108,24 @@ export default function ReportsList() {
 }
 
 function ReportCard({ report: r }) {
-  const pct = r.progress ?? 0;
+  const subtitle = r.dueDate ? `Due ${formatDate(r.dueDate)}` : (r.funder || '');
   return (
     <li className={styles.card}>
       <div className={styles.cardTop}>
         <span className={styles.cardName}>
           <span
             className={styles.dot}
-            style={{ background: r.color || 'var(--color-neutral)' }}
+            style={{ background: 'var(--color-primary)' }}
             aria-hidden="true"
           />
           {r.title}
         </span>
-        {r.urgent && <span className={styles.urgentBadge}>Urgent</span>}
       </div>
-      {r.subtitle && <p className={styles.cardSub}>{r.subtitle}</p>}
-      <div className={styles.bar} aria-hidden="true">
-        <span
-          className={styles.barFill}
-          style={{ width: `${pct}%`, background: r.color || 'var(--color-primary)' }}
-        />
-      </div>
+      {subtitle && <p className={styles.cardSub}>{subtitle}</p>}
       <div className={styles.cardFoot}>
-        <span className={styles.pct}>{pct}% complete</span>
+        <span className={styles.pct}>{r.status}</span>
         <Link
-          to={ROUTES.reportBuilder.replace(':id', r.id)}
+          to={`/reports/${r.id}`}
           className={styles.arrowBtn}
           aria-label={`Open ${r.title}`}
         >

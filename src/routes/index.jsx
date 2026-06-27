@@ -23,6 +23,9 @@ import Today from '../features/dashboard/pages/Today.jsx';
 import AttendanceMulti from '../features/attendance/pages/AttendanceMulti.jsx';
 import BeneficiaryList from '../features/beneficiaries/pages/BeneficiaryList.jsx';
 import ReportsList from '../features/reports/pages/ReportsList.jsx';
+import NewReport from '../features/reports/pages/NewReport.jsx';
+import ReportBuilder from '../features/reports/pages/ReportBuilder.jsx';
+import ViewReport from '../features/reports/pages/ViewReport.jsx';
 import ScheduledReports from '../features/reports/pages/ScheduledReports.jsx';
 import ScheduleReport from '../features/reports/pages/ScheduleReport.jsx';
 import More from '../features/more/pages/More.jsx';
@@ -86,8 +89,11 @@ export const router = createBrowserRouter([
           { path: '/students/add', element: <AddBeneficiary /> }, // before /students/:id
           { path: '/students/:id',  element: <BeneficiaryProfile /> },
           { path: '/reports',              element: <ReportsList /> },
+          { path: '/reports/new',          element: <NewReport /> },         // before /reports/:id
+          { path: '/reports/builder',      element: <ReportBuilder /> },     // before /reports/:id
           { path: '/reports/scheduled',    element: <ScheduledReports /> },  // before /reports/:id
           { path: '/reports/schedule/new', element: <ScheduleReport /> },    // before /reports/:id
+          { path: '/reports/:id',          element: <ViewReport /> },
           { path: '/more',       element: <More /> },
 
           // Manage

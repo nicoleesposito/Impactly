@@ -1,0 +1,277 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ── Header ───────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.programmePill {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  color: #fff;
+  align-self: flex-start;
+}
+
+/* ── Subtitle ─────────────────────────────────────── */
+.subtitleRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.subtitleChip {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+}
+
+/* ── Sections list ────────────────────────────────── */
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── Section card ─────────────────────────────────── */
+.sectionCard {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.sectionMeta {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.empty {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.bodyText {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ── Overview dl ──────────────────────────────────── */
+.dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-4);
+}
+
+.dt {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.dd {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+/* ── Progress gender breakdown ────────────────────── */
+.genderBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.genderRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.genderRow:last-child {
+  border-bottom: none;
+}
+
+.genderLabel {
+  color: var(--color-text-muted);
+}
+
+.genderCount {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+/* ── Story images ─────────────────────────────────── */
+.imageGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.imageThumb {
+  width: 68px;
+  height: 68px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── Quotes ───────────────────────────────────────── */
+.quoteList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  list-style: none;
+}
+
+.quoteItem {
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-surface-tint);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.quoteText {
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.quoteAuthor {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+/* ── Grants list ──────────────────────────────────── */
+.grantList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.grantItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.grantItem:last-child {
+  border-bottom: none;
+}
+
+.grantInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.grantTitle {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.grantFunder {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.grantRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.grantAmount {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.grantStatus {
+  font-size: var(--text-xs);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-neutral-bg);
+  color: var(--color-neutral);
+}
+
+.grantStatus_active {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.grantStatus_draft {
+  background: var(--color-neutral-bg);
+  color: var(--color-neutral);
+}
+
+.grantStatus_closed {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+/* ── Not found ────────────────────────────────────── */
+.notFound {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+}
