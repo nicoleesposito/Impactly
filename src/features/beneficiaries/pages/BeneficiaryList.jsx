@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
+import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { Users, Search, Plus } from '../../../components/icons.jsx';
 import styles from './BeneficiaryList.module.css';
-
-// Beneficiaries (students) list (FR-005). Wired to Supabase in a later section.
-const beneficiaries = [];
 
 function fullName(b) {
   return `${b.firstName} ${b.lastName}`.trim();
@@ -21,6 +19,7 @@ function initials(b) {
 
 export default function BeneficiaryList() {
   const { beneficiaryLabel } = useOrg();
+  const { beneficiaries } = useBeneficiaries();
   const { activeProgramme } = useProgrammeFilter();
   const [query, setQuery] = useState('');
 
@@ -30,6 +29,8 @@ export default function BeneficiaryList() {
   const programmeFiltered = activeProgramme !== 'all'
     ? beneficiaries.filter((b) => b.programmeId === activeProgramme)
     : beneficiaries;
+
+  const activeCount = programmeFiltered.filter((b) => b.status === 'Active').length;
 
   const term = query.trim().toLowerCase();
   const visible = term
@@ -52,7 +53,7 @@ export default function BeneficiaryList() {
 
       <section className={styles.stats} aria-label="Summary">
         <StatTile label={`Total ${label.toLowerCase()}`} value={programmeFiltered.length} />
-        <StatTile label="Active" value={programmeFiltered.length} />
+        <StatTile label="Active" value={activeCount} />
       </section>
 
       <label className={styles.searchField}>
@@ -79,7 +80,7 @@ export default function BeneficiaryList() {
         <EmptyState
           icon={<Search />}
           title="No matches"
-          hint={`No ${label.toLowerCase()} match “${query}”.`}
+          hint={`No ${label.toLowerCase()} match "${query}".`}
         />
       ) : (
         <ul className={styles.list}>

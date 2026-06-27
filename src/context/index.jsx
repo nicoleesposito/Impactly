@@ -5,6 +5,7 @@ import { StaffProvider } from './StaffContext.jsx';
 import { FundersProvider } from './FundersContext.jsx';
 import { GrantsProvider } from './GrantsContext.jsx';
 import { ScheduledReportsProvider } from './ScheduledReportsContext.jsx';
+import { BeneficiariesProvider } from './BeneficiariesContext.jsx';
 import { ThemeProvider } from './ThemeContext.jsx';
 
 // Single wrapper composing all global providers, mounted once in main.jsx.
@@ -17,7 +18,9 @@ export function AppProviders({ children }) {
             <FundersProvider>
               <GrantsProvider>
                 <ScheduledReportsProvider>
-                  <ProgrammeFilterProvider>{children}</ProgrammeFilterProvider>
+                  <BeneficiariesProvider>
+                    <ProgrammeFilterProvider>{children}</ProgrammeFilterProvider>
+                  </BeneficiariesProvider>
                 </ScheduledReportsProvider>
               </GrantsProvider>
             </FundersProvider>
@@ -35,4 +38,5 @@ export { useStaff } from './StaffContext.jsx';
 export { useFunders } from './FundersContext.jsx';
 export { useGrants } from './GrantsContext.jsx';
 export { useScheduledReports } from './ScheduledReportsContext.jsx';
+export { useBeneficiaries } from './BeneficiariesContext.jsx';
 export { useTheme } from './ThemeContext.jsx';
