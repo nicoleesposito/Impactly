@@ -16,10 +16,27 @@ function dbToBeneficiary(row) {
     emergencyContactName: row.emergency_contact_name ?? '',
     emergencyContactDob: row.emergency_contact_dob ?? '',
     emergencyContactRelation: row.emergency_contact_relation ?? '',
+    documentUrls: row.document_urls ?? [],
+    storyImageUrls: row.story_image_urls ?? [],
+    storyQuotes: row.story_quotes ?? '',
     programmeId: row.programme_id ?? null,
     status: row.status ?? 'Active',
     createdAt: row.created_at,
   };
+}
+
+// Upload a single file to a Supabase Storage bucket.
+// Returns the public URL, or null on failure.
+async function uploadFile(bucket, file) {
+  const ext = file.name.split('.').pop();
+  const path = `${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from(bucket).upload(path, file);
+  if (error) {
+    console.error(`[BeneficiariesContext] upload to ${bucket} failed:`, error.message);
+    return null;
+  }
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
 }
 
 export function BeneficiariesProvider({ children }) {
@@ -42,8 +59,23 @@ export function BeneficiariesProvider({ children }) {
     const orgId = profile?.org_id;
     if (!orgId) return null;
 
+    // Upload files before inserting the record
+    const docUrls = await Promise.all(
+      (beneficiary.documentFiles ?? []).map((f) => uploadFile('beneficiary-docs', f)),
+    ).then((urls) => urls.filter(Boolean));
+
+    const imageUrls = await Promise.all(
+      (beneficiary.storyImageFiles ?? []).map((f) => uploadFile('beneficiary-images', f)),
+    ).then((urls) => urls.filter(Boolean));
+
     const tempId = `temp-${Date.now()}`;
-    const optimistic = { id: tempId, status: 'Active', ...beneficiary };
+    const optimistic = {
+      id: tempId,
+      status: 'Active',
+      documentUrls: docUrls,
+      storyImageUrls: imageUrls,
+      ...beneficiary,
+    };
     setBeneficiaries((prev) => [...prev, optimistic]);
 
     const { data, error } = await supabase.from('beneficiaries').insert({
@@ -57,6 +89,9 @@ export function BeneficiariesProvider({ children }) {
       emergency_contact_name: beneficiary.emergencyContactName || null,
       emergency_contact_dob: beneficiary.emergencyContactDob || null,
       emergency_contact_relation: beneficiary.emergencyContactRelation || null,
+      document_urls: docUrls,
+      story_image_urls: imageUrls,
+      story_quotes: beneficiary.storyQuotes || null,
       programme_id: beneficiary.programmeId || null,
       status: 'Active',
     }).select().single();

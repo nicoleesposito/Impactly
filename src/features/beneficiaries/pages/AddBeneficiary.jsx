@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
@@ -16,6 +16,25 @@ function CalendarIcon() {
       <line x1="16" y1="2" x2="16" y2="6" />
       <line x1="8" y1="2" x2="8" y2="6" />
       <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+function UploadIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
     </svg>
   );
 }
@@ -42,21 +61,56 @@ export default function AddBeneficiary() {
     emergencyContactName: '',
     emergencyContactDob: '',
     emergencyContactRelation: '',
+    storyQuotes: '',
     programmeId: preselectedProgramme,
   });
+
+  // Document files (up to 2 PDFs)
+  const [docFiles, setDocFiles] = useState([null, null]);
+  // Story image files
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+
+  const imageInputRef = useRef(null);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  function handleSubmit(e) {
+  function handleDocChange(index, e) {
+    const file = e.target.files[0] ?? null;
+    setDocFiles((prev) => {
+      const next = [...prev];
+      next[index] = file;
+      return next;
+    });
+  }
+
+  function handleImagesChange(e) {
+    const files = Array.from(e.target.files);
+    setImageFiles((prev) => [...prev, ...files]);
+    const previews = files.map((f) => URL.createObjectURL(f));
+    setImagePreviews((prev) => [...prev, ...previews]);
+  }
+
+  function removeImage(index) {
+    setImageFiles((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => {
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
+    });
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!form.firstName.trim()) {
       setError('Please enter a first name.');
       return;
     }
     setError('');
+    setSubmitting(true);
 
-    addBeneficiary({
+    await addBeneficiary({
       firstName: form.firstName.trim(),
       lastName: form.lastName.trim(),
       dob: form.dob || null,
@@ -66,9 +120,13 @@ export default function AddBeneficiary() {
       emergencyContactName: form.emergencyContactName.trim() || null,
       emergencyContactDob: form.emergencyContactDob || null,
       emergencyContactRelation: form.emergencyContactRelation || null,
+      storyQuotes: form.storyQuotes.trim() || null,
       programmeId: form.programmeId || null,
+      documentFiles: docFiles.filter(Boolean),
+      storyImageFiles: imageFiles,
     });
 
+    setSubmitting(false);
     navigate(-1);
   }
 
@@ -179,6 +237,33 @@ export default function AddBeneficiary() {
           </div>
         </fieldset>
 
+        {/* Forms & consent documents */}
+        <fieldset className={styles.card}>
+          <legend className={styles.cardTitle}>Forms &amp; consent documents</legend>
+          {[0, 1].map((i) => (
+            <label key={i} className={styles.fileRow}>
+              <span className={styles.fileLabel}>Document {i + 1}</span>
+              <span className={styles.fileRight}>
+                {docFiles[i] ? (
+                  <span className={styles.fileName}>{docFiles[i].name}</span>
+                ) : (
+                  <span className={styles.filePlaceholder}>No file chosen</span>
+                )}
+                <span className={styles.fileBtn} aria-hidden="true">
+                  <UploadIcon /> Upload
+                </span>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  className={styles.fileInput}
+                  onChange={(e) => handleDocChange(i, e)}
+                  aria-label={`Document ${i + 1}`}
+                />
+              </span>
+            </label>
+          ))}
+        </fieldset>
+
         {/* Programme */}
         <fieldset className={styles.card}>
           <legend className={styles.cardTitle}>Programme</legend>
@@ -197,10 +282,59 @@ export default function AddBeneficiary() {
           </div>
         </fieldset>
 
+        {/* Story content */}
+        <fieldset className={styles.card}>
+          <legend className={styles.cardTitle}>Story content</legend>
+
+          <p className={styles.subLabel}>IMAGES</p>
+          <div className={styles.imageGrid}>
+            {imagePreviews.map((src, i) => (
+              <div key={src} className={styles.imageThumb}>
+                <img src={src} alt={`Story image ${i + 1}`} className={styles.thumbImg} />
+                <button
+                  type="button"
+                  className={styles.removeImg}
+                  onClick={() => removeImage(i)}
+                  aria-label="Remove image"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className={styles.addImageBtn}
+              onClick={() => imageInputRef.current?.click()}
+              aria-label="Add image"
+            >
+              <PlusIcon />
+            </button>
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className={styles.fileInput}
+              onChange={handleImagesChange}
+              aria-label="Story images"
+            />
+          </div>
+
+          <p className={styles.subLabel}>QUOTES</p>
+          <textarea
+            className={styles.textarea}
+            placeholder='e.g. "This programme changed my life."'
+            value={form.storyQuotes}
+            onChange={update('storyQuotes')}
+            aria-label="Story quotes"
+            rows={3}
+          />
+        </fieldset>
+
         {error && <p className={styles.error} role="alert">{error}</p>}
 
-        <button type="submit" className={styles.submit}>
-          Add {singular.toLowerCase()}
+        <button type="submit" className={styles.submit} disabled={submitting}>
+          {submitting ? 'Saving…' : `Add ${singular.toLowerCase()}`}
         </button>
       </form>
     </div>
