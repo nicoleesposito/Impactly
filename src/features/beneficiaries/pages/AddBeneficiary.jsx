@@ -7,6 +7,7 @@ import { ChevronLeft } from '../../../components/icons.jsx';
 import styles from './AddBeneficiary.module.css';
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
+const RELATION_OPTIONS = ['Mother', 'Father', 'Guardian', 'Grandparent', 'Sibling', 'Other'];
 
 function CalendarIcon() {
   return (
@@ -26,10 +27,9 @@ export default function AddBeneficiary() {
   const { activeProgramme } = useProgrammeFilter();
 
   const programmes = org?.programmes ?? [];
-  const label = beneficiaryLabel || 'Beneficiary';
-  const singularLabel = label.replace(/s$/i, '');
+  const label = beneficiaryLabel || 'Beneficiaries';
+  const singular = label.replace(/s$/i, '');
 
-  // Pre-select active programme pill
   const preselectedProgramme = activeProgramme !== 'all' ? activeProgramme : '';
 
   const [form, setForm] = useState({
@@ -37,6 +37,11 @@ export default function AddBeneficiary() {
     lastName: '',
     dob: '',
     gender: '',
+    address: '',
+    idNumber: '',
+    emergencyContactName: '',
+    emergencyContactDob: '',
+    emergencyContactRelation: '',
     programmeId: preselectedProgramme,
   });
   const [error, setError] = useState('');
@@ -56,6 +61,11 @@ export default function AddBeneficiary() {
       lastName: form.lastName.trim(),
       dob: form.dob || null,
       gender: form.gender || null,
+      address: form.address.trim() || null,
+      idNumber: form.idNumber.trim() || null,
+      emergencyContactName: form.emergencyContactName.trim() || null,
+      emergencyContactDob: form.emergencyContactDob || null,
+      emergencyContactRelation: form.emergencyContactRelation || null,
       programmeId: form.programmeId || null,
     });
 
@@ -68,7 +78,7 @@ export default function AddBeneficiary() {
         <button type="button" className={styles.back} onClick={() => navigate(-1)} aria-label="Back">
           <ChevronLeft size={24} />
         </button>
-        <h1 className={styles.title}>Add {singularLabel.toLowerCase()}</h1>
+        <h1 className={styles.title}>Add {singular.toLowerCase()}</h1>
       </header>
 
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
@@ -99,11 +109,8 @@ export default function AddBeneficiary() {
               value={form.dob}
               onChange={update('dob')}
               aria-label="Date of birth"
-              placeholder="Date of birth"
             />
-            <span className={styles.calIcon} aria-hidden="true">
-              <CalendarIcon />
-            </span>
+            <span className={styles.calIcon} aria-hidden="true"><CalendarIcon /></span>
           </div>
           <div className={styles.selectWrap}>
             <select
@@ -115,6 +122,58 @@ export default function AddBeneficiary() {
               <option value="">Gender (optional)</option>
               {GENDER_OPTIONS.map((g) => (
                 <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+          </div>
+          <input
+            className={styles.input}
+            placeholder="Address"
+            value={form.address}
+            onChange={update('address')}
+            aria-label="Address"
+            autoComplete="street-address"
+          />
+          <input
+            className={styles.input}
+            placeholder="ID number"
+            value={form.idNumber}
+            onChange={update('idNumber')}
+            aria-label="ID number"
+            inputMode="numeric"
+          />
+        </fieldset>
+
+        {/* Emergency contact */}
+        <fieldset className={styles.card}>
+          <legend className={styles.cardTitle}>Emergency contact</legend>
+          <input
+            className={styles.input}
+            placeholder="Full name"
+            value={form.emergencyContactName}
+            onChange={update('emergencyContactName')}
+            aria-label="Emergency contact name"
+            autoComplete="off"
+          />
+          <div className={styles.dateWrap}>
+            <input
+              type="date"
+              className={styles.input}
+              value={form.emergencyContactDob}
+              onChange={update('emergencyContactDob')}
+              aria-label="Emergency contact date of birth"
+            />
+            <span className={styles.calIcon} aria-hidden="true"><CalendarIcon /></span>
+          </div>
+          <div className={styles.selectWrap}>
+            <select
+              className={`${styles.select} ${!form.emergencyContactRelation ? styles.placeholder : ''}`}
+              value={form.emergencyContactRelation}
+              onChange={update('emergencyContactRelation')}
+              aria-label="Relation"
+            >
+              <option value="">Relation (optional)</option>
+              {RELATION_OPTIONS.map((r) => (
+                <option key={r} value={r}>{r}</option>
               ))}
             </select>
           </div>
@@ -140,7 +199,9 @@ export default function AddBeneficiary() {
 
         {error && <p className={styles.error} role="alert">{error}</p>}
 
-        <button type="submit" className={styles.submit}>Add {singularLabel.toLowerCase()}</button>
+        <button type="submit" className={styles.submit}>
+          Add {singular.toLowerCase()}
+        </button>
       </form>
     </div>
   );
