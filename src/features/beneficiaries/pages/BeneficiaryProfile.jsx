@@ -23,11 +23,10 @@ function formatDate(val) {
 export default function BeneficiaryProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { beneficiaries } = useBeneficiaries();
+  const { beneficiaries, addStoryImages } = useBeneficiaries();
   const { org } = useOrg();
 
-  const [storyImages, setStoryImages] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
   const imageInputRef = useRef(null);
 
   const b = beneficiaries.find((x) => x.id === id);
@@ -49,25 +48,16 @@ export default function BeneficiaryProfile() {
 
   const enrolledProgramme = programmes.find((p) => p.id === b.programmeId) ?? null;
 
-  const allImages = [
-    ...(b.storyImageUrls ?? []).map((url) => ({ url, local: false })),
-    ...imagePreviews.map((url) => ({ url, local: true })),
-  ];
+  const allImages = (b.storyImageUrls ?? []);
 
-  function handleImagesChange(e) {
+  async function handleImagesChange(e) {
     const files = Array.from(e.target.files);
-    setStoryImages((prev) => [...prev, ...files]);
-    setImagePreviews((prev) => [...prev, ...files.map((f) => URL.createObjectURL(f))]);
-  }
-
-  function removeLocalImage(localIndex) {
-    const remoteCount = (b.storyImageUrls ?? []).length;
-    const adjustedIndex = localIndex - remoteCount;
-    setStoryImages((prev) => prev.filter((_, i) => i !== adjustedIndex));
-    setImagePreviews((prev) => {
-      URL.revokeObjectURL(prev[adjustedIndex]);
-      return prev.filter((_, i) => i !== adjustedIndex);
-    });
+    if (!files.length) return;
+    setUploadingImages(true);
+    await addStoryImages(b.id, files);
+    setUploadingImages(false);
+    // clear the input so the same file can be re-selected if needed
+    e.target.value = '';
   }
 
   return (
@@ -178,28 +168,19 @@ export default function BeneficiaryProfile() {
         <div className={styles.detailCard}>
           <p className={styles.subLabel}>IMAGES</p>
           <div className={styles.imageGrid}>
-            {allImages.map((img, i) => (
-              <div key={img.url} className={styles.imageThumb}>
-                <img src={img.url} alt={`Story image ${i + 1}`} className={styles.thumbImg} />
-                {img.local && (
-                  <button
-                    type="button"
-                    className={styles.removeImg}
-                    onClick={() => removeLocalImage(i)}
-                    aria-label="Remove image"
-                  >
-                    ×
-                  </button>
-                )}
+            {allImages.map((url, i) => (
+              <div key={url} className={styles.imageThumb}>
+                <img src={url} alt={`Story image ${i + 1}`} className={styles.thumbImg} />
               </div>
             ))}
             <button
               type="button"
-              className={styles.addImageBtn}
-              onClick={() => imageInputRef.current?.click()}
-              aria-label="Add image"
+              className={`${styles.addImageBtn} ${uploadingImages ? styles.uploading : ''}`}
+              onClick={() => !uploadingImages && imageInputRef.current?.click()}
+              aria-label={uploadingImages ? 'Uploading…' : 'Add image'}
+              disabled={uploadingImages}
             >
-              <Plus size={20} />
+              {uploadingImages ? <span className={styles.spinner} /> : <Plus size={20} />}
             </button>
             <input
               ref={imageInputRef}

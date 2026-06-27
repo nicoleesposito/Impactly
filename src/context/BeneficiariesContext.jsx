@@ -108,7 +108,46 @@ export function BeneficiariesProvider({ children }) {
     return null;
   }, [profile?.org_id]);
 
-  const value = useMemo(() => ({ beneficiaries, addBeneficiary }), [beneficiaries, addBeneficiary]);
+  // Upload new images, merge with existing URLs, and persist to Supabase.
+  const addStoryImages = useCallback(async (beneficiaryId, newFiles) => {
+    if (!newFiles?.length) return;
+
+    const uploaded = await Promise.all(
+      newFiles.map((f) => uploadFile('beneficiary-images', f)),
+    ).then((urls) => urls.filter(Boolean));
+
+    if (!uploaded.length) return;
+
+    // Merge with the beneficiary's current URLs
+    const current = beneficiaries.find((b) => b.id === beneficiaryId);
+    const merged = [...(current?.storyImageUrls ?? []), ...uploaded];
+
+    // Optimistic update
+    setBeneficiaries((prev) =>
+      prev.map((b) => b.id === beneficiaryId ? { ...b, storyImageUrls: merged } : b),
+    );
+
+    const { data, error } = await supabase
+      .from('beneficiaries')
+      .update({ story_image_urls: merged })
+      .eq('id', beneficiaryId)
+      .select()
+      .single();
+
+    if (data) {
+      setBeneficiaries((prev) =>
+        prev.map((b) => b.id === beneficiaryId ? dbToBeneficiary(data) : b),
+      );
+    }
+    if (error) {
+      console.error('[BeneficiariesContext] addStoryImages error:', error.message);
+    }
+  }, [beneficiaries]);
+
+  const value = useMemo(
+    () => ({ beneficiaries, addBeneficiary, addStoryImages }),
+    [beneficiaries, addBeneficiary, addStoryImages],
+  );
   return <BeneficiariesContext.Provider value={value}>{children}</BeneficiariesContext.Provider>;
 }
 
