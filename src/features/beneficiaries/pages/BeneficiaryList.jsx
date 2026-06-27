@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
-import { Users, Search, Plus } from '../../../components/icons.jsx';
+import { Users, Search, Plus, ChevronRight } from '../../../components/icons.jsx';
 import styles from './BeneficiaryList.module.css';
 
 function fullName(b) {
@@ -18,43 +17,39 @@ function initials(b) {
 }
 
 export default function BeneficiaryList() {
-  const { beneficiaryLabel } = useOrg();
+  const { beneficiaryLabel, org } = useOrg();
   const { beneficiaries } = useBeneficiaries();
   const { activeProgramme } = useProgrammeFilter();
   const [query, setQuery] = useState('');
 
   const label = beneficiaryLabel || 'Beneficiaries';
+  const programmes = org?.programmes ?? [];
 
-  // Filter by active programme pill (matches on programme_id UUID)
+  // Filter by active programme pill
   const programmeFiltered = activeProgramme !== 'all'
     ? beneficiaries.filter((b) => b.programmeId === activeProgramme)
     : beneficiaries;
-
-  const activeCount = programmeFiltered.filter((b) => b.status === 'Active').length;
 
   const term = query.trim().toLowerCase();
   const visible = term
     ? programmeFiltered.filter((b) => fullName(b).toLowerCase().includes(term))
     : programmeFiltered;
 
+  function getProgramme(id) {
+    return programmes.find((p) => p.id === id) ?? null;
+  }
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.heading}>
-          <h1 className={styles.title}>{label}</h1>
-          <p className={styles.meta}>
-            {programmeFiltered.length} {programmeFiltered.length === 1 ? 'person' : 'people'}
-          </p>
+          <h1 className={styles.title}>All Beneficiaries</h1>
+          <p className={styles.meta}>Beneficiaries set to &gt; {label}</p>
         </div>
         <Link to={ROUTES.studentAdd} className={styles.add}>
-          <Plus /> Add
+          <Plus size={16} /> Add
         </Link>
       </header>
-
-      <section className={styles.stats} aria-label="Summary">
-        <StatTile label={`Total ${label.toLowerCase()}`} value={programmeFiltered.length} />
-        <StatTile label="Active" value={activeCount} />
-      </section>
 
       <label className={styles.searchField}>
         <span className={styles.searchIcon} aria-hidden="true">
@@ -83,24 +78,41 @@ export default function BeneficiaryList() {
           hint={`No ${label.toLowerCase()} match "${query}".`}
         />
       ) : (
-        <ul className={styles.list}>
-          {visible.map((b) => (
-            <li key={b.id}>
-              <Link
-                to={ROUTES.studentProfile.replace(':id', b.id)}
-                className={styles.row}
-              >
-                <span className={styles.avatar} aria-hidden="true">
-                  {initials(b)}
-                </span>
-                <span className={styles.rowText}>
-                  <span className={styles.rowName}>{fullName(b)}</span>
-                  {b.dob && <span className={styles.rowSub}>{b.dob}</span>}
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className={styles.card}>
+          <ul className={styles.list}>
+            {visible.map((b, idx) => {
+              const prog = getProgramme(b.programmeId);
+              return (
+                <li key={b.id} className={idx < visible.length - 1 ? styles.rowBorder : ''}>
+                  <Link
+                    to={ROUTES.studentProfile.replace(':id', b.id)}
+                    className={styles.row}
+                  >
+                    <span className={styles.avatar} aria-hidden="true">
+                      {initials(b)}
+                    </span>
+                    <span className={styles.rowBody}>
+                      <span className={styles.rowName}>{fullName(b)}</span>
+                      {prog && (
+                        <span className={styles.pills}>
+                          <span
+                            className={styles.pill}
+                            style={{ background: prog.color ? `${prog.color}22` : undefined, color: prog.color ?? undefined }}
+                          >
+                            {prog.name}
+                          </span>
+                        </span>
+                      )}
+                    </span>
+                    <span className={styles.arrow} aria-hidden="true">
+                      <ChevronRight size={20} />
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
     </div>
   );

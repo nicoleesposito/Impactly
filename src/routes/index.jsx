@@ -38,6 +38,7 @@ import Templates from '../features/programmes/pages/Templates.jsx';
 import AddProgramme from '../features/programmes/pages/AddProgramme.jsx';
 import AddGrant from '../features/grants/pages/AddGrant.jsx';
 import AddBeneficiary from '../features/beneficiaries/pages/AddBeneficiary.jsx';
+import BeneficiaryProfile from '../features/beneficiaries/pages/BeneficiaryProfile.jsx';
 
 // Settings
 import OrganisationSettings from '../features/settings/pages/OrganisationSettings.jsx';
@@ -83,6 +84,7 @@ export const router = createBrowserRouter([
           { path: '/attendance', element: <AttendanceMulti /> },
           { path: '/students',     element: <BeneficiaryList /> },
           { path: '/students/add', element: <AddBeneficiary /> }, // before /students/:id
+          { path: '/students/:id',  element: <BeneficiaryProfile /> },
           { path: '/reports',              element: <ReportsList /> },
           { path: '/reports/scheduled',    element: <ScheduledReports /> },  // before /reports/:id
           { path: '/reports/schedule/new', element: <ScheduleReport /> },    // before /reports/:id
