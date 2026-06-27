@@ -93,6 +93,9 @@ export function FundersProvider({ children }) {
   const updateFunder = useCallback(async (id, patch) => {
     setFunders((prev) => prev.map((f) => f.id === id ? { ...f, ...patch } : f));
     const colMap = {
+      name: 'name',
+      type: 'type',
+      status: 'status',
       notes: 'notes',
       address: 'address',
       phone: 'phone',

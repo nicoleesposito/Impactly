@@ -85,7 +85,32 @@ export function GrantsProvider({ children }) {
     return null;
   }, [profile?.org_id]);
 
-  const value = useMemo(() => ({ grants, addGrant }), [grants, addGrant]);
+  const updateGrant = useCallback(async (id, patch) => {
+    setGrants((prev) => prev.map((g) => g.id === id ? { ...g, ...patch } : g));
+    const colMap = {
+      title: 'title',
+      funder: 'funder',
+      programme: 'programme',
+      amount: 'amount',
+      period: 'period',
+      dueDate: 'due_date',
+      reminder: 'reminder',
+      subtitle: 'subtitle',
+      remaining: 'remaining',
+      status: 'status',
+      group: 'group_label',
+      filter: 'filter',
+      progress: 'progress',
+    };
+    const dbPatch = {};
+    for (const [k, col] of Object.entries(colMap)) {
+      if (k in patch) dbPatch[col] = patch[k];
+    }
+    const { error } = await supabase.from('grants').update(dbPatch).eq('id', id);
+    if (error) console.error('[GrantsContext] updateGrant error:', error.message);
+  }, []);
+
+  const value = useMemo(() => ({ grants, addGrant, updateGrant }), [grants, addGrant, updateGrant]);
   return <GrantsContext.Provider value={value}>{children}</GrantsContext.Provider>;
 }
 

@@ -29,6 +29,7 @@ export const ROUTES = {
   funderProfile: '/funders/:id',
   grants: '/grants',
   grantAdd: '/grants/add',
+  grantProfile: '/grants/:id',
   staff: '/staff',
   staffInvite: '/staff/invite',
   staffPermissions: '/staff/permissions',
@@ -41,6 +42,8 @@ export const ROUTES = {
   // Settings
   settingsOrganisation: '/settings/organisation',
   settingsOrganisationDetails: '/settings/organisation/details',
+  settingsDataImport: '/settings/data-import',
+  settingsDataExport: '/settings/data-export',
   settingsPersonal: '/settings/personal',
   settingsIntegrations: '/settings/integrations',
   settingsBilling: '/settings/billing',

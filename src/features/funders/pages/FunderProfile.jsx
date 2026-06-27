@@ -7,6 +7,17 @@ import { useOrg } from '../../../context/OrgContext.jsx';
 import { ChevronLeft, Pencil } from '../../../components/icons.jsx';
 import styles from './FunderProfile.module.css';
 
+const FUNDER_TYPES = [
+  'Government',
+  'Corporate / Foundation',
+  'Trust',
+  'Individual donor',
+  'International donor',
+  'Other',
+];
+
+const FUNDER_STATUSES = ['Active', 'Inactive', 'Closed'];
+
 function initials(name = '') {
   return name
     .split(' ')
@@ -29,11 +40,19 @@ function fmtAmt(n) {
 }
 
 function DetailRow({ label, value }) {
-  if (!value) return null;
   return (
     <div className={styles.detailRow}>
       <span className={styles.detailLabel}>{label}</span>
-      <span className={styles.detailValue}>{value}</span>
+      <span className={styles.detailValue}>{value || '—'}</span>
+    </div>
+  );
+}
+
+function EditField({ label, children }) {
+  return (
+    <div className={styles.editField}>
+      <span className={styles.editLabel}>{label}</span>
+      {children}
     </div>
   );
 }
@@ -48,8 +67,9 @@ export default function FunderProfile() {
 
   const funder = funders.find((f) => f.id === id);
 
-  const [editingNotes, setEditingNotes] = useState(false);
-  const [notesDraft, setNotesDraft] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   if (!funder) {
     return (
@@ -80,15 +100,36 @@ export default function FunderProfile() {
   const totalFunding = funderGrants.reduce((sum, g) => sum + parseAmount(g.amount), 0);
   const activeGrantCount = funderGrants.filter((g) => g.status === 'Active').length;
 
-  function startEditNotes() {
-    setNotesDraft(funder.notes || '');
-    setEditingNotes(true);
+  function startEdit() {
+    setDraft({
+      name: funder.name || '',
+      type: funder.type || '',
+      status: funder.status || 'Active',
+      address: funder.address || '',
+      phone: funder.phone || '',
+      contactEmail: funder.contactEmail || '',
+      registrationId: funder.registrationId || '',
+      contactName: funder.contactName || '',
+      contactRole: funder.contactRole || '',
+      notes: funder.notes || '',
+    });
+    setEditing(true);
   }
 
-  async function saveNotes() {
-    await updateFunder(funder.id, { notes: notesDraft });
-    setEditingNotes(false);
+  function cancelEdit() {
+    setEditing(false);
+    setDraft(null);
   }
+
+  async function saveEdit() {
+    setSaving(true);
+    await updateFunder(funder.id, draft);
+    setSaving(false);
+    setEditing(false);
+    setDraft(null);
+  }
+
+  const set = (key) => (e) => setDraft((d) => ({ ...d, [key]: e.target.value }));
 
   return (
     <div className={styles.page}>
@@ -101,11 +142,22 @@ export default function FunderProfile() {
       <div className={styles.card}>
         {/* Top: avatar + name + edit */}
         <div className={styles.profileTop}>
-          <div className={styles.avatar} aria-hidden="true">{initials(funder.name)}</div>
+          <div className={styles.avatar} aria-hidden="true">
+            {initials(editing ? draft.name : funder.name)}
+          </div>
           <div className={styles.nameBlock}>
-            <h1 className={styles.funderName}>{funder.name}</h1>
-            {funder.type && <span className={styles.funderType}>{funder.type}</span>}
-            {linkedProgrammeNames.length > 0 && (
+            {editing ? (
+              <input
+                className={styles.editNameInput}
+                value={draft.name}
+                onChange={set('name')}
+                placeholder="Organisation name"
+              />
+            ) : (
+              <h1 className={styles.funderName}>{funder.name}</h1>
+            )}
+            {!editing && funder.type && <span className={styles.funderType}>{funder.type}</span>}
+            {!editing && linkedProgrammeNames.length > 0 && (
               <div className={styles.pillRow}>
                 {linkedProgrammeNames.map((n) => (
                   <span key={n} className={styles.pill}>{n}</span>
@@ -113,15 +165,24 @@ export default function FunderProfile() {
               </div>
             )}
           </div>
-          <button
-            type="button"
-            className={styles.editTopBtn}
-            onClick={() => navigate(`/funders/${funder.id}/edit`)}
-            aria-label="Edit funder"
-          >
-            <Pencil size={16} />
-            <span>Edit</span>
-          </button>
+          {editing ? (
+            <div className={styles.editActions}>
+              <button type="button" className={styles.cancelBtn} onClick={cancelEdit}>Cancel</button>
+              <button type="button" className={styles.saveBtn} onClick={saveEdit} disabled={saving}>
+                {saving ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={styles.editTopBtn}
+              onClick={startEdit}
+              aria-label="Edit funder"
+            >
+              <Pencil size={16} />
+              <span>Edit</span>
+            </button>
+          )}
         </div>
 
         <hr className={styles.divider} />
@@ -129,13 +190,43 @@ export default function FunderProfile() {
         {/* Contact details */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Contact details</h2>
-          <DetailRow label="Address" value={funder.address} />
-          <DetailRow label="Phone" value={funder.phone} />
-          <DetailRow label="Email" value={funder.contactEmail} />
-          <DetailRow label="ID / Reg." value={funder.registrationId} />
-          <DetailRow label="Representative" value={funder.contactName} />
-          {funder.contactRole && (
-            <DetailRow label="Role" value={funder.contactRole} />
+          {editing ? (
+            <>
+              <EditField label="Type">
+                <select className={styles.editSelect} value={draft.type} onChange={set('type')}>
+                  <option value="">— Select type —</option>
+                  {FUNDER_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </EditField>
+              <EditField label="Address">
+                <input className={styles.editInput} value={draft.address} onChange={set('address')} placeholder="Physical address" />
+              </EditField>
+              <EditField label="Phone">
+                <input className={styles.editInput} type="tel" value={draft.phone} onChange={set('phone')} placeholder="Phone number" />
+              </EditField>
+              <EditField label="Email">
+                <input className={styles.editInput} type="email" value={draft.contactEmail} onChange={set('contactEmail')} placeholder="Email address" />
+              </EditField>
+              <EditField label="ID / Reg.">
+                <input className={styles.editInput} value={draft.registrationId} onChange={set('registrationId')} placeholder="Registration / NPO number" />
+              </EditField>
+              <EditField label="Representative">
+                <input className={styles.editInput} value={draft.contactName} onChange={set('contactName')} placeholder="Contact full name" />
+              </EditField>
+              <EditField label="Role">
+                <input className={styles.editInput} value={draft.contactRole} onChange={set('contactRole')} placeholder="e.g. Programme Director" />
+              </EditField>
+            </>
+          ) : (
+            <>
+              <DetailRow label="Type" value={funder.type} />
+              <DetailRow label="Address" value={funder.address} />
+              <DetailRow label="Phone" value={funder.phone} />
+              <DetailRow label="Email" value={funder.contactEmail} />
+              <DetailRow label="ID / Reg." value={funder.registrationId} />
+              <DetailRow label="Representative" value={funder.contactName} />
+              <DetailRow label="Role" value={funder.contactRole} />
+            </>
           )}
         </section>
 
@@ -146,98 +237,78 @@ export default function FunderProfile() {
           <h2 className={styles.sectionTitle}>Funding history</h2>
           <DetailRow
             label="Total donated"
-            value={totalFunding > 0 ? fmtAmt(totalFunding) : 'No grants recorded'}
+            value={totalFunding > 0 ? fmtAmt(totalFunding) : '—'}
           />
-          <DetailRow
-            label="Active grants"
-            value={activeGrantCount > 0 ? String(activeGrantCount) : '0'}
-          />
-          <DetailRow label="Status" value={funder.status} />
+          <DetailRow label="Active grants" value={String(activeGrantCount)} />
+          {editing ? (
+            <EditField label="Status">
+              <select className={styles.editSelect} value={draft.status} onChange={set('status')}>
+                {FUNDER_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </EditField>
+          ) : (
+            <DetailRow label="Status" value={funder.status} />
+          )}
         </section>
 
         {/* Notes */}
-        {(funder.notes || editingNotes) && (
-          <>
-            <hr className={styles.divider} />
-            <section className={styles.section}>
-              <div className={styles.sectionHead}>
-                <h2 className={styles.sectionTitle}>Notes</h2>
-                {!editingNotes && (
-                  <button type="button" className={styles.editInlineBtn} onClick={startEditNotes}>
-                    <Pencil size={14} /> Edit
-                  </button>
-                )}
-              </div>
-              {editingNotes ? (
-                <>
-                  <textarea
-                    className={styles.textarea}
-                    rows={4}
-                    value={notesDraft}
-                    onChange={(e) => setNotesDraft(e.target.value)}
-                  />
-                  <div className={styles.editActions}>
-                    <button type="button" className={styles.cancelBtn} onClick={() => setEditingNotes(false)}>Cancel</button>
-                    <button type="button" className={styles.saveBtn} onClick={saveNotes}>Save</button>
-                  </div>
-                </>
-              ) : (
-                <p className={styles.notesText}>{funder.notes}</p>
-              )}
-            </section>
-          </>
-        )}
+        <hr className={styles.divider} />
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Notes</h2>
+          {editing ? (
+            <textarea
+              className={styles.textarea}
+              rows={4}
+              value={draft.notes}
+              onChange={set('notes')}
+              placeholder="Add notes about this funder…"
+            />
+          ) : (
+            <p className={styles.notesText}>{funder.notes || '—'}</p>
+          )}
+        </section>
 
         {/* Reports sent */}
-        {funderReports.length > 0 && (
-          <>
-            <hr className={styles.divider} />
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Reports sent</h2>
-              <ul className={styles.itemList}>
-                {funderReports.map((r) => (
-                  <li key={r.id} className={styles.itemRow}>
-                    <span className={styles.itemName}>{r.title}</span>
-                    <Link to={`/reports/${r.id}`} className={styles.viewLink}>View</Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </>
-        )}
+        <hr className={styles.divider} />
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Reports sent</h2>
+          {funderReports.length > 0 ? (
+            <ul className={styles.itemList}>
+              {funderReports.map((r) => (
+                <li key={r.id} className={styles.itemRow}>
+                  <span className={styles.itemName}>{r.title}</span>
+                  <Link to={`/reports/${r.id}`} className={styles.viewLink}>View</Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.empty}>No reports sent to this funder yet.</p>
+          )}
+        </section>
 
         {/* Linked grants */}
-        {funderGrants.length > 0 && (
-          <>
-            <hr className={styles.divider} />
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Linked grants &amp; projects</h2>
-              <ul className={styles.itemList}>
-                {funderGrants.map((g) => (
-                  <li key={g.id} className={styles.itemRow}>
-                    <div className={styles.grantInfo}>
-                      <span className={styles.itemName}>{g.title}</span>
-                      {g.amount && (
-                        <span className={styles.grantAmt}>{g.amount}</span>
-                      )}
-                    </div>
-                    <span className={`${styles.grantStatus} ${styles[`status_${g.status?.toLowerCase()}`]}`}>
-                      {g.status}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          </>
-        )}
+        <hr className={styles.divider} />
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Linked grants &amp; projects</h2>
+          {funderGrants.length > 0 ? (
+            <ul className={styles.itemList}>
+              {funderGrants.map((g) => (
+                <li key={g.id} className={styles.itemRow}>
+                  <div className={styles.grantInfo}>
+                    <span className={styles.itemName}>{g.title}</span>
+                    {g.amount && <span className={styles.grantAmt}>{g.amount}</span>}
+                  </div>
+                  <span className={`${styles.grantStatus} ${styles[`status_${g.status?.toLowerCase()}`]}`}>
+                    {g.status}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.empty}>No grants linked to this funder yet.</p>
+          )}
+        </section>
       </div>
-
-      {/* Add notes CTA if empty */}
-      {!funder.notes && !editingNotes && (
-        <button type="button" className={styles.addNotesBtn} onClick={startEditNotes}>
-          + Add notes
-        </button>
-      )}
     </div>
   );
 }

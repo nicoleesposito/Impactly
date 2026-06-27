@@ -13,16 +13,16 @@ const ITEMS = [
     hint: 'Name, type, country, etc',
   },
   {
-    to: ROUTES.settingsOrganisation, // data import — placeholder destination
+    to: ROUTES.settingsDataImport,
     icon: <Download />,
     label: 'Data import',
-    hint: 'Import from CSV or Excel',
+    hint: 'Import beneficiaries, funders, grants from CSV',
   },
   {
-    to: ROUTES.settingsOrganisation, // data export — placeholder destination
+    to: ROUTES.settingsDataExport,
     icon: <UploadCloud />,
     label: 'Data export',
-    hint: 'Download all org data',
+    hint: 'Download all org data as CSV',
   },
 ];
 

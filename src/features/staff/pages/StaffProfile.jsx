@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useStaff } from '../../../context/StaffContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { ChevronLeft, Pencil } from '../../../components/icons.jsx';
 import styles from './StaffProfile.module.css';
+
+const ROLES = ['Admin', 'Manager', 'Staff', 'Volunteer', 'Intern'];
 
 function initials(name = '') {
   return name
@@ -26,10 +29,14 @@ function DetailRow({ label, value }) {
 export default function StaffProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { activeStaff } = useStaff();
+  const { activeStaff, updateStaff } = useStaff();
   const { org } = useOrg();
 
   const member = activeStaff.find((s) => s.id === id);
+
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   if (!member) {
     return (
@@ -51,6 +58,34 @@ export default function StaffProfile() {
     member.programmeIds?.includes(p.id),
   );
 
+  function startEdit() {
+    setDraft({
+      firstName: member.firstName || '',
+      lastName: member.lastName || '',
+      role: member.role || '',
+    });
+    setEditing(true);
+  }
+
+  function cancelEdit() {
+    setEditing(false);
+    setDraft(null);
+  }
+
+  async function saveEdit() {
+    setSaving(true);
+    await updateStaff(member.id, draft);
+    setSaving(false);
+    setEditing(false);
+    setDraft(null);
+  }
+
+  const set = (key) => (e) => setDraft((d) => ({ ...d, [key]: e.target.value }));
+
+  const displayName = editing
+    ? `${draft.firstName} ${draft.lastName}`.trim() || 'Unknown'
+    : fullName || 'Unknown';
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -63,18 +98,51 @@ export default function StaffProfile() {
       <div className={styles.card}>
         {/* Role header row */}
         <div className={styles.roleRow}>
-          <span className={styles.roleTitle}>{member.role || 'Staff'}</span>
-          <button type="button" className={styles.editBtn} aria-label="Edit profile">
-            <Pencil size={14} />
-            <span>Edit</span>
-          </button>
+          {editing ? (
+            <select className={styles.roleSelect} value={draft.role} onChange={set('role')}>
+              <option value="">— Select role —</option>
+              {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+            </select>
+          ) : (
+            <span className={styles.roleTitle}>{member.role || 'Staff'}</span>
+          )}
+          {editing ? (
+            <div className={styles.editActions}>
+              <button type="button" className={styles.cancelBtn} onClick={cancelEdit}>Cancel</button>
+              <button type="button" className={styles.saveBtn} onClick={saveEdit} disabled={saving}>
+                {saving ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          ) : (
+            <button type="button" className={styles.editBtn} onClick={startEdit} aria-label="Edit profile">
+              <Pencil size={14} />
+              <span>Edit</span>
+            </button>
+          )}
         </div>
 
         {/* Avatar + name + pills */}
         <div className={styles.identity}>
-          <span className={styles.avatar} aria-hidden="true">{initials(fullName)}</span>
+          <span className={styles.avatar} aria-hidden="true">{initials(displayName)}</span>
           <div className={styles.nameBlock}>
-            <span className={styles.name}>{fullName || 'Unknown'}</span>
+            {editing ? (
+              <div className={styles.nameInputRow}>
+                <input
+                  className={styles.nameInput}
+                  placeholder="First name"
+                  value={draft.firstName}
+                  onChange={set('firstName')}
+                />
+                <input
+                  className={styles.nameInput}
+                  placeholder="Last name"
+                  value={draft.lastName}
+                  onChange={set('lastName')}
+                />
+              </div>
+            ) : (
+              <span className={styles.name}>{displayName}</span>
+            )}
             {programmes.length > 0 && (
               <div className={styles.pillRow}>
                 {programmes.map((p) => (

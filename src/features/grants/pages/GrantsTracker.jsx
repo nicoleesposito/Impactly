@@ -119,7 +119,7 @@ function GrantCard({ grant: g }) {
             </span>
           )}
           <Link
-            to={ROUTES.grants}
+            to={`/grants/${g.id}`}
             className={styles.arrow}
             aria-label={`Open ${g.title}`}
           >

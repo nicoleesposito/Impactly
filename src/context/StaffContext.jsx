@@ -110,9 +110,25 @@ export function StaffProvider({ children }) {
     }
   }, []);
 
+  const updateStaff = useCallback(async (id, patch) => {
+    setActiveStaff((prev) => prev.map((s) => {
+      if (s.id !== id) return s;
+      const updated = { ...s, ...patch };
+      updated.name = `${updated.firstName} ${updated.lastName}`.trim();
+      return updated;
+    }));
+    const colMap = { firstName: 'first_name', lastName: 'last_name', role: 'role' };
+    const dbPatch = {};
+    for (const [k, col] of Object.entries(colMap)) {
+      if (k in patch) dbPatch[col] = patch[k];
+    }
+    const { error } = await supabase.from('profiles').update(dbPatch).eq('id', id);
+    if (error) console.error('[StaffContext] updateStaff error:', error.message);
+  }, []);
+
   const value = useMemo(
-    () => ({ activeStaff, pendingInvites, addInvite, removeInvite }),
-    [activeStaff, pendingInvites, addInvite, removeInvite],
+    () => ({ activeStaff, pendingInvites, addInvite, removeInvite, updateStaff }),
+    [activeStaff, pendingInvites, addInvite, removeInvite, updateStaff],
   );
 
   return <StaffContext.Provider value={value}>{children}</StaffContext.Provider>;

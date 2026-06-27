@@ -38,6 +38,7 @@ import StaffProfile from '../features/staff/pages/StaffProfile.jsx';
 import HelpFAQ from '../features/more/pages/HelpFAQ.jsx';
 
 import GrantsTracker from '../features/grants/pages/GrantsTracker.jsx';
+import GrantProfile from '../features/grants/pages/GrantProfile.jsx';
 import StaffList from '../features/staff/pages/StaffList.jsx';
 import InviteStaff from '../features/staff/pages/InviteStaff.jsx';
 import Permissions from '../features/staff/pages/Permissions.jsx';
@@ -50,6 +51,8 @@ import BeneficiaryProfile from '../features/beneficiaries/pages/BeneficiaryProfi
 // Settings
 import OrganisationSettings from '../features/settings/pages/OrganisationSettings.jsx';
 import OrganisationDetails from '../features/settings/pages/OrganisationDetails.jsx';
+import DataImport from '../features/settings/pages/DataImport.jsx';
+import DataExport from '../features/settings/pages/DataExport.jsx';
 import Integrations from '../features/settings/pages/Integrations.jsx';
 import Billing from '../features/settings/pages/Billing.jsx';
 import PersonalSettings from '../features/settings/pages/PersonalSettings.jsx';
@@ -106,6 +109,7 @@ export const router = createBrowserRouter([
           { path: '/funders/:id',    element: <FunderProfile /> },
           { path: '/grants',         element: <GrantsTracker /> },
           { path: '/grants/add',     element: <AddGrant /> },        // before /grants/:id
+          { path: '/grants/:id',     element: <GrantProfile /> },
           { path: '/staff',             element: <StaffList /> },
           { path: '/staff/invite',      element: <InviteStaff /> },   // before /staff/:id
           { path: '/staff/permissions', element: <Permissions /> },   // before /staff/:id
@@ -117,6 +121,8 @@ export const router = createBrowserRouter([
           // Settings
           { path: '/settings/organisation',         element: <OrganisationSettings /> },
           { path: '/settings/organisation/details', element: <OrganisationDetails /> },
+          { path: '/settings/data-import',          element: <DataImport /> },
+          { path: '/settings/data-export',          element: <DataExport /> },
           { path: '/settings/integrations',         element: <Integrations /> },
           { path: '/settings/billing',              element: <Billing /> },
           { path: '/settings/personal',             element: <PersonalSettings /> },
