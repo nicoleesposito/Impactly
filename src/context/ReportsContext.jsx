@@ -81,7 +81,13 @@ export function ReportsProvider({ children }) {
     return null;
   }, [profile?.org_id]);
 
-  const value = useMemo(() => ({ reports, addReport }), [reports, addReport]);
+  const updateReport = useCallback(async (id, sections) => {
+    setReports((prev) => prev.map((r) => (r.id === id ? { ...r, sections } : r)));
+    const { error } = await supabase.from('reports').update({ sections }).eq('id', id);
+    if (error) console.error('[ReportsContext] updateReport error:', error.message);
+  }, []);
+
+  const value = useMemo(() => ({ reports, addReport, updateReport }), [reports, addReport, updateReport]);
 
   return (
     <ReportsContext.Provider value={value}>
