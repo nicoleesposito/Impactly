@@ -2,15 +2,37 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TemplateCard from '../../onboarding/components/TemplateCard.jsx';
 import { TEMPLATES } from '../../../constants/templates.js';
+import { useOrg } from '../../../context/OrgContext.jsx';
 import { ChevronLeft } from '../../../components/icons.jsx';
 import styles from './Templates.module.css';
 
-// Templates (PDF p.41).
-// Standalone template picker reached from More — reuses the onboarding
-// TemplateCard so the two stay visually identical.
+const STORAGE_KEY = 'impactly_selected_template';
+
+function loadSaved(orgId) {
+  try {
+    const raw = localStorage.getItem(`${STORAGE_KEY}_${orgId}`);
+    if (raw) return raw;
+  } catch { /* ignore */ }
+  return null;
+}
+
+function saveTpl(orgId, templateId) {
+  try {
+    localStorage.setItem(`${STORAGE_KEY}_${orgId}`, templateId);
+  } catch { /* ignore */ }
+}
+
 export default function Templates() {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(null);
+  const { org } = useOrg();
+  const orgId = org?.id ?? 'default';
+
+  const [selected, setSelected] = useState(() => loadSaved(orgId));
+
+  function handleSelect(id) {
+    setSelected(id);
+    saveTpl(orgId, id);
+  }
 
   return (
     <div className={styles.page}>
@@ -30,7 +52,7 @@ export default function Templates() {
             key={template.id}
             template={template}
             selected={selected === template.id}
-            onSelect={setSelected}
+            onSelect={handleSelect}
           />
         ))}
       </div>

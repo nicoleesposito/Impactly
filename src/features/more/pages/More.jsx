@@ -117,7 +117,7 @@ export default function More() {
 
   const supportItems = [
     {
-      to: ROUTES.more, // placeholder until Help page exists
+      to: ROUTES.helpFaq,
       icon: <HelpCircle />,
       label: 'Help / FAQ',
       hint: 'Support for commonly asked questions',

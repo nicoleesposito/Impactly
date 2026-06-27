@@ -34,6 +34,7 @@ export const ROUTES = {
   staffPermissions: '/staff/permissions',
   staffProfile: '/staff/:id',
   more: '/more',
+  helpFaq: '/help',
   templates: '/templates',
   programmeAdd: '/programmes/add',
 

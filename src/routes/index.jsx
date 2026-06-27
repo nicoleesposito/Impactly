@@ -34,6 +34,9 @@ import More from '../features/more/pages/More.jsx';
 import FundersList from '../features/funders/pages/FundersList.jsx';
 import AddFunder from '../features/funders/pages/AddFunder.jsx';
 import FunderProfile from '../features/funders/pages/FunderProfile.jsx';
+import StaffProfile from '../features/staff/pages/StaffProfile.jsx';
+import HelpFAQ from '../features/more/pages/HelpFAQ.jsx';
+
 import GrantsTracker from '../features/grants/pages/GrantsTracker.jsx';
 import StaffList from '../features/staff/pages/StaffList.jsx';
 import InviteStaff from '../features/staff/pages/InviteStaff.jsx';
@@ -106,8 +109,10 @@ export const router = createBrowserRouter([
           { path: '/staff',             element: <StaffList /> },
           { path: '/staff/invite',      element: <InviteStaff /> },   // before /staff/:id
           { path: '/staff/permissions', element: <Permissions /> },   // before /staff/:id
+          { path: '/staff/:id',         element: <StaffProfile /> },
           { path: '/templates',         element: <Templates /> },
           { path: '/programmes/add',    element: <AddProgramme /> },
+          { path: '/help',              element: <HelpFAQ /> },
 
           // Settings
           { path: '/settings/organisation',         element: <OrganisationSettings /> },

@@ -106,6 +106,7 @@
   border: 1.5px solid var(--color-text);
   border-radius: 8px;
   color: var(--color-text);
+  pointer-events: none;
 }
 
 /* ── Save ─────────────────────────────────────────── */

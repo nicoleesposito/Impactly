@@ -21,12 +21,18 @@ function dbToInvite(row) {
 }
 
 function dbToStaff(row) {
+  const firstName = row.first_name ?? '';
+  const lastName = row.last_name ?? '';
   return {
     id: row.id,
-    firstName: row.first_name ?? '',
-    lastName: row.last_name ?? '',
+    firstName,
+    lastName,
+    name: `${firstName} ${lastName}`.trim(),
     role: row.role,
     orgId: row.org_id,
+    status: row.status ?? 'Active',
+    volunteer: row.volunteer ?? false,
+    programme: row.programme ?? null,
   };
 }
 
