@@ -30,3 +30,6 @@ pnpm-debug.log*
 # Supabase local
 supabase/.branches
 supabase/.temp
+
+# Claude Code internal (agent worktrees)
+.claude/
