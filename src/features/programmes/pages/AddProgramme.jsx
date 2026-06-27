@@ -23,21 +23,32 @@ export default function AddProgramme() {
   const [description, setDescription] = useState('');
   const [color, setColor] = useState(COLOURS[0]);
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!name.trim()) {
       setError('Please enter a programme name.');
       return;
     }
     setError('');
+    setSaving(true);
 
-    addProgramme({
+    const result = await addProgramme({
       name: name.trim(),
       description: description.trim(),
       color,
       shortLabel: name.trim().slice(0, 3).toUpperCase(),
     });
+
+    setSaving(false);
+
+    // If the returned id is still a temp id, Supabase wasn't reached —
+    // the programme exists only for this session and will be lost on refresh.
+    if (result?.id?.startsWith('temp-')) {
+      setError('Programme saved locally only — your account isn\'t fully set up yet, so it won\'t survive a refresh. Complete onboarding to fix this.');
+      return;
+    }
 
     navigate(-1);
   }
@@ -92,7 +103,9 @@ export default function AddProgramme() {
 
         {error && <p className={styles.error} role="alert">{error}</p>}
 
-        <button type="submit" className={styles.submit}>Add</button>
+        <button type="submit" className={styles.submit} disabled={saving}>
+          {saving ? 'Saving…' : 'Add'}
+        </button>
       </form>
     </div>
   );
