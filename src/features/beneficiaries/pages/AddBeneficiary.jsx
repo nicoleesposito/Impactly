@@ -71,6 +71,7 @@ export default function AddBeneficiary() {
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
+  const docInputRefs = [useRef(null), useRef(null)];
   const imageInputRef = useRef(null);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -241,7 +242,7 @@ export default function AddBeneficiary() {
         <fieldset className={styles.card}>
           <legend className={styles.cardTitle}>Forms &amp; consent documents</legend>
           {[0, 1].map((i) => (
-            <label key={i} className={styles.fileRow}>
+            <div key={i} className={styles.fileRow}>
               <span className={styles.fileLabel}>Document {i + 1}</span>
               <span className={styles.fileRight}>
                 {docFiles[i] ? (
@@ -249,18 +250,24 @@ export default function AddBeneficiary() {
                 ) : (
                   <span className={styles.filePlaceholder}>No file chosen</span>
                 )}
-                <span className={styles.fileBtn} aria-hidden="true">
+                <button
+                  type="button"
+                  className={styles.fileBtn}
+                  onClick={() => docInputRefs[i].current?.click()}
+                  aria-label={`Upload document ${i + 1}`}
+                >
                   <UploadIcon /> Upload
-                </span>
+                </button>
                 <input
+                  ref={docInputRefs[i]}
                   type="file"
                   accept=".pdf,.doc,.docx"
-                  className={styles.fileInput}
+                  className={styles.fileInputHidden}
                   onChange={(e) => handleDocChange(i, e)}
                   aria-label={`Document ${i + 1}`}
                 />
               </span>
-            </label>
+            </div>
           ))}
         </fieldset>
 
@@ -314,7 +321,7 @@ export default function AddBeneficiary() {
               type="file"
               accept="image/*"
               multiple
-              className={styles.fileInput}
+              className={styles.fileInputHidden}
               onChange={handleImagesChange}
               aria-label="Story images"
             />
