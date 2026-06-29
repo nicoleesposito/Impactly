@@ -5,6 +5,7 @@ import { useStaff } from '../../../context/StaffContext.jsx';
 import { useFunders } from '../../../context/FundersContext.jsx';
 import { useGrants } from '../../../context/GrantsContext.jsx';
 import { useTheme } from '../../../context/ThemeContext.jsx';
+import { useRole } from '../../../hooks/useRole.js';
 import { supabase } from '../../../lib/supabase.js';
 import { ROUTES } from '../../../constants/routes.js';
 import {
@@ -19,6 +20,8 @@ import {
   HelpCircle,
   Moon,
   LogOut,
+  Download,
+  UploadCloud,
 } from '../../../components/icons.jsx';
 import styles from './More.module.css';
 
@@ -33,6 +36,7 @@ export default function More() {
   const { funders } = useFunders();
   const { grants } = useGrants();
   const { theme, toggleTheme } = useTheme();
+  const { canManageOrg, canEditFunders, canEditGrants } = useRole();
   const navigate = useNavigate();
 
   const displayName =
@@ -60,7 +64,7 @@ export default function More() {
   const openGrants = grants.filter((g) => g.filter === 'Open').length;
 
   const fundingItems = [
-    {
+    canEditFunders && {
       to: ROUTES.funders,
       icon: <Building />,
       label: 'Funders & donors',
@@ -78,7 +82,7 @@ export default function More() {
         : 'Team members and roles',
       badge: pendingInvites.length > 0 ? `${pendingInvites.length} invite${pendingInvites.length !== 1 ? 's' : ''}` : null,
     },
-    {
+    canEditGrants && {
       to: ROUTES.grants,
       icon: <RefreshCw />,
       label: 'Grants tracker',
@@ -92,7 +96,7 @@ export default function More() {
       hint: 'Scheduled this week',
       badge: null,
     },
-  ];
+  ].filter(Boolean);
 
   const settingsItems = [
     {
@@ -101,19 +105,31 @@ export default function More() {
       label: 'Personal Settings',
       hint: 'Email, password, profile image',
     },
-    {
+    canManageOrg && {
       to: ROUTES.settingsOrganisation,
       icon: <Network />,
       label: 'Organisation',
       hint: 'Name, logo, users, roles, data',
     },
-    {
+    canManageOrg && {
       to: ROUTES.settingsIntegrations,
       icon: <Grid />,
       label: 'Integrations & App',
       hint: 'Connect apps, billing, and templates',
     },
-  ];
+    !canManageOrg && {
+      to: ROUTES.settingsDataImport,
+      icon: <Download />,
+      label: 'Data import',
+      hint: 'Import beneficiaries, funders, grants from CSV',
+    },
+    !canManageOrg && {
+      to: ROUTES.settingsDataExport,
+      icon: <UploadCloud />,
+      label: 'Data export',
+      hint: 'Download all org data as CSV',
+    },
+  ].filter(Boolean);
 
   const supportItems = [
     {

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useStaff } from '../../../context/StaffContext.jsx';
+import { useRole } from '../../../hooks/useRole.js';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, Users } from '../../../components/icons.jsx';
 import styles from './StaffList.module.css';
@@ -27,6 +28,7 @@ function initials(name = '') {
 export default function StaffList() {
   const navigate = useNavigate();
   const { activeStaff, pendingInvites } = useStaff();
+  const { canViewPermissions } = useRole();
   const [filter, setFilter] = useState('All staff');
 
   const visible =
@@ -41,7 +43,9 @@ export default function StaffList() {
           <ChevronLeft size={24} />
         </button>
         <h1 className={styles.title}>Staff</h1>
-        <Link to={ROUTES.staffPermissions} className={styles.secondary}>Permissions</Link>
+        {canViewPermissions && (
+          <Link to={ROUTES.staffPermissions} className={styles.secondary}>Permissions</Link>
+        )}
         <Link to={ROUTES.staffInvite} className={styles.add}>+ Invite</Link>
       </header>
 

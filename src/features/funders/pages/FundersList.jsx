@@ -3,6 +3,7 @@ import StatTile from '../../../components/ui/StatTile/index.js';
 import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useFunders } from '../../../context/FundersContext.jsx';
 import { useGrants } from '../../../context/GrantsContext.jsx';
+import { useRole } from '../../../hooks/useRole.js';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, Users } from '../../../components/icons.jsx';
 import styles from './FundersList.module.css';
@@ -32,6 +33,7 @@ export default function FundersList() {
   const navigate = useNavigate();
   const { funders } = useFunders();
   const { grants } = useGrants();
+  const { canEditFunders } = useRole();
 
   const totalFunders = funders.length;
   const activeGrants = grants.filter((g) => g.status === 'Active').length;
@@ -55,7 +57,7 @@ export default function FundersList() {
           <ChevronLeft size={24} />
         </button>
         <h1 className={styles.title}>Funders &amp; Donors</h1>
-        <Link to={ROUTES.funderAdd} className={styles.add}>+ Add</Link>
+        {canEditFunders && <Link to={ROUTES.funderAdd} className={styles.add}>+ Add</Link>}
       </header>
 
       <section className={styles.stats} aria-label="Summary">

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useGrants } from '../../../context/GrantsContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
+import { useRole } from '../../../hooks/useRole.js';
 import { ChevronLeft, Pencil } from '../../../components/icons.jsx';
 import styles from './GrantProfile.module.css';
 
@@ -42,6 +43,7 @@ export default function GrantProfile() {
   const navigate = useNavigate();
   const { grants, updateGrant } = useGrants();
   const { org } = useOrg();
+  const { canEditGrants } = useRole();
 
   const grant = grants.find((g) => g.id === id);
 
@@ -106,7 +108,7 @@ export default function GrantProfile() {
           <ChevronLeft size={24} />
         </button>
         <h1 className={styles.title}>Grant details</h1>
-        {!editing && (
+        {!editing && canEditGrants && (
           <button type="button" className={styles.editBtn} onClick={startEdit} aria-label="Edit grant">
             <Pencil size={16} />
             <span>Edit</span>

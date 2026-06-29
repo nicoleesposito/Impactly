@@ -5,6 +5,7 @@ import EmptyState from '../../dashboard/components/EmptyState.jsx';
 import { useGrants } from '../../../context/GrantsContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
+import { useRole } from '../../../hooks/useRole.js';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, FileText } from '../../../components/icons.jsx';
 import styles from './GrantsTracker.module.css';
@@ -31,6 +32,7 @@ export default function GrantsTracker() {
   const { grants } = useGrants();
   const { org } = useOrg();
   const { activeProgramme } = useProgrammeFilter();
+  const { canEditGrants } = useRole();
   const [filter, setFilter] = useState('All');
 
   const activeProgrammeName = activeProgramme !== 'all'
@@ -52,7 +54,7 @@ export default function GrantsTracker() {
           <ChevronLeft size={24} />
         </button>
         <h1 className={styles.title}>Grants tracker</h1>
-        <Link to={ROUTES.grantAdd} className={styles.add}>+ Add</Link>
+        {canEditGrants && <Link to={ROUTES.grantAdd} className={styles.add}>+ Add</Link>}
       </header>
 
       <section className={styles.stats} aria-label="Summary">

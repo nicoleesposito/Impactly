@@ -4,6 +4,7 @@ import { useFunders } from '../../../context/FundersContext.jsx';
 import { useGrants } from '../../../context/GrantsContext.jsx';
 import { useReports } from '../../../context/ReportsContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
+import { useRole } from '../../../hooks/useRole.js';
 import { ChevronLeft, Pencil } from '../../../components/icons.jsx';
 import styles from './FunderProfile.module.css';
 
@@ -64,6 +65,7 @@ export default function FunderProfile() {
   const { grants } = useGrants();
   const { reports } = useReports();
   const { org } = useOrg();
+  const { canEditFunders } = useRole();
 
   const funder = funders.find((f) => f.id === id);
 
@@ -172,7 +174,7 @@ export default function FunderProfile() {
                 {saving ? 'Saving…' : 'Save'}
               </button>
             </div>
-          ) : (
+          ) : canEditFunders ? (
             <button
               type="button"
               className={styles.editTopBtn}
@@ -182,7 +184,7 @@ export default function FunderProfile() {
               <Pencil size={16} />
               <span>Edit</span>
             </button>
-          )}
+          ) : null}
         </div>
 
         <hr className={styles.divider} />

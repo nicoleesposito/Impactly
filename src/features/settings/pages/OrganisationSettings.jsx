@@ -1,33 +1,33 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useRole } from '../../../hooks/useRole.js';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronLeft, ArrowRight, Cog, Download, UploadCloud } from '../../../components/icons.jsx';
 import styles from './OrganisationSettings.module.css';
 
-// Organisation settings hub (PDF p.24).
-// Users & Roles has been removed — permissions now live under Staff.
-const ITEMS = [
-  {
-    to: ROUTES.settingsOrganisationDetails,
-    icon: <Cog />,
-    label: 'Organisation',
-    hint: 'Name, type, country, etc',
-  },
-  {
-    to: ROUTES.settingsDataImport,
-    icon: <Download />,
-    label: 'Data import',
-    hint: 'Import beneficiaries, funders, grants from CSV',
-  },
-  {
-    to: ROUTES.settingsDataExport,
-    icon: <UploadCloud />,
-    label: 'Data export',
-    hint: 'Download all org data as CSV',
-  },
-];
-
 export default function OrganisationSettings() {
   const navigate = useNavigate();
+  const { canManageOrg } = useRole();
+
+  const items = [
+    canManageOrg && {
+      to: ROUTES.settingsOrganisationDetails,
+      icon: <Cog />,
+      label: 'Organisation',
+      hint: 'Name, type, country, etc',
+    },
+    {
+      to: ROUTES.settingsDataImport,
+      icon: <Download />,
+      label: 'Data import',
+      hint: 'Import beneficiaries, funders, grants from CSV',
+    },
+    {
+      to: ROUTES.settingsDataExport,
+      icon: <UploadCloud />,
+      label: 'Data export',
+      hint: 'Download all org data as CSV',
+    },
+  ].filter(Boolean);
 
   return (
     <div className={styles.page}>
@@ -39,7 +39,7 @@ export default function OrganisationSettings() {
       </header>
 
       <ul className={styles.list}>
-        {ITEMS.map((item) => (
+        {items.map((item) => (
           <li key={item.label}>
             <Link to={item.to} className={styles.item}>
               <span className={styles.itemIcon} aria-hidden="true">{item.icon}</span>
