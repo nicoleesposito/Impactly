@@ -1,14 +1,14 @@
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes.js';
+import { Home, Users, ClipboardCheck, FileText, MoreHorizontal } from '../../components/icons.jsx';
 import styles from './BottomNav.module.css';
 
-// Mobile bottom navigation (MVP-019). Attendance is a centered, elevated FAB.
 const ITEMS = [
-  { to: ROUTES.home, label: 'Home', icon: '\u{1F3E0}' },
-  { to: ROUTES.students, label: 'Students', icon: '\u{1F465}' },
-  { to: ROUTES.attendance, label: 'Attendance', icon: '✅', fab: true },
-  { to: ROUTES.reports, label: 'Reports', icon: '\u{1F4C4}' },
-  { to: ROUTES.more, label: 'More', icon: '…' },
+  { to: ROUTES.home,       label: 'Home',       Icon: Home },
+  { to: ROUTES.students,   label: 'Students',   Icon: Users },
+  { to: ROUTES.attendance, label: 'Attendance', Icon: ClipboardCheck, fab: true },
+  { to: ROUTES.reports,    label: 'Reports',    Icon: FileText },
+  { to: ROUTES.more,       label: 'More',       Icon: MoreHorizontal },
 ];
 
 export default function BottomNav() {
@@ -25,7 +25,7 @@ export default function BottomNav() {
           }
         >
           <span className={styles.icon} aria-hidden="true">
-            {item.icon}
+            <item.Icon size={item.fab ? 26 : 22} />
           </span>
           <span className={styles.label}>{item.label}</span>
         </NavLink>

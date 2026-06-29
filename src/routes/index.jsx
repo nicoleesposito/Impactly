@@ -29,6 +29,7 @@ import ViewReport from '../features/reports/pages/ViewReport.jsx';
 import ScheduledReports from '../features/reports/pages/ScheduledReports.jsx';
 import ScheduleReport from '../features/reports/pages/ScheduleReport.jsx';
 import More from '../features/more/pages/More.jsx';
+import Notifications from '../features/notifications/pages/Notifications.jsx';
 
 // Manage
 import FundersList from '../features/funders/pages/FundersList.jsx';
@@ -101,7 +102,8 @@ export const router = createBrowserRouter([
           { path: '/reports/scheduled',    element: <ScheduledReports /> },  // before /reports/:id
           { path: '/reports/schedule/new', element: <ScheduleReport /> },    // before /reports/:id
           { path: '/reports/:id',          element: <ViewReport /> },
-          { path: '/more',       element: <More /> },
+          { path: '/more',          element: <More /> },
+          { path: '/notifications', element: <Notifications /> },
 
           // Manage
           { path: '/funders',        element: <FundersList /> },

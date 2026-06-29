@@ -8,6 +8,7 @@ import { ScheduledReportsProvider } from './ScheduledReportsContext.jsx';
 import { ReportsProvider } from './ReportsContext.jsx';
 import { BeneficiariesProvider } from './BeneficiariesContext.jsx';
 import { ThemeProvider } from './ThemeContext.jsx';
+import { NotificationsProvider } from './NotificationsContext.jsx';
 
 // Single wrapper composing all global providers, mounted once in main.jsx.
 export function AppProviders({ children }) {
@@ -21,7 +22,9 @@ export function AppProviders({ children }) {
                 <ScheduledReportsProvider>
                   <ReportsProvider>
                     <BeneficiariesProvider>
-                      <ProgrammeFilterProvider>{children}</ProgrammeFilterProvider>
+                      <NotificationsProvider>
+            <ProgrammeFilterProvider>{children}</ProgrammeFilterProvider>
+          </NotificationsProvider>
                     </BeneficiariesProvider>
                   </ReportsProvider>
                 </ScheduledReportsProvider>
@@ -44,3 +47,4 @@ export { useScheduledReports } from './ScheduledReportsContext.jsx';
 export { useReports } from './ReportsContext.jsx';
 export { useBeneficiaries } from './BeneficiariesContext.jsx';
 export { useTheme } from './ThemeContext.jsx';
+export { useNotifications } from './NotificationsContext.jsx';
