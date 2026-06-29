@@ -115,16 +115,16 @@ Account creation with email/password via Supabase Auth
 
 ## What's Production-Ready
 
-✅ Authentication & onboarding  
-✅ Multi-programme attendance tracking  
-✅ Beneficiary, grant, and funder management  
-✅ Staff invitations and role-based access control  
-✅ Report library and scheduling  
-✅ CSV import/export  
-✅ Notifications  
-✅ Dark mode  
-✅ Mobile-responsive UI  
-✅ Supabase integration (auth, database, RLS policies)  
+- Authentication & onboarding
+- Multi-programme attendance tracking
+- Beneficiary, grant, and funder management
+- Staff invitations and role-based access control
+- Report library and scheduling
+- CSV import/export
+- Notifications
+- Dark mode
+- Mobile-responsive UI
+- Supabase integration (auth, database, RLS policies)  
 
 ## What Remains (Post-MVP)
 
@@ -161,7 +161,3 @@ npm run dev
 # Build for production
 npm run build
 ```
-
-## Contributing
-
-This project is under active development. Issues and PRs welcome.
