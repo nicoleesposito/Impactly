@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../../../context/NotificationsContext.jsx';
 import { ChevronLeft } from '../../../components/icons.jsx';
@@ -34,12 +35,11 @@ export default function Notifications() {
   const navigate = useNavigate();
   const { notifications, clearAll, markAllRead } = useNotifications();
 
+  useEffect(() => { markAllRead(); }, []);
+
   function handleClearAll() {
     clearAll();
   }
-
-  // Mark all read when page is opened
-  markAllRead();
 
   return (
     <div className={styles.page}>
