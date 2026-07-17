@@ -138,10 +138,12 @@ export default function Landing() {
         <div className={styles.splitInner}>
           <div className={styles.splitImage} aria-hidden="true" style={{ backgroundImage: ABOUT_IMAGE }} />
           <div className={styles.splitCard}>
-            <h2 className={styles.h2}>About Impactly</h2>
+            <h2 className={styles.h2}>Purpose-built software for mission-driven NGOs</h2>
             <p className={styles.splitBody}>
-              Impactly is software built specifically for non-profit organisations, helping
-              teams spend less time on paperwork and more time with the people they serve.
+              Impactly is the all-in-one platform designed exclusively for non-profits,
+              built to replace scattered spreadsheets and paperwork with one connected
+              system. Spend less time on admin, and more time driving the change your
+              organisation exists to make.
             </p>
             <h3 className={styles.h3}>Built in partnership with South African NGOs</h3>
             <p className={styles.splitBody}>
@@ -149,6 +151,9 @@ export default function Landing() {
               through the Tebelo Tech Hub design partnership.
             </p>
             {/* TODO: replace with a real partner quote and logo once Tebelo sign-off is confirmed */}
+            <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
+              Get started today <ChevronRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
