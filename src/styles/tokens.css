@@ -39,6 +39,8 @@
 
   /* Typography */
   --font-sans: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Headings only — pairs with Nunito for body copy. */
+  --font-heading: 'Poppins', 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;

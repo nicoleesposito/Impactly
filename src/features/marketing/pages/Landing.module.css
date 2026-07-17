@@ -71,11 +71,15 @@
 }
 
 .h1 {
-  font-size: var(--text-3xl);
+  font-size: 32px;
   font-weight: var(--font-weight-bold);
   line-height: 1.15;
   color: #ffffff;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  /* Narrower than .heroContent so the title wraps into a tighter,
+     more stacked block instead of spreading the full column width. */
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .subhead {
@@ -465,7 +469,7 @@
 /* ── Desktop ─────────────────────────────────────────── */
 @media (min-width: 768px) {
   .h1 {
-    font-size: 2.75rem;
+    font-size: 48px;
   }
 
   #home,
