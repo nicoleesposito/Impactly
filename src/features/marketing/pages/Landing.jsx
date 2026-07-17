@@ -1,16 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import {
   BrandMark,
-  Home,
   ClipboardCheck,
   Users,
   FileText,
   ChevronRight,
 } from '../../../components/icons.jsx';
 import styles from './Landing.module.css';
+
+// Placeholder banner slides — brand-colour gradients standing in for real
+// photography until we have actual images to drop in.
+const HERO_SLIDES = [
+  'linear-gradient(135deg, #a02b3f, #d94e6b)',
+  'linear-gradient(135deg, #6366f1, #8b5cf6)',
+  'linear-gradient(135deg, #3ba55d, #6366f1)',
+  'linear-gradient(135deg, #d94e6b, #b5762b)',
+];
+const HERO_SLIDE_DURATION = 5000;
 
 const FEATURES = [
   {
@@ -59,9 +68,17 @@ const FAQ = [
 
 export default function Landing() {
   const { session, loading } = useAuth();
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     document.title = 'Impactly | NGO Attendance & Funder Reporting Software (SA)';
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveSlide((i) => (i + 1) % HERO_SLIDES.length);
+    }, HERO_SLIDE_DURATION);
+    return () => clearInterval(id);
   }, []);
 
   // Render marketing content immediately; only redirect once we positively
@@ -85,37 +102,26 @@ export default function Landing() {
 
       {/* ── Hero ────────────────────────────────────────── */}
       <section className={styles.hero}>
-        <h1 className={styles.h1}>Attendance, beneficiaries and funder reports in one place</h1>
-        <p className={styles.subhead}>
-          Up and running in under 30 minutes, no IT support needed.
-        </p>
-        <div className={styles.heroCtas}>
-          <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
-            Create your account <ChevronRight size={16} />
-          </Link>
-          <Link to={ROUTES.signIn} className={styles.secondaryCta}>Log in</Link>
+        <div className={styles.heroBg} aria-hidden="true">
+          {HERO_SLIDES.map((slide, i) => (
+            <div
+              key={i}
+              className={`${styles.heroSlide} ${i === activeSlide ? styles.heroSlideActive : ''}`}
+              style={{ backgroundImage: slide }}
+            />
+          ))}
         </div>
 
-        {/* Lightweight product mock — no fabricated screenshot */}
-        <div className={styles.mock} aria-hidden="true">
-          <div className={styles.mockPhone}>
-            <div className={styles.mockBar}>
-              <Home size={14} />
-              <span>Today</span>
-            </div>
-            <div className={styles.mockCard}>
-              <span className={styles.mockLabel}>Present today</span>
-              <span className={styles.mockValue}>87</span>
-            </div>
-            <div className={styles.mockCard}>
-              <span className={styles.mockLabel}>Rate</span>
-              <span className={styles.mockValue}>95%</span>
-            </div>
-            <div className={styles.mockRow}>
-              <span className={styles.mockChip}>present</span>
-              <span className={styles.mockChip}>present</span>
-              <span className={styles.mockChipMuted}>late</span>
-            </div>
+        <div className={styles.heroContent}>
+          <h1 className={styles.h1}>Attendance, beneficiaries and funder reports in one place</h1>
+          <p className={styles.subhead}>
+            Up and running in under 30 minutes, no IT support needed.
+          </p>
+          <div className={styles.heroCtas}>
+            <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+              Create your account <ChevronRight size={16} />
+            </Link>
+            <Link to={ROUTES.signIn} className={styles.secondaryCta}>Log in</Link>
           </div>
         </div>
       </section>
