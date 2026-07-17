@@ -7,17 +7,8 @@ import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './Landing.module.css';
 
-// Placeholder banner slides: brand-colour gradients standing in for real
+// Placeholder section images: brand-colour gradients standing in for real
 // photography until we have actual images to drop in.
-const HERO_SLIDES = [
-  'linear-gradient(135deg, #a02b3f, #d94e6b)',
-  'linear-gradient(135deg, #6366f1, #8b5cf6)',
-  'linear-gradient(135deg, #3ba55d, #6366f1)',
-  'linear-gradient(135deg, #d94e6b, #b5762b)',
-];
-const HERO_SLIDE_DURATION = 5000;
-
-// Placeholder section images, same treatment as the hero slides.
 const ABOUT_IMAGE = 'linear-gradient(135deg, #6366f1, #3ba55d)';
 const PRODUCT_IMAGE = 'linear-gradient(135deg, #a02b3f, #b5762b)';
 const CONTACT_IMAGE = 'linear-gradient(135deg, #3ba55d, #6366f1, #a02b3f)';
@@ -66,19 +57,11 @@ const FAQ = [
 
 export default function Landing() {
   const { session, loading } = useAuth();
-  const [activeSlide, setActiveSlide] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
   const [contactSent, setContactSent] = useState(false);
 
   useEffect(() => {
     document.title = 'Impactly | NGO Attendance & Funder Reporting Software (SA)';
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setActiveSlide((i) => (i + 1) % HERO_SLIDES.length);
-    }, HERO_SLIDE_DURATION);
-    return () => clearInterval(id);
   }, []);
 
   // If the page loads (or is client-navigated to) with a section hash in the
@@ -109,15 +92,15 @@ export default function Landing() {
 
       {/* ── Hero ────────────────────────────────────────── */}
       <section id="home" className={styles.hero}>
-        <div className={styles.heroBg} aria-hidden="true">
-          {HERO_SLIDES.map((slide, i) => (
-            <div
-              key={i}
-              className={`${styles.heroSlide} ${i === activeSlide ? styles.heroSlideActive : ''}`}
-              style={{ backgroundImage: slide }}
-            />
-          ))}
-        </div>
+        <video
+          className={styles.heroVideo}
+          src="/videos/hero-banner.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-hidden="true"
+        />
 
         <div className={styles.heroContent}>
           <h1 className={styles.h1}>Attendance, beneficiary management and funder reporting in one place</h1>

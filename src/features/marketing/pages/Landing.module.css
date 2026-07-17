@@ -44,22 +44,13 @@
   background: var(--color-bg);
 }
 
-.heroBg {
+.heroVideo {
   position: absolute;
   inset: 0;
   z-index: 0;
-}
-
-.heroSlide {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-}
-
-.heroSlideActive {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   opacity: 0.3;
 }
 
