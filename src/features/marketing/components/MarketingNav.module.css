@@ -174,4 +174,25 @@
   .logIn {
     display: inline-flex;
   }
+
+  /* Grid with equal flanking columns guarantees the nav links sit at the
+     true horizontal centre of the bar, regardless of the logo and button
+     group having different widths (which broke centering under flex's
+     justify-content: space-between). */
+  .topbarInner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .wordmark {
+    justify-self: start;
+  }
+
+  .navDesktop {
+    justify-self: center;
+  }
+
+  .topbarActions {
+    justify-self: end;
+  }
 }
