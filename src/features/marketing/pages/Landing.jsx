@@ -9,7 +9,6 @@ import styles from './Landing.module.css';
 
 // Placeholder section images: brand-colour gradients standing in for real
 // photography until we have actual images to drop in.
-const ABOUT_IMAGE = 'linear-gradient(135deg, #6366f1, #3ba55d)';
 const PRODUCT_IMAGE = 'linear-gradient(135deg, #a02b3f, #b5762b)';
 const CONTACT_IMAGE = 'linear-gradient(135deg, #3ba55d, #6366f1, #a02b3f)';
 
@@ -120,14 +119,18 @@ export default function Landing() {
       {/* ── About us (two-column, image overlap) ────────── */}
       <section id="about-us" className={styles.split}>
         <div className={styles.splitInner}>
-          <div className={styles.splitImage} aria-hidden="true" style={{ backgroundImage: ABOUT_IMAGE }} />
+          <img
+            className={styles.splitImage}
+            src="/images/about-us.jpg"
+            alt="Two students at a school desk exploring photos together on a laptop"
+          />
           <div className={styles.splitCard}>
-            <h2 className={styles.h2}>Purpose-built software for mission-driven NGOs</h2>
+            <h2 className={styles.h2}>Software that puts your mission first</h2>
             <p className={styles.splitBody}>
-              Impactly is the all-in-one platform designed exclusively for non-profits,
-              built to replace scattered spreadsheets and paperwork with one connected
-              system. Spend less time on admin, and more time driving the change your
-              organisation exists to make.
+              Impactly exists to help NGOs spend less time on admin and more time on the
+              people they serve. From classrooms to community centres, our all-in-one
+              platform replaces scattered spreadsheets and paperwork with one connected
+              system built around your mission.
             </p>
             <h3 className={styles.h3}>Built in partnership with South African NGOs</h3>
             <p className={styles.splitBody}>

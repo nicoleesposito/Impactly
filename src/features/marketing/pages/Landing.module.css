@@ -150,11 +150,17 @@
 }
 
 .splitImage {
+  display: block;
   width: 100%;
+  /* Without this, a flex item that's an <img> uses its own intrinsic
+     width (2000px) as the automatic minimum size and refuses to shrink
+     to its 50% flex-basis, blowing out the layout. */
+  min-width: 0;
   aspect-ratio: 4 / 3;
   border-radius: var(--radius-lg);
   background-size: cover;
   background-position: center;
+  object-fit: cover;
   box-shadow: var(--shadow-md);
 }
 
