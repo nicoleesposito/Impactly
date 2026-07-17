@@ -170,11 +170,18 @@
   line-height: 1.6;
 }
 
+.splitCtas {
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 .splitCta {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-4);
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
   background: var(--color-primary);

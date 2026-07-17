@@ -151,9 +151,11 @@ export default function Landing() {
               through the Tebelo Tech Hub design partnership.
             </p>
             {/* TODO: replace with a real partner quote and logo once Tebelo sign-off is confirmed */}
-            <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
-              Get started today <ChevronRight size={16} />
-            </Link>
+            <div className={styles.splitCtas}>
+              <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
+                Get started today <ChevronRight size={16} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -163,14 +165,20 @@ export default function Landing() {
         <div className={styles.splitInner}>
           <div className={styles.splitImage} aria-hidden="true" style={{ backgroundImage: PRODUCT_IMAGE }} />
           <div className={styles.splitCard}>
-            <h2 className={styles.h2}>Core features for NGO programme management</h2>
+            <h2 className={styles.h2}>The complete toolkit for modern NGO programme management</h2>
             <p className={styles.splitBody}>
               From attendance tracking to funder reporting, Impactly brings every part of
-              running an NGO programme into one platform.
+              running your programme into one seamless platform. Spend less time switching
+              between tools, and more time creating impact.
             </p>
-            <Link to={ROUTES.productOverview} className={styles.splitCta}>
-              Explore all capabilities <ChevronRight size={16} />
-            </Link>
+            <div className={styles.splitCtas}>
+              <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
+                Get started today <ChevronRight size={16} />
+              </Link>
+              <Link to={ROUTES.productOverview} className={styles.secondaryCta}>
+                Explore all capabilities
+              </Link>
+            </div>
           </div>
         </div>
       </section>
