@@ -6,227 +6,7 @@
   color: var(--color-text);
 }
 
-/* ── Top bar ─────────────────────────────────────────── */
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-}
-
-.wordmark {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-shrink: 0;
-  font-weight: var(--font-weight-bold);
-  font-size: var(--text-base);
-  color: var(--color-primary);
-  white-space: nowrap;
-}
-
-/* ── Desktop nav + mega menu ─────────────────────────── */
-.navDesktop {
-  display: none;
-}
-
-.navList {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-  list-style: none;
-}
-
-.navItem,
-.navItemMega {
-  position: relative;
-}
-
-.navLink {
-  display: inline-block;
-  padding: var(--space-2) 0;
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text);
-  white-space: nowrap;
-}
-
-.navLink:hover {
-  color: var(--color-primary);
-}
-
-.megaMenu {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  width: 560px;
-  max-width: 90vw;
-  margin-top: var(--space-2);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 150ms ease, transform 150ms ease;
-}
-
-.navItemMega:hover .megaMenu,
-.navItemMega:focus-within .megaMenu {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
-}
-
-.megaMenuGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-2);
-}
-
-.megaMenuItem {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-2);
-  border-radius: var(--radius-md);
-}
-
-.megaMenuItem:hover {
-  background: var(--color-surface-tint);
-}
-
-.megaMenuIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  background: var(--color-surface-tint);
-  color: var(--color-primary);
-}
-
-.megaMenuTitle {
-  display: block;
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text);
-}
-
-.megaMenuBody {
-  display: block;
-  margin-top: 2px;
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-  line-height: 1.4;
-}
-
-/* ── Top bar actions ─────────────────────────────────── */
-.topbarActions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-shrink: 0;
-}
-
-.logIn {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text);
-  white-space: nowrap;
-}
-
-.logIn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.topCta {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-semibold);
-  white-space: nowrap;
-}
-
-.topCta:hover {
-  background: var(--color-primary-hover);
-}
-
-.navToggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  color: var(--color-text);
-}
-
-.navToggle:hover {
-  background: var(--color-border);
-}
-
-/* ── Mobile nav panel ────────────────────────────────── */
-.navMobile {
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.navMobileList {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-}
-
-.navMobileLink {
-  display: block;
-  padding: var(--space-3) var(--space-5);
-  font-size: var(--text-base);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.navMobileLogIn {
-  display: block;
-  margin: var(--space-3) var(--space-5);
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  border: 1.5px solid var(--color-border);
-  background: var(--color-surface);
-  text-align: center;
-  font-size: var(--text-base);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text);
-}
-
 /* ── Shared section rhythm ───────────────────────────── */
-.about,
-.contact,
-.problem,
-.featuresSection,
 .impact,
 .popia,
 .pricing,
@@ -254,10 +34,10 @@
 /* ── Anchor scroll offset for the sticky nav ─────────── */
 #home,
 #about-us,
-#contact-us,
 #product-overview,
 #impact,
-#popia {
+#contact-us,
+#faq {
   scroll-margin-top: 64px;
 }
 
@@ -352,12 +132,78 @@
   color: var(--color-primary);
 }
 
-/* ── About us ────────────────────────────────────────── */
-.about {
-  text-align: center;
+/* ── Split sections (About us / Product overview) ──────
+   Image on one side, white text card overlapping its edge
+   on the other. Reverse the row on desktop with .splitReverse. */
+.split {
+  padding: var(--space-10) var(--space-5) var(--space-12);
+  background: var(--color-surface-tint);
 }
 
-.aboutBody {
+.splitInner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.splitImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  background-size: cover;
+  background-position: center;
+  box-shadow: var(--shadow-md);
+}
+
+.splitCard {
+  position: relative;
+  z-index: 1;
+  margin: -40px var(--space-3) 0;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.splitBody {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.splitCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.splitCta:hover {
+  background: var(--color-primary-hover);
+}
+
+/* ── Impact ────────────────────────────────────────────── */
+.problemList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+}
+
+.problemList li {
+  padding-left: var(--space-4);
+  border-left: 3px solid var(--color-border);
+}
+
+.impactBody {
   font-size: var(--text-base);
   color: var(--color-text-secondary);
   line-height: 1.6;
@@ -394,78 +240,6 @@
 .contactIcon {
   display: inline-flex;
   color: var(--color-primary);
-}
-
-/* ── Problem / Impact ──────────────────────────────────── */
-.problemList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  list-style: none;
-  font-size: var(--text-base);
-  color: var(--color-text-secondary);
-}
-
-.problemList li {
-  padding-left: var(--space-4);
-  border-left: 3px solid var(--color-border);
-}
-
-.impactBody {
-  font-size: var(--text-base);
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-}
-
-/* ── Features ────────────────────────────────────────── */
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-4);
-}
-
-.featureCard {
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-}
-
-.featureIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  background: var(--color-surface-tint);
-  color: var(--color-primary);
-  margin-bottom: var(--space-3);
-}
-
-.featureTitle {
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-2);
-}
-
-.featureBody {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-}
-
-/* ── POPIA / Pricing ───────────────────────────────────── */
-.popia,
-.pricing {
-  text-align: center;
-}
-
-.popiaBody,
-.pricingBody {
-  font-size: var(--text-base);
-  color: var(--color-text-secondary);
-  line-height: 1.6;
 }
 
 /* ── FAQ (accordion) ─────────────────────────────────── */
@@ -530,6 +304,19 @@
   margin: 0;
 }
 
+/* ── POPIA / Pricing ───────────────────────────────────── */
+.popia,
+.pricing {
+  text-align: center;
+}
+
+.popiaBody,
+.pricingBody {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
 /* ── Final CTA ───────────────────────────────────────── */
 .finalCta {
   text-align: center;
@@ -540,134 +327,42 @@
   margin-top: var(--space-4);
 }
 
-/* ── Footer ──────────────────────────────────────────── */
-.footer {
-  padding: var(--space-8) var(--space-5) var(--space-5);
-  background: var(--color-surface-tint);
-  border-top: 1px solid var(--color-border);
-}
-
-.footerTop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-5);
-  max-width: 720px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.footerLogo {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--text-lg);
-  color: var(--color-primary);
-}
-
-.footerContact {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  list-style: none;
-}
-
-.footerContact li {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-}
-
-.footerSocials {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  list-style: none;
-}
-
-.footerSocialLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-}
-
-.footerSocialLink:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.footerBottom {
-  margin-top: var(--space-6);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-border);
-  text-align: center;
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-}
-
 /* ── Desktop ─────────────────────────────────────────── */
 @media (min-width: 768px) {
   .h1 {
     font-size: 2.75rem;
   }
 
-  .topbar {
-    padding: var(--space-4) var(--space-6);
-  }
-
-  .wordmark {
-    font-size: var(--text-lg);
-  }
-
-  .topCta {
-    padding: var(--space-2) var(--space-4);
-    font-size: var(--text-sm);
-  }
-
   #home,
   #about-us,
-  #contact-us,
   #product-overview,
   #impact,
-  #popia {
+  #contact-us,
+  #faq {
     scroll-margin-top: 72px;
   }
 
-  .footerTop {
+  .splitInner {
     flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
+    align-items: center;
+    gap: var(--space-6);
   }
 
-  .footerContact {
-    align-items: flex-start;
+  .splitImage {
+    flex: 1 1 50%;
   }
 
-  .footerContact li {
-    justify-content: flex-start;
-  }
-}
-
-@media (min-width: 1024px) {
-  .navDesktop {
-    display: block;
+  .splitCard {
+    flex: 1 1 50%;
+    margin: 0 0 0 -64px;
+    padding: var(--space-8);
   }
 
-  .navToggle {
-    display: none;
+  .splitReverse .splitInner {
+    flex-direction: row-reverse;
   }
 
-  .logIn {
-    display: inline-flex;
+  .splitReverse .splitCard {
+    margin: 0 -64px 0 0;
   }
 }

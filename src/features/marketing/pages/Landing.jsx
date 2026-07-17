@@ -2,24 +2,9 @@ import { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
-import {
-  BrandMark,
-  ClipboardCheck,
-  Users,
-  FileText,
-  CalendarDays,
-  UploadCloud,
-  Mail,
-  Phone,
-  ChevronRight,
-  ChevronDown,
-  Menu,
-  Close,
-  Facebook,
-  Instagram,
-  LinkedIn,
-  XLogo,
-} from '../../../components/icons.jsx';
+import { Mail, Phone, ChevronRight, ChevronDown } from '../../../components/icons.jsx';
+import MarketingNav from '../components/MarketingNav.jsx';
+import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './Landing.module.css';
 
 // Placeholder banner slides: brand-colour gradients standing in for real
@@ -32,42 +17,9 @@ const HERO_SLIDES = [
 ];
 const HERO_SLIDE_DURATION = 5000;
 
-const NAV_LINKS = [
-  { href: '#home', label: 'Home' },
-  { href: '#about-us', label: 'About us' },
-  { href: '#contact-us', label: 'Contact us' },
-  { href: '#product-overview', label: 'Product overview', megaMenu: true },
-  { href: '#impact', label: 'Impact' },
-];
-
-// Shared by the Product overview section cards and the nav hover preview.
-const CAPABILITIES = [
-  {
-    Icon: ClipboardCheck,
-    title: 'Attendance tracking',
-    body: 'Mark present, absent or late in one tap. See your rate for the day at a glance, across every programme you run.',
-  },
-  {
-    Icon: Users,
-    title: 'Beneficiary management',
-    body: 'Keep every beneficiary’s profile, programme history and status in one place. No more spreadsheets that lock when one person leaves.',
-  },
-  {
-    Icon: FileText,
-    title: 'Funder reporting',
-    body: 'Build reports for any programme and funder, fill them in as you go, and pick up exactly where you left off.',
-  },
-  {
-    Icon: CalendarDays,
-    title: 'Scheduled reports',
-    body: 'Automate delivery to funders and your team by email or WhatsApp.',
-  },
-  {
-    Icon: UploadCloud,
-    title: 'Data import and export',
-    body: 'Bring in an existing spreadsheet, or export everything to CSV at any time.',
-  },
-];
+// Placeholder split-section images, same treatment as the hero slides.
+const ABOUT_IMAGE = 'linear-gradient(135deg, #6366f1, #3ba55d)';
+const PRODUCT_IMAGE = 'linear-gradient(135deg, #a02b3f, #b5762b)';
 
 const FAQ = [
   {
@@ -96,17 +48,9 @@ const FAQ = [
   },
 ];
 
-const SOCIALS = [
-  { Icon: Facebook, label: 'Facebook' },
-  { Icon: Instagram, label: 'Instagram' },
-  { Icon: LinkedIn, label: 'LinkedIn' },
-  { Icon: XLogo, label: 'X (Twitter)' },
-];
-
 export default function Landing() {
   const { session, loading } = useAuth();
   const [activeSlide, setActiveSlide] = useState(0);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
 
   useEffect(() => {
@@ -120,6 +64,16 @@ export default function Landing() {
     return () => clearInterval(id);
   }, []);
 
+  // If the page loads (or is client-navigated to) with a section hash in the
+  // URL — e.g. arriving from the Product overview subpage via "/#about-us" —
+  // scroll to that section once content has laid out.
+  useEffect(() => {
+    if (window.location.hash) {
+      const el = document.querySelector(window.location.hash);
+      if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }));
+    }
+  }, []);
+
   // Render marketing content immediately; only redirect once we positively
   // know the visitor already has a session (avoids blocking on the auth
   // check, which has nothing to do with viewing this page).
@@ -127,83 +81,7 @@ export default function Landing() {
 
   return (
     <div className={styles.page}>
-      {/* ── Top bar ─────────────────────────────────────── */}
-      <header className={styles.topbar}>
-        <a href="#home" className={styles.wordmark}>
-          <BrandMark size={28} />
-          Impactly
-        </a>
-
-        <nav className={styles.navDesktop} aria-label="Primary">
-          <ul className={styles.navList}>
-            {NAV_LINKS.map((link) => (
-              <li
-                key={link.href}
-                className={link.megaMenu ? styles.navItemMega : styles.navItem}
-              >
-                <a href={link.href} className={styles.navLink}>{link.label}</a>
-                {link.megaMenu && (
-                  <div className={styles.megaMenu}>
-                    <div className={styles.megaMenuGrid}>
-                      {CAPABILITIES.map(({ Icon, title, body }) => (
-                        <a key={title} href="#product-overview" className={styles.megaMenuItem}>
-                          <span className={styles.megaMenuIcon} aria-hidden="true"><Icon size={20} /></span>
-                          <span>
-                            <span className={styles.megaMenuTitle}>{title}</span>
-                            <span className={styles.megaMenuBody}>{body}</span>
-                          </span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className={styles.topbarActions}>
-          <Link to={ROUTES.signIn} className={styles.logIn}>Log in</Link>
-          <Link to={ROUTES.onboardingAccount} className={styles.topCta}>Create your account</Link>
-          <button
-            type="button"
-            className={styles.navToggle}
-            aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileNavOpen}
-            onClick={() => setMobileNavOpen((o) => !o)}
-          >
-            {mobileNavOpen ? <Close size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
-      </header>
-
-      {/* ── Mobile nav panel ────────────────────────────── */}
-      {mobileNavOpen && (
-        <nav className={styles.navMobile} aria-label="Primary mobile">
-          <ul className={styles.navMobileList}>
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className={styles.navMobileLink}
-                  onClick={() => setMobileNavOpen(false)}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-            <li>
-              <Link
-                to={ROUTES.signIn}
-                className={styles.navMobileLogIn}
-                onClick={() => setMobileNavOpen(false)}
-              >
-                Log in
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      )}
+      <MarketingNav />
 
       {/* ── Hero ────────────────────────────────────────── */}
       <section id="home" className={styles.hero}>
@@ -231,20 +109,60 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── About us ────────────────────────────────────── */}
-      <section id="about-us" className={styles.about}>
-        <h2 className={styles.h2}>About Impactly</h2>
-        <p className={styles.aboutBody}>
-          Impactly is software built specifically for non-profit organisations, helping
-          teams spend less time on paperwork and more time with the people they serve.
-        </p>
+      {/* ── About us (two-column, image overlap) ────────── */}
+      <section id="about-us" className={styles.split}>
+        <div className={styles.splitInner}>
+          <div className={styles.splitImage} aria-hidden="true" style={{ backgroundImage: ABOUT_IMAGE }} />
+          <div className={styles.splitCard}>
+            <h2 className={styles.h2}>About Impactly</h2>
+            <p className={styles.splitBody}>
+              Impactly is software built specifically for non-profit organisations, helping
+              teams spend less time on paperwork and more time with the people they serve.
+            </p>
+            <h3 className={styles.h3}>Built in partnership with South African NGOs</h3>
+            <p className={styles.splitBody}>
+              Impactly is being built and tested in partnership with a South African NGO
+              through the Tebelo Tech Hub design partnership.
+            </p>
+            {/* TODO: replace with a real partner quote and logo once Tebelo sign-off is confirmed */}
+          </div>
+        </div>
+      </section>
 
-        <h3 className={styles.h3}>Built in partnership with South African NGOs</h3>
-        <p className={styles.aboutBody}>
-          Impactly is being built and tested in partnership with a South African NGO
-          through the Tebelo Tech Hub design partnership.
+      {/* ── Product overview (two-column, links to subpage) */}
+      <section id="product-overview" className={`${styles.split} ${styles.splitReverse}`}>
+        <div className={styles.splitInner}>
+          <div className={styles.splitImage} aria-hidden="true" style={{ backgroundImage: PRODUCT_IMAGE }} />
+          <div className={styles.splitCard}>
+            <h2 className={styles.h2}>Core features for NGO programme management</h2>
+            <p className={styles.splitBody}>
+              From attendance tracking to funder reporting, Impactly brings every part of
+              running an NGO programme into one platform.
+            </p>
+            <Link to={ROUTES.productOverview} className={styles.splitCta}>
+              Explore all capabilities <ChevronRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Impact ──────────────────────────────────────── */}
+      <section id="impact" className={styles.impact}>
+        <h2 className={styles.h2}>Making a measurable impact for NGOs</h2>
+
+        <h3 className={styles.h3}>Common challenges in NGO record keeping</h3>
+        <ul className={styles.problemList}>
+          <li>Paper registers that never make it back to the office.</li>
+          <li>Spreadsheets that lock up the moment one person leaves.</li>
+          <li>Programme updates scattered across WhatsApp threads.</li>
+        </ul>
+
+        <h3 className={styles.h3}>Attendance software built for the field, not just the office</h3>
+        <p className={styles.impactBody}>
+          Impactly is designed mobile-first for staff capturing attendance and updating
+          beneficiary profiles from a phone, often on a slow connection. The same data
+          syncs back to the office in real time.
         </p>
-        {/* TODO: replace with a real partner quote and logo once Tebelo sign-off is confirmed */}
       </section>
 
       {/* ── Contact us ──────────────────────────────────── */}
@@ -268,61 +186,8 @@ export default function Landing() {
         </ul>
       </section>
 
-      {/* ── Product overview ────────────────────────────── */}
-      <section id="product-overview" className={styles.featuresSection}>
-        <h2 className={styles.h2}>Core features for NGO programme management</h2>
-        <div className={styles.features}>
-          {CAPABILITIES.map(({ Icon, title, body }) => (
-            <div key={title} className={styles.featureCard}>
-              <span className={styles.featureIcon} aria-hidden="true"><Icon size={26} /></span>
-              <h3 className={styles.featureTitle}>{title}</h3>
-              <p className={styles.featureBody}>{body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Impact ──────────────────────────────────────── */}
-      <section id="impact" className={styles.impact}>
-        <h2 className={styles.h2}>Making a measurable impact for NGOs</h2>
-
-        <h3 className={styles.h3}>Common challenges in NGO record keeping</h3>
-        <ul className={styles.problemList}>
-          <li>Paper registers that never make it back to the office.</li>
-          <li>Spreadsheets that lock up the moment one person leaves.</li>
-          <li>Programme updates scattered across WhatsApp threads.</li>
-        </ul>
-
-        <h3 className={styles.h3}>Attendance software built for the field, not just the office</h3>
-        <p className={styles.impactBody}>
-          Impactly is designed mobile-first for staff capturing attendance and updating
-          beneficiary profiles from a phone, often on a slow connection. The same data
-          syncs back to the office in real time.
-        </p>
-      </section>
-
-      {/* ── POPIA ───────────────────────────────────────── */}
-      <section id="popia" className={styles.popia}>
-        <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
-        <p className={styles.popiaBody}>
-          Your organisation’s data, including beneficiaries, funders, grants and staff,
-          is scoped to your organisation only. We’re documenting exactly how data is
-          handled as we go. POPIA compliance is ultimately an operational responsibility
-          shared between Impactly and your organisation.
-        </p>
-      </section>
-
-      {/* ── Pricing teaser ──────────────────────────────── */}
-      <section className={styles.pricing}>
-        <h2 className={styles.h2}>Transparent pricing for NGO software</h2>
-        <p className={styles.pricingBody}>
-          We’re finalising transparent, published pricing. Create an account to get
-          started, and we’ll let you know as soon as plans go live.
-        </p>
-      </section>
-
       {/* ── FAQ (accordion) ─────────────────────────────── */}
-      <section className={styles.faq}>
+      <section id="faq" className={styles.faq}>
         <h2 className={styles.h2}>Frequently asked questions about Impactly</h2>
         <div className={styles.faqList}>
           {FAQ.map(({ q, a }, i) => {
@@ -359,6 +224,26 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── POPIA ───────────────────────────────────────── */}
+      <section className={styles.popia}>
+        <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
+        <p className={styles.popiaBody}>
+          Your organisation’s data, including beneficiaries, funders, grants and staff,
+          is scoped to your organisation only. We’re documenting exactly how data is
+          handled as we go. POPIA compliance is ultimately an operational responsibility
+          shared between Impactly and your organisation.
+        </p>
+      </section>
+
+      {/* ── Pricing teaser ──────────────────────────────── */}
+      <section className={styles.pricing}>
+        <h2 className={styles.h2}>Transparent pricing for NGO software</h2>
+        <p className={styles.pricingBody}>
+          We’re finalising transparent, published pricing. Create an account to get
+          started, and we’ll let you know as soon as plans go live.
+        </p>
+      </section>
+
       {/* ── Final CTA ───────────────────────────────────── */}
       <section className={styles.finalCta}>
         <h2 className={styles.h2}>Ready to make an impact for your NGO?</h2>
@@ -367,41 +252,7 @@ export default function Landing() {
         </Link>
       </section>
 
-      {/* ── Footer ──────────────────────────────────────── */}
-      <footer className={styles.footer}>
-        <div className={styles.footerTop}>
-          <span className={styles.footerLogo}>
-            <BrandMark size={28} />
-            Impactly
-          </span>
-
-          <ul className={styles.footerContact}>
-            <li>
-              <Mail size={16} aria-hidden="true" />
-              <a href="mailto:hello@impactly.co.za">hello@impactly.co.za</a>
-            </li>
-            <li>
-              <Phone size={16} aria-hidden="true" />
-              <span>+27 21 XXX XXXX</span>
-            </li>
-          </ul>
-
-          <ul className={styles.footerSocials}>
-            {SOCIALS.map(({ Icon, label }) => (
-              <li key={label}>
-                {/* Placeholder — swap href for the real profile once it exists */}
-                <a href="#" className={styles.footerSocialLink} aria-label={label}>
-                  <Icon size={18} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className={styles.footerBottom}>
-          <span>&copy; {new Date().getFullYear()} Impactly</span>
-        </div>
-      </footer>
+      <MarketingFooter />
     </div>
   );
 }

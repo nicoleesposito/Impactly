@@ -1,5 +1,8 @@
 // Centralised route path constants (PRD §9 routes).
 export const ROUTES = {
+  // Marketing
+  productOverview: '/product-overview',
+
   // Auth
   signIn: '/signin',
   forgotPassword: '/forgot-password',

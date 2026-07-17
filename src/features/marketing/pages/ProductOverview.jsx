@@ -1,0 +1,47 @@
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '../../../constants/routes.js';
+import { ChevronRight } from '../../../components/icons.jsx';
+import { CAPABILITIES } from '../data/capabilities.js';
+import MarketingNav from '../components/MarketingNav.jsx';
+import MarketingFooter from '../components/MarketingFooter.jsx';
+import styles from './ProductOverview.module.css';
+
+export default function ProductOverview() {
+  useEffect(() => {
+    document.title = 'Impactly | Platform Capabilities for NGOs';
+  }, []);
+
+  return (
+    <div className={styles.page}>
+      <MarketingNav />
+
+      <section className={styles.header}>
+        <h1 className={styles.h1}>Impactly platform capabilities for NGOs</h1>
+        <p className={styles.intro}>
+          From attendance tracking to funder reporting, Impactly brings every part of
+          running an NGO programme into one platform. Here is everything included.
+        </p>
+      </section>
+
+      <section className={styles.grid}>
+        {CAPABILITIES.map(({ Icon, title, body }) => (
+          <div key={title} className={styles.card}>
+            <span className={styles.cardIcon} aria-hidden="true"><Icon size={26} /></span>
+            <h2 className={styles.cardTitle}>{title}</h2>
+            <p className={styles.cardBody}>{body}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className={styles.cta}>
+        <h2 className={styles.h2}>Ready to bring this to your NGO?</h2>
+        <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+          Create your account <ChevronRight size={16} />
+        </Link>
+      </section>
+
+      <MarketingFooter />
+    </div>
+  );
+}

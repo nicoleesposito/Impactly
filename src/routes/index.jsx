@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute.jsx';
 
 // Marketing
 import Landing from '../features/marketing/pages/Landing.jsx';
+import ProductOverview from '../features/marketing/pages/ProductOverview.jsx';
 
 // Auth
 import SignIn from '../features/auth/pages/SignIn.jsx';
@@ -63,6 +64,7 @@ import PersonalSettings from '../features/settings/pages/PersonalSettings.jsx';
 
 export const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
+  { path: '/product-overview', element: <ProductOverview /> },
 
   // Public auth routes
   {
