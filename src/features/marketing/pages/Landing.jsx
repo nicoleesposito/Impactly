@@ -11,7 +11,7 @@ import {
 } from '../../../components/icons.jsx';
 import styles from './Landing.module.css';
 
-// Placeholder banner slides — brand-colour gradients standing in for real
+// Placeholder banner slides: brand-colour gradients standing in for real
 // photography until we have actual images to drop in.
 const HERO_SLIDES = [
   'linear-gradient(135deg, #a02b3f, #d94e6b)',
@@ -30,12 +30,12 @@ const FEATURES = [
   {
     Icon: Users,
     title: 'Beneficiary management',
-    body: 'Keep every learner’s profile, programme history and status in one place — no more spreadsheets that lock when one person leaves.',
+    body: 'Keep every beneficiary’s profile, programme history and status in one place. No more spreadsheets that lock when one person leaves.',
   },
   {
     Icon: FileText,
     title: 'Funder reporting',
-    body: 'Build reports against a programme and a funder, fill them in as you go, and find them again exactly where you left off.',
+    body: 'Build reports for any programme and funder, fill them in as you go, and pick up exactly where you left off.',
   },
 ];
 
@@ -46,11 +46,11 @@ const FAQ = [
   },
   {
     q: 'Do I need IT support to set it up?',
-    a: 'No. Setup takes around 30 minutes and walks you through creating your organisation, adding your first programmes, and inviting your team — no technical background needed.',
+    a: 'No. Setup takes around 30 minutes and walks you through creating your organisation, adding your first programmes, and inviting your team. No technical background is needed.',
   },
   {
     q: 'What happens to our data?',
-    a: 'Your data is stored per organisation and only accessible to your team. We’re building Impactly with South African NGOs and POPIA in mind — read more on our data handling page (coming soon).',
+    a: 'Your data is stored per organisation and only accessible to your team. We’re building Impactly with South African NGOs and POPIA in mind. Read more on our data handling page (coming soon).',
   },
   {
     q: 'Can we import our existing spreadsheet?',
@@ -58,11 +58,11 @@ const FAQ = [
   },
   {
     q: 'What does it cost?',
-    a: 'Pricing is being finalised — details are coming soon. Create an account to be notified.',
+    a: 'Pricing is being finalised, with details coming soon. Create an account to be notified.',
   },
   {
     q: 'Can we export our data if we leave?',
-    a: 'Yes. Every organisation can export all of its data — beneficiaries, funders, grants and staff — to CSV at any time, no questions asked.',
+    a: 'Yes. Every organisation can export all of its data, including beneficiaries, funders, grants and staff, to CSV at any time, no questions asked.',
   },
 ];
 
@@ -113,7 +113,7 @@ export default function Landing() {
         </div>
 
         <div className={styles.heroContent}>
-          <h1 className={styles.h1}>Attendance, beneficiaries and funder reports in one place</h1>
+          <h1 className={styles.h1}>Attendance, beneficiary management and funder reporting in one place</h1>
           <p className={styles.subhead}>
             Up and running in under 30 minutes, no IT support needed.
           </p>
@@ -128,6 +128,7 @@ export default function Landing() {
 
       {/* ── Problem ─────────────────────────────────────── */}
       <section className={styles.problem}>
+        <h2 className={styles.h2}>Common challenges in NGO record keeping</h2>
         <ul className={styles.problemList}>
           <li>Paper registers that never make it back to the office.</li>
           <li>Spreadsheets that lock up the moment one person leaves.</li>
@@ -136,28 +137,32 @@ export default function Landing() {
       </section>
 
       {/* ── Features ────────────────────────────────────── */}
-      <section className={styles.features}>
-        {FEATURES.map(({ Icon, title, body }) => (
-          <div key={title} className={styles.featureCard}>
-            <span className={styles.featureIcon} aria-hidden="true"><Icon size={26} /></span>
-            <h2 className={styles.featureTitle}>{title}</h2>
-            <p className={styles.featureBody}>{body}</p>
-          </div>
-        ))}
+      <section className={styles.featuresSection}>
+        <h2 className={styles.h2}>Core features for NGO programme management</h2>
+        <div className={styles.features}>
+          {FEATURES.map(({ Icon, title, body }) => (
+            <div key={title} className={styles.featureCard}>
+              <span className={styles.featureIcon} aria-hidden="true"><Icon size={26} /></span>
+              <h3 className={styles.featureTitle}>{title}</h3>
+              <p className={styles.featureBody}>{body}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* ── Mobile-first proof ──────────────────────────── */}
       <section className={styles.mobileProof}>
-        <h2 className={styles.h2}>Built for the field, not just the office</h2>
+        <h2 className={styles.h2}>Attendance software built for the field, not just the office</h2>
         <p className={styles.mobileProofBody}>
           Impactly is designed mobile-first for staff capturing attendance and updating
-          profiles from a phone, often on a slow connection. The same data syncs back
-          to the office in real time.
+          beneficiary profiles from a phone, often on a slow connection. The same data
+          syncs back to the office in real time.
         </p>
       </section>
 
       {/* ── Trust ───────────────────────────────────────── */}
       <section className={styles.trust}>
+        <h2 className={styles.h2}>Built in partnership with South African NGOs</h2>
         <p className={styles.trustBody}>
           Impactly is being built and tested in partnership with a South African NGO
           through the Tebelo Tech Hub design partnership.
@@ -167,11 +172,11 @@ export default function Landing() {
 
       {/* ── POPIA ───────────────────────────────────────── */}
       <section className={styles.popia}>
-        <h2 className={styles.h2}>Built with POPIA in mind</h2>
+        <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
         <p className={styles.popiaBody}>
-          Your organisation’s data — beneficiaries, funders, grants and staff — is
-          scoped to your organisation only. We’re documenting exactly how data is
-          handled as we go; POPIA compliance is ultimately an operational responsibility
+          Your organisation’s data, including beneficiaries, funders, grants and staff,
+          is scoped to your organisation only. We’re documenting exactly how data is
+          handled as we go. POPIA compliance is ultimately an operational responsibility
           shared between Impactly and your organisation.
         </p>
         <a href="#popia" className={styles.popiaLink}>Read more about data handling &rarr;</a>
@@ -179,20 +184,20 @@ export default function Landing() {
 
       {/* ── Pricing teaser ──────────────────────────────── */}
       <section className={styles.pricing}>
-        <h2 className={styles.h2}>Pricing</h2>
+        <h2 className={styles.h2}>Transparent pricing for NGO software</h2>
         <p className={styles.pricingBody}>
           We’re finalising transparent, published pricing. Create an account to get
-          started — we’ll let you know as soon as plans go live.
+          started, and we’ll let you know as soon as plans go live.
         </p>
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────── */}
       <section className={styles.faq}>
-        <h2 className={styles.h2}>Frequently asked questions</h2>
+        <h2 className={styles.h2}>Frequently asked questions about Impactly</h2>
         <dl className={styles.faqList}>
           {FAQ.map(({ q, a }) => (
             <div key={q} className={styles.faqItem}>
-              <dt className={styles.faqQ}>{q}</dt>
+              <dt><h3 className={styles.faqQ}>{q}</h3></dt>
               <dd className={styles.faqA}>{a}</dd>
             </div>
           ))}
@@ -201,7 +206,7 @@ export default function Landing() {
 
       {/* ── Final CTA ───────────────────────────────────── */}
       <section className={styles.finalCta}>
-        <h2 className={styles.h2}>Ready to make an impact?</h2>
+        <h2 className={styles.h2}>Ready to make an impact for your NGO?</h2>
         <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
           Create your account <ChevronRight size={16} />
         </Link>
