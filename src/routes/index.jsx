@@ -5,6 +5,9 @@ import OnboardingLayout from '../layouts/OnboardingLayout/index.js';
 import AppShell from '../layouts/AppShell/index.js';
 import ProtectedRoute from './ProtectedRoute.jsx';
 
+// Marketing
+import Landing from '../features/marketing/pages/Landing.jsx';
+
 // Auth
 import SignIn from '../features/auth/pages/SignIn.jsx';
 import ForgotPassword from '../features/auth/pages/ForgotPassword.jsx';
@@ -59,7 +62,7 @@ import Billing from '../features/settings/pages/Billing.jsx';
 import PersonalSettings from '../features/settings/pages/PersonalSettings.jsx';
 
 export const router = createBrowserRouter([
-  { path: '/', element: <Navigate to="/home" replace /> },
+  { path: '/', element: <Landing /> },
 
   // Public auth routes
   {
