@@ -152,7 +152,7 @@ export default function Landing() {
           <img
             className={`${styles.splitImage} ${styles.productImage}`}
             src="/images/product-overview.webp"
-            alt="Impactly dashboard on a phone, annotated with callouts explaining programmes at a glance, key metrics, upcoming tasks, notifications, one-tap attendance capture, reporting and attendance insights"
+            alt="Impactly dashboard on a phone, annotated with callouts explaining programmes at a glance, key metrics, upcoming tasks, notifications, one-tap attendance capture, smarter reporting and attendance analysis"
           />
           <div className={styles.splitCard}>
             <h2 className={styles.h2}>The complete toolkit for modern NGO programme management</h2>
