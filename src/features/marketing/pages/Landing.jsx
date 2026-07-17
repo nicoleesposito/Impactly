@@ -172,11 +172,8 @@ export default function Landing() {
               between tools, and more time creating impact.
             </p>
             <div className={styles.splitCtas}>
-              <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
-                Get started today <ChevronRight size={16} />
-              </Link>
-              <Link to={ROUTES.productOverview} className={styles.secondaryCta}>
-                Explore all capabilities
+              <Link to={ROUTES.productOverview} className={styles.splitCta}>
+                View all capabilities <ChevronRight size={16} />
               </Link>
             </div>
           </div>
