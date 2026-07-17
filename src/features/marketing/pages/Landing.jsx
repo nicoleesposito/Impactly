@@ -17,9 +17,16 @@ const HERO_SLIDES = [
 ];
 const HERO_SLIDE_DURATION = 5000;
 
-// Placeholder split-section images, same treatment as the hero slides.
+// Placeholder section images, same treatment as the hero slides.
 const ABOUT_IMAGE = 'linear-gradient(135deg, #6366f1, #3ba55d)';
 const PRODUCT_IMAGE = 'linear-gradient(135deg, #a02b3f, #b5762b)';
+const CONTACT_IMAGE = 'linear-gradient(135deg, #3ba55d, #6366f1, #a02b3f)';
+
+const CHALLENGES = [
+  'Paper registers that never make it back to the office.',
+  'Spreadsheets that lock up the moment one person leaves.',
+  'Programme updates scattered across WhatsApp threads.',
+];
 
 const FAQ = [
   {
@@ -52,6 +59,7 @@ export default function Landing() {
   const { session, loading } = useAuth();
   const [activeSlide, setActiveSlide] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
+  const [contactSent, setContactSent] = useState(false);
 
   useEffect(() => {
     document.title = 'Impactly | NGO Attendance & Funder Reporting Software (SA)';
@@ -73,6 +81,13 @@ export default function Landing() {
       if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }));
     }
   }, []);
+
+  // No backend wired up yet — this just gives the visitor feedback that
+  // their message was captured.
+  function handleContactSubmit(e) {
+    e.preventDefault();
+    setContactSent(true);
+  }
 
   // Render marketing content immediately; only redirect once we positively
   // know the visitor already has a session (avoids blocking on the auth
@@ -148,108 +163,141 @@ export default function Landing() {
 
       {/* ── Impact ──────────────────────────────────────── */}
       <section id="impact" className={styles.impact}>
-        <h2 className={styles.h2}>Making a measurable impact for NGOs</h2>
+        <div className={styles.impactInner}>
+          <h2 className={styles.h2}>Making a measurable impact for NGOs</h2>
 
-        <h3 className={styles.h3}>Common challenges in NGO record keeping</h3>
-        <ul className={styles.problemList}>
-          <li>Paper registers that never make it back to the office.</li>
-          <li>Spreadsheets that lock up the moment one person leaves.</li>
-          <li>Programme updates scattered across WhatsApp threads.</li>
-        </ul>
-
-        <h3 className={styles.h3}>Attendance software built for the field, not just the office</h3>
-        <p className={styles.impactBody}>
-          Impactly is designed mobile-first for staff capturing attendance and updating
-          beneficiary profiles from a phone, often on a slow connection. The same data
-          syncs back to the office in real time.
-        </p>
+          <h3 className={styles.h3}>Common challenges in NGO record keeping</h3>
+          <div className={styles.challengeGrid}>
+            {CHALLENGES.map((challenge) => (
+              <div key={challenge} className={styles.challengeBox}>{challenge}</div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* ── Contact us ──────────────────────────────────── */}
-      <section id="contact-us" className={styles.contact}>
-        <h2 className={styles.h2}>Get in touch with Impactly</h2>
-        <p className={styles.contactBody}>
-          Have a question about Impactly, or want a walkthrough for your organisation?
-          Reach out and our team will get back to you.
-        </p>
-        <ul className={styles.contactList}>
-          <li className={styles.contactItem}>
-            <span className={styles.contactIcon} aria-hidden="true"><Mail size={18} /></span>
-            {/* TODO: replace with a real support inbox once the domain is live */}
-            <a href="mailto:hello@impactly.co.za">hello@impactly.co.za</a>
-          </li>
-          <li className={styles.contactItem}>
-            <span className={styles.contactIcon} aria-hidden="true"><Phone size={18} /></span>
-            {/* TODO: replace with a real contact number */}
-            <span>+27 21 XXX XXXX</span>
-          </li>
-        </ul>
+      {/* ── Contact us (full-bleed image, two-column) ───── */}
+      <section id="contact-us" className={styles.contactSection}>
+        <div className={styles.contactBg} aria-hidden="true" style={{ backgroundImage: CONTACT_IMAGE }} />
+        <div className={styles.contactGrid}>
+          <div className={styles.contactSpacer} aria-hidden="true" />
+          <div className={styles.contactCard}>
+            <h2 className={styles.h2}>Get in touch with Impactly</h2>
+            <p className={styles.contactBody}>
+              Have a question about Impactly, or want a walkthrough for your organisation?
+              Reach out and our team will get back to you.
+            </p>
+            <ul className={styles.contactList}>
+              <li className={styles.contactItem}>
+                <span className={styles.contactIcon} aria-hidden="true"><Mail size={18} /></span>
+                {/* TODO: replace with a real support inbox once the domain is live */}
+                <a href="mailto:hello@impactly.co.za">hello@impactly.co.za</a>
+              </li>
+              <li className={styles.contactItem}>
+                <span className={styles.contactIcon} aria-hidden="true"><Phone size={18} /></span>
+                {/* TODO: replace with a real contact number */}
+                <span>+27 21 XXX XXXX</span>
+              </li>
+            </ul>
+
+            {contactSent ? (
+              <p className={styles.contactThanks}>Thanks — we’ll be in touch soon.</p>
+            ) : (
+              <form className={styles.contactForm} onSubmit={handleContactSubmit}>
+                <label className={styles.contactLabel} htmlFor="contact-email">Email address</label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  required
+                  className={styles.contactInput}
+                  placeholder="you@example.org"
+                />
+                <label className={styles.contactLabel} htmlFor="contact-message">Message</label>
+                <textarea
+                  id="contact-message"
+                  required
+                  rows={4}
+                  className={styles.contactTextarea}
+                  placeholder="How can we help?"
+                />
+                <button type="submit" className={styles.contactSubmit}>Send message</button>
+              </form>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* ── FAQ (accordion) ─────────────────────────────── */}
       <section id="faq" className={styles.faq}>
-        <h2 className={styles.h2}>Frequently asked questions about Impactly</h2>
-        <div className={styles.faqList}>
-          {FAQ.map(({ q, a }, i) => {
-            const isOpen = openFaq === i;
-            const panelId = `faq-panel-${i}`;
-            return (
-              <div key={q} className={styles.faqItem}>
-                <h3 className={styles.faqQ}>
-                  <button
-                    type="button"
-                    className={styles.faqButton}
-                    aria-expanded={isOpen}
-                    aria-controls={panelId}
-                    onClick={() => setOpenFaq(isOpen ? null : i)}
+        <div className={styles.faqInner}>
+          <h2 className={styles.h2}>Frequently asked questions about Impactly</h2>
+          <div className={styles.faqList}>
+            {FAQ.map(({ q, a }, i) => {
+              const isOpen = openFaq === i;
+              const panelId = `faq-panel-${i}`;
+              return (
+                <div key={q} className={styles.faqItem}>
+                  <h3 className={styles.faqQ}>
+                    <button
+                      type="button"
+                      className={styles.faqButton}
+                      aria-expanded={isOpen}
+                      aria-controls={panelId}
+                      onClick={() => setOpenFaq(isOpen ? null : i)}
+                    >
+                      {q}
+                      <span className={`${styles.faqChevron} ${isOpen ? styles.faqChevronOpen : ''}`} aria-hidden="true">
+                        <ChevronDown size={18} />
+                      </span>
+                    </button>
+                  </h3>
+                  <div
+                    id={panelId}
+                    role="region"
+                    className={`${styles.faqPanel} ${isOpen ? styles.faqPanelOpen : ''}`}
                   >
-                    {q}
-                    <span className={`${styles.faqChevron} ${isOpen ? styles.faqChevronOpen : ''}`} aria-hidden="true">
-                      <ChevronDown size={18} />
-                    </span>
-                  </button>
-                </h3>
-                <div
-                  id={panelId}
-                  role="region"
-                  className={`${styles.faqPanel} ${isOpen ? styles.faqPanelOpen : ''}`}
-                >
-                  <div className={styles.faqPanelInner}>
-                    <p className={styles.faqA}>{a}</p>
+                    <div className={styles.faqPanelInner}>
+                      <p className={styles.faqA}>{a}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </section>
 
       {/* ── POPIA ───────────────────────────────────────── */}
       <section className={styles.popia}>
-        <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
-        <p className={styles.popiaBody}>
-          Your organisation’s data, including beneficiaries, funders, grants and staff,
-          is scoped to your organisation only. We’re documenting exactly how data is
-          handled as we go. POPIA compliance is ultimately an operational responsibility
-          shared between Impactly and your organisation.
-        </p>
+        <div className={styles.popiaInner}>
+          <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
+          <p className={styles.popiaBody}>
+            Your organisation’s data, including beneficiaries, funders, grants and staff,
+            is scoped to your organisation only. We’re documenting exactly how data is
+            handled as we go. POPIA compliance is ultimately an operational responsibility
+            shared between Impactly and your organisation.
+          </p>
+        </div>
       </section>
 
       {/* ── Pricing teaser ──────────────────────────────── */}
       <section className={styles.pricing}>
-        <h2 className={styles.h2}>Transparent pricing for NGO software</h2>
-        <p className={styles.pricingBody}>
-          We’re finalising transparent, published pricing. Create an account to get
-          started, and we’ll let you know as soon as plans go live.
-        </p>
+        <div className={styles.pricingInner}>
+          <h2 className={styles.h2}>Transparent pricing for NGO software</h2>
+          <p className={styles.pricingBody}>
+            We’re finalising transparent, published pricing. Create an account to get
+            started, and we’ll let you know as soon as plans go live.
+          </p>
+        </div>
       </section>
 
       {/* ── Final CTA ───────────────────────────────────── */}
       <section className={styles.finalCta}>
-        <h2 className={styles.h2}>Ready to make an impact for your NGO?</h2>
-        <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
-          Create your account <ChevronRight size={16} />
-        </Link>
+        <div className={styles.finalCtaInner}>
+          <h2 className={styles.h2}>Ready to make an impact for your NGO?</h2>
+          <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+            Create your account <ChevronRight size={16} />
+          </Link>
+        </div>
       </section>
 
       <MarketingFooter />

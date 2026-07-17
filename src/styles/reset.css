@@ -17,6 +17,10 @@ body,
 
 html {
   scroll-behavior: smooth;
+  /* Reserve equal gutters on both edges so centered layouts (like the
+     marketing nav) sit visually centred in the window instead of being
+     pulled a scrollbar's-width off-centre to the left. */
+  scrollbar-gutter: stable both-edges;
 }
 
 body {

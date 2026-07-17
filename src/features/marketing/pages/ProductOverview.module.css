@@ -7,11 +7,15 @@
 }
 
 .header {
-  padding: var(--space-10) var(--space-5) var(--space-6);
+  width: 100%;
+  padding: var(--space-10) 0 var(--space-6);
+  text-align: center;
+}
+
+.headerInner {
   max-width: 720px;
   margin: 0 auto;
-  width: 100%;
-  text-align: center;
+  padding: 0 var(--space-5);
 }
 
 .h1 {
@@ -27,11 +31,15 @@
   line-height: 1.6;
 }
 
+.gridSection {
+  width: 100%;
+  padding: var(--space-6) 0 var(--space-10);
+}
+
 .grid {
-  padding: var(--space-6) var(--space-5) var(--space-10);
   max-width: 960px;
   margin: 0 auto;
-  width: 100%;
+  padding: 0 var(--space-5);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-4);
@@ -69,12 +77,19 @@
 }
 
 .cta {
-  padding: var(--space-8) var(--space-5) var(--space-12);
+  width: 100%;
+  padding: var(--space-8) 0 var(--space-12);
   text-align: center;
 }
 
+.ctaInner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
 .h2 {
-  font-size: var(--text-xl);
+  font-size: 30px;
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-4);
 }

@@ -17,28 +17,34 @@ export default function ProductOverview() {
       <MarketingNav />
 
       <section className={styles.header}>
-        <h1 className={styles.h1}>Impactly platform capabilities for NGOs</h1>
-        <p className={styles.intro}>
-          From attendance tracking to funder reporting, Impactly brings every part of
-          running an NGO programme into one platform. Here is everything included.
-        </p>
+        <div className={styles.headerInner}>
+          <h1 className={styles.h1}>Impactly platform capabilities for NGOs</h1>
+          <p className={styles.intro}>
+            From attendance tracking to funder reporting, Impactly brings every part of
+            running an NGO programme into one platform. Here is everything included.
+          </p>
+        </div>
       </section>
 
-      <section className={styles.grid}>
-        {CAPABILITIES.map(({ Icon, title, body }) => (
-          <div key={title} className={styles.card}>
-            <span className={styles.cardIcon} aria-hidden="true"><Icon size={26} /></span>
-            <h2 className={styles.cardTitle}>{title}</h2>
-            <p className={styles.cardBody}>{body}</p>
-          </div>
-        ))}
+      <section className={styles.gridSection}>
+        <div className={styles.grid}>
+          {CAPABILITIES.map(({ Icon, title, body }) => (
+            <div key={title} className={styles.card}>
+              <span className={styles.cardIcon} aria-hidden="true"><Icon size={26} /></span>
+              <h2 className={styles.cardTitle}>{title}</h2>
+              <p className={styles.cardBody}>{body}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className={styles.cta}>
-        <h2 className={styles.h2}>Ready to bring this to your NGO?</h2>
-        <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
-          Create your account <ChevronRight size={16} />
-        </Link>
+        <div className={styles.ctaInner}>
+          <h2 className={styles.h2}>Ready to bring this to your NGO?</h2>
+          <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+            Create your account <ChevronRight size={16} />
+          </Link>
+        </div>
       </section>
 
       <MarketingFooter />
