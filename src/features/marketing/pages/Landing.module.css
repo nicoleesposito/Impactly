@@ -51,12 +51,18 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.3;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .heroContent {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   /* Matches MarketingNav's inner max-width (1200px) so the hero content
      shares the exact same centred column as the navbar above it. */
   max-width: 1200px;
@@ -68,12 +74,13 @@
   font-size: var(--text-3xl);
   font-weight: var(--font-weight-bold);
   line-height: 1.15;
+  color: #ffffff;
 }
 
 .subhead {
   margin-top: var(--space-3);
   font-size: var(--text-lg);
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .heroCtas {
@@ -271,15 +278,19 @@
   border-radius: var(--radius-lg);
   /* 30% opaque fill so the background image shows through, while text
      inside stays fully legible (only the panel fill is translucent). */
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--shadow-lg);
 }
 
+.contactCard .h2 {
+  color: #ffffff;
+}
+
 .contactBody {
   font-size: var(--text-base);
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.6;
 }
 
@@ -296,12 +307,12 @@
   align-items: center;
   gap: var(--space-2);
   font-size: var(--text-base);
-  color: var(--color-text);
+  color: #ffffff;
 }
 
 .contactIcon {
   display: inline-flex;
-  color: var(--color-primary);
+  color: #ffffff;
 }
 
 .contactForm {
@@ -314,7 +325,7 @@
 .contactLabel {
   font-size: var(--text-sm);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text);
+  color: #ffffff;
 }
 
 .contactInput,

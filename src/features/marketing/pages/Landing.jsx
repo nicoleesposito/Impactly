@@ -101,6 +101,7 @@ export default function Landing() {
           playsInline
           aria-hidden="true"
         />
+        <div className={styles.heroOverlay} aria-hidden="true" />
 
         <div className={styles.heroContent}>
           <h1 className={styles.h1}>Attendance, beneficiary management and funder reporting in one place</h1>
