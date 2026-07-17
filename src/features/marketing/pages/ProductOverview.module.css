@@ -8,14 +8,21 @@
 
 .header {
   width: 100%;
-  padding: var(--space-10) 0 var(--space-6);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: var(--space-12) 0;
   text-align: center;
 }
 
 .headerInner {
-  max-width: 720px;
+  /* Matches MarketingNav's inner max-width (1200px) so this content
+     shares the exact same centred column as the navbar above it. */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--space-5);
+  width: 100%;
+  padding: 0 var(--space-6);
 }
 
 .h1 {
@@ -33,20 +40,25 @@
 
 .gridSection {
   width: 100%;
-  padding: var(--space-6) 0 var(--space-10);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: var(--space-12) 0;
 }
 
 .grid {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--space-5);
+  width: 100%;
+  padding: 0 var(--space-6);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: var(--space-4);
 }
 
 .card {
-  padding: var(--space-5);
+  padding: var(--space-6);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -76,16 +88,48 @@
   line-height: 1.5;
 }
 
+/* ── POPIA / Pricing (full width, inner content centred) ── */
+.popia,
+.pricing {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: var(--space-12) 0;
+  text-align: center;
+}
+
+.popiaInner,
+.pricingInner {
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 var(--space-6);
+}
+
+.popiaBody,
+.pricingBody {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
 .cta {
   width: 100%;
-  padding: var(--space-8) 0 var(--space-12);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding: var(--space-12) 0;
   text-align: center;
 }
 
 .ctaInner {
   max-width: 720px;
   margin: 0 auto;
-  padding: 0 var(--space-5);
+  width: 100%;
+  padding: 0 var(--space-6);
 }
 
 .h2 {
@@ -112,5 +156,14 @@
 @media (min-width: 768px) {
   .h1 {
     font-size: 2.75rem;
+  }
+
+  .headerInner,
+  .grid,
+  .popiaInner,
+  .pricingInner,
+  .ctaInner {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
   }
 }
