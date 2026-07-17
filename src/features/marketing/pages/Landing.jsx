@@ -7,9 +7,8 @@ import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './Landing.module.css';
 
-// Placeholder section images: brand-colour gradients standing in for real
-// photography until we have actual images to drop in.
-const PRODUCT_IMAGE = 'linear-gradient(135deg, #a02b3f, #b5762b)';
+// Placeholder section image: brand-colour gradient standing in for real
+// photography until we have an actual image to drop in.
 const CONTACT_IMAGE = 'linear-gradient(135deg, #3ba55d, #6366f1, #a02b3f)';
 
 const CHALLENGES = [
@@ -150,7 +149,11 @@ export default function Landing() {
       {/* ── Product overview (two-column, links to subpage) */}
       <section id="product-overview" className={`${styles.split} ${styles.splitReverse}`}>
         <div className={styles.splitInner}>
-          <div className={styles.splitImage} aria-hidden="true" style={{ backgroundImage: PRODUCT_IMAGE }} />
+          <img
+            className={`${styles.splitImage} ${styles.productImage}`}
+            src="/images/product-overview.webp"
+            alt="Impactly dashboard on a phone, annotated with callouts explaining programmes at a glance, key metrics, upcoming tasks, notifications, one-tap attendance capture, reporting and attendance insights"
+          />
           <div className={styles.splitCard}>
             <h2 className={styles.h2}>The complete toolkit for modern NGO programme management</h2>
             <p className={styles.splitBody}>
