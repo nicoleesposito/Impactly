@@ -57,7 +57,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .heroContent {
@@ -75,12 +75,14 @@
   font-weight: var(--font-weight-bold);
   line-height: 1.15;
   color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .subhead {
   margin-top: var(--space-3);
   font-size: var(--text-lg);
   color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .heroCtas {
