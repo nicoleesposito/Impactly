@@ -7,6 +7,25 @@ import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './ProductOverview.module.css';
 
+const TRUST_SCREENSHOTS = [
+  {
+    src: '/images/trust/trust-attendance-overview.webp',
+    alt: 'Impactly attendance overview screen showing present today, attendance rate and a breakdown by programme',
+  },
+  {
+    src: '/images/trust/trust-attendance-capture.webp',
+    alt: 'Impactly attendance capture screen for the after-school literacy programme with present, absent and late buttons per beneficiary',
+  },
+  {
+    src: '/images/trust/trust-reports.webp',
+    alt: 'Impactly reports screen showing reports due soon, in progress and completed',
+  },
+  {
+    src: '/images/trust/trust-grants-tracker.webp',
+    alt: 'Impactly grants tracker screen showing open applications, pending decisions and amount awarded',
+  },
+];
+
 const PLANS = [
   {
     name: 'Free',
@@ -109,6 +128,19 @@ export default function ProductOverview() {
             development programmes. Every screen has been tested with the people who’ll
             actually use it: field staff, programme managers and administrators.
           </p>
+        </div>
+
+        <div className={styles.trustShowcase}>
+          <img
+            className={styles.trustShowcaseMain}
+            src="/images/trust/trust-annotated.webp"
+            alt="Impactly home screen annotated with callouts explaining programmes at a glance, key metrics, upcoming tasks, notifications and one-tap attendance capture"
+          />
+          <div className={styles.trustShowcaseGrid}>
+            {TRUST_SCREENSHOTS.map(({ src, alt }) => (
+              <img key={src} className={styles.trustShowcaseThumb} src={src} alt={alt} />
+            ))}
+          </div>
         </div>
       </section>
 
