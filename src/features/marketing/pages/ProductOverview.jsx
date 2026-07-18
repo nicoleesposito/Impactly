@@ -1,11 +1,40 @@
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../../../constants/routes.js';
-import { ChevronRight } from '../../../components/icons.jsx';
+import { ChevronRight, Check } from '../../../components/icons.jsx';
 import { CAPABILITIES } from '../data/capabilities.js';
 import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './ProductOverview.module.css';
+
+const PLANS = [
+  {
+    name: 'Free',
+    price: 'R0',
+    priceNote: '/month',
+    description: 'Get started with the essentials.',
+    features: [
+      'Up to 300 beneficiaries',
+      'Core programme management',
+      'Attendance tracking',
+      'Basic reporting',
+    ],
+    cta: 'Get started',
+  },
+  {
+    name: 'Pro',
+    price: 'R499',
+    priceNote: '/month',
+    description: 'For growing organisations.',
+    features: [
+      'Unlimited programmes',
+      'Up to 500 beneficiaries',
+      'Unlimited reports & exports',
+      'Priority support',
+    ],
+    cta: 'Get started',
+  },
+];
 
 export default function ProductOverview() {
   const { hash } = useLocation();
@@ -71,25 +100,62 @@ export default function ProductOverview() {
         </div>
       </section>
 
+      <section id="trust" className={styles.trust}>
+        <div className={styles.trustInner}>
+          <h3 className={styles.h2}>Built and tested with a real NGO</h3>
+          <p className={styles.trustBody}>
+            Impactly is being built in direct partnership with Tebelo Tech Hub, a South
+            African community development NGO running literacy, digital skills and youth
+            development programmes. Every screen has been tested with the people who’ll
+            actually use it: field staff, programme managers and administrators.
+          </p>
+        </div>
+      </section>
+
       <section id="pricing" className={styles.pricing}>
         <div className={styles.pricingInner}>
           <h2 className={styles.h2}>Transparent pricing for NGO software</h2>
           <p className={styles.pricingBody}>
-            We’re finalising transparent, published pricing. Create an account to get
-            started, and we’ll let you know as soon as plans go live.
+            All organisations get a free 1-month Pro trial with unlimited beneficiaries.
+            After the trial, plans supporting more than 300 beneficiaries require a paid
+            subscription.
           </p>
+          <div className={styles.pricingGrid}>
+            {PLANS.map(({ name, price, priceNote, description, features, cta }) => (
+              <div key={name} className={styles.planCard}>
+                <h3 className={styles.planName}>{name}</h3>
+                <p className={styles.planPrice}>
+                  {price}
+                  <span className={styles.planPriceNote}>{priceNote}</span>
+                </p>
+                <p className={styles.planDescription}>{description}</p>
+                <ul className={styles.planFeatures}>
+                  {features.map((feature) => (
+                    <li key={feature}>
+                      <Check size={16} /> {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Link to={ROUTES.onboardingAccount} className={styles.planCta}>{cta}</Link>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <section id="popia" className={styles.popia}>
         <div className={styles.popiaInner}>
-          <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
-          <p className={styles.popiaBody}>
-            Your organisation’s data, including beneficiaries, funders, grants and staff,
-            is scoped to your organisation only. We’re documenting exactly how data is
-            handled as we go. POPIA compliance is ultimately an operational responsibility
-            shared between Impactly and your organisation.
-          </p>
+          {/* TODO: swap for a real image once one is available */}
+          <div className={styles.popiaImage} aria-hidden="true" />
+          <div className={styles.popiaCard}>
+            <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
+            <p className={styles.popiaBody}>
+              Your organisation’s data, including beneficiaries, funders, grants and staff,
+              is scoped to your organisation only. We’re documenting exactly how data is
+              handled as we go. POPIA compliance is ultimately an operational responsibility
+              shared between Impactly and your organisation.
+            </p>
+          </div>
         </div>
       </section>
 

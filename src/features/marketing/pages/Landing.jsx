@@ -130,19 +130,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── Who it's for ─────────────────────────────────── */}
-      <section id="who-its-for" className={styles.whoFor}>
-        <div className={styles.whoForInner}>
-          <h3 className={styles.h2}>Built for people who run programmes, not systems</h3>
-          <p className={styles.whoForBody}>
-            Impactly is for NGO field staff, programme managers and administrators at
-            small to mid-sized organisations. No dedicated IT team. No time for a steep
-            learning curve. If you’re currently running your programme out of a notebook,
-            a shared spreadsheet and a WhatsApp group, this is for you.
-          </p>
-        </div>
-      </section>
-
       {/* ── About us (two-column, image overlap) ────────── */}
       <section id="about-us" className={styles.split}>
         <div className={styles.splitInner}>
@@ -160,6 +147,13 @@ export default function Landing() {
               people they serve. From classrooms to community centres, our all-in-one
               platform replaces scattered spreadsheets and paperwork with one connected
               system built around your mission.
+            </p>
+            <h4 className={styles.h3}>Built for people who run programmes, not systems</h4>
+            <p className={styles.splitBody}>
+              Impactly is for NGO field staff, programme managers and administrators at
+              small to mid-sized organisations. No dedicated IT team. No time for a steep
+              learning curve. If you’re currently running your programme out of a notebook,
+              a shared spreadsheet and a WhatsApp group, this is for you.
             </p>
             <div className={styles.splitCtas}>
               <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
@@ -201,19 +195,6 @@ export default function Landing() {
               </Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── Trust signals ─────────────────────────────────── */}
-      <section id="trust" className={styles.trust}>
-        <div className={styles.trustInner}>
-          <h3 className={styles.h2}>Built and tested with a real NGO</h3>
-          <p className={styles.trustBody}>
-            Impactly is being built in direct partnership with Tebelo Tech Hub, a South
-            African community development NGO running literacy, digital skills and youth
-            development programmes. Every screen has been tested with the people who’ll
-            actually use it: field staff, programme managers and administrators.
-          </p>
         </div>
       </section>
 
