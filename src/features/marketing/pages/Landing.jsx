@@ -100,7 +100,7 @@ export default function Landing() {
         <div className={styles.heroOverlay} aria-hidden="true" />
 
         <div className={styles.heroContent}>
-          <h2 className={styles.h1}>Powerful NGO impact management software — all in one place</h2>
+          <h3 className={styles.h1}>Your daily NGO impact measuring tool — all in one place</h3>
           <h2 className={styles.subhead}>
             South Africa&rsquo;s NGO impact management software for attendance, beneficiary
             management and funder reporting.
