@@ -89,22 +89,23 @@
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
   /* Narrower than .heroContent so the title wraps into a tighter,
      more stacked block instead of spreading the full column width. */
-  max-width: 820px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-.subhead {
-  max-width: 640px;
-  margin: var(--space-3) auto 0;
-  font-size: 24px;
-  color: rgba(255, 255, 255, 0.85);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+.heroDivider {
+  width: 80px;
+  height: 2px;
+  margin: var(--space-5) auto;
+  background: #ffffff;
 }
 
-.heroTagline {
-  margin-top: var(--space-3);
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.85);
+.subhead {
+  max-width: 840px;
+  margin: 0 auto;
+  font-size: 24px;
+  font-weight: var(--font-weight-regular);
+  color: #ffffff;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
@@ -274,6 +275,15 @@
   justify-content: center;
 }
 
+.impactIntro {
+  max-width: 700px;
+  margin: var(--space-4) auto var(--space-6);
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  text-align: center;
+}
+
 .challengeGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -370,28 +380,6 @@
   font-size: 16px;
   color: rgba(255, 255, 255, 0.85);
   line-height: 1.6;
-}
-
-.contactList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-4);
-  list-style: none;
-}
-
-.contactItem {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  font-size: var(--text-base);
-  color: #ffffff;
-}
-
-.contactIcon {
-  display: inline-flex;
-  color: #ffffff;
 }
 
 .contactForm {
@@ -549,10 +537,10 @@
     font-size: 36px;
   }
 
-  .heroTagline,
   .splitBody,
   .challengeText,
-  .contactBody {
+  .contactBody,
+  .impactIntro {
     font-size: 18px;
   }
 
@@ -562,8 +550,7 @@
     text-align: left;
   }
 
-  .splitCtas,
-  .contactItem {
+  .splitCtas {
     justify-content: flex-start;
   }
 

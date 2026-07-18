@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
-import { Mail, Phone, ChevronRight, ChevronDown } from '../../../components/icons.jsx';
+import { ChevronRight, ChevronDown } from '../../../components/icons.jsx';
 import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './Landing.module.css';
@@ -57,7 +57,7 @@ export default function Landing() {
   const [contactSent, setContactSent] = useState(false);
 
   useEffect(() => {
-    document.title = 'Impactly | NGO Attendance & Funder Reporting Software (SA)';
+    document.title = 'Impactly | NGO Attendance & Funder Reporting Application (SA)';
   }, []);
 
   // If the page loads (or is client-navigated to) with a section hash in the
@@ -101,13 +101,11 @@ export default function Landing() {
 
         <div className={styles.heroContent}>
           <h3 className={styles.h1}>Your daily NGO impact measuring tool — all in one place</h3>
+          <div className={styles.heroDivider} aria-hidden="true" />
           <h2 className={styles.subhead}>
-            South Africa&rsquo;s NGO impact management software for attendance, beneficiary
+            South Africa&rsquo;s NGO impact management application for attendance, beneficiary
             management and funder reporting.
           </h2>
-          <p className={styles.heroTagline}>
-            Up and running in under 30 minutes, no IT support needed.
-          </p>
           <div className={styles.heroCtas}>
             <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
               Create your account <ChevronRight size={16} />
@@ -126,7 +124,7 @@ export default function Landing() {
             alt="Two students at a school desk exploring photos together on a laptop"
           />
           <div className={styles.splitCard}>
-            <h3 className={styles.h2}>Software that puts your beneficiaries first</h3>
+            <h3 className={styles.h2}>Application that puts your beneficiaries first</h3>
             <p className={styles.splitBody}>
               Impactly exists to help NGOs spend less time on admin and more time on the
               people they serve. From classrooms to community centres, our all-in-one
@@ -159,7 +157,7 @@ export default function Landing() {
             />
           </div>
           <div className={styles.splitCard}>
-            <h3 className={styles.h2}>The complete toolkit for modern NGO programme management</h3>
+            <h3 className={styles.h2}>The complete toolkit for NGO programme management</h3>
             <p className={styles.splitBody}>
               From attendance tracking to funder reporting, Impactly brings every part of
               running your programme into one seamless platform. Spend less time switching
@@ -179,7 +177,13 @@ export default function Landing() {
         <div className={styles.impactInner}>
           <h3 className={styles.h2}>Making a measurable impact for NGOs</h3>
 
-          <h4 className={styles.h3}>Common challenges in NGO record keeping</h4>
+          <p className={styles.impactIntro}>
+            Most non-profits still rely on paper registers, spreadsheets, and scattered
+            WhatsApp messages to keep their programmes running. These outdated tools make
+            it difficult to report accurately to funders, and they put years of beneficiary
+            records at risk every time a staff member leaves. These are the challenges we
+            hear about most from non-government-organisations across South Africa.
+          </p>
           <div className={styles.challengeGrid}>
             {CHALLENGES.map(({ text, icon }) => (
               <div key={text} className={styles.challengeBox}>
@@ -205,23 +209,11 @@ export default function Landing() {
         <div className={styles.contactGrid}>
           <div className={styles.contactSpacer} aria-hidden="true" />
           <div className={styles.contactCard}>
-            <h3 className={styles.h2}>Get in touch about our NGO software</h3>
+            <h3 className={styles.h2}>Get in touch about our NGO application</h3>
             <p className={styles.contactBody}>
               Have a question about Impactly, or want a walkthrough for your organisation?
               Reach out and our team will get back to you.
             </p>
-            <ul className={styles.contactList}>
-              <li className={styles.contactItem}>
-                <span className={styles.contactIcon} aria-hidden="true"><Mail size={18} /></span>
-                {/* TODO: replace with a real support inbox once the domain is live */}
-                <a href="mailto:hello@impactly.co.za">hello@impactly.co.za</a>
-              </li>
-              <li className={styles.contactItem}>
-                <span className={styles.contactIcon} aria-hidden="true"><Phone size={18} /></span>
-                {/* TODO: replace with a real contact number */}
-                <span>+27 21 XXX XXXX</span>
-              </li>
-            </ul>
 
             {contactSent ? (
               <p className={styles.contactThanks}>Thanks — we’ll be in touch soon.</p>
@@ -253,7 +245,7 @@ export default function Landing() {
       {/* ── FAQ (accordion) ─────────────────────────────── */}
       <section id="faq" className={styles.faq}>
         <div className={styles.faqInner}>
-          <h3 className={styles.h2}>Frequently asked questions about our impact software</h3>
+          <h3 className={styles.h2}>Frequently asked questions about our impact application</h3>
           <div className={styles.faqList}>
             {FAQ.map(({ q, a }, i) => {
               const isOpen = openFaq === i;
