@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../../../constants/routes.js';
 import { ChevronRight } from '../../../components/icons.jsx';
 import { CAPABILITIES } from '../data/capabilities.js';
@@ -8,19 +8,22 @@ import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './ProductOverview.module.css';
 
 export default function ProductOverview() {
+  const { hash } = useLocation();
+
   useEffect(() => {
     document.title = 'Impactly | Platform Capabilities for NGOs';
   }, []);
 
-  // If the page loads (or is client-navigated to) with a section hash in the
-  // URL — e.g. arriving from the nav's Product Overview dropdown — scroll to
-  // that section once content has laid out.
+  // Scroll to the matching section whenever the hash changes — both on
+  // first load (e.g. a fresh visit to "/product-overview#pricing") and on
+  // in-app navigation, since the nav's Product Overview dropdown links
+  // between anchors on this same route without remounting the page.
   useEffect(() => {
-    if (window.location.hash) {
-      const el = document.querySelector(window.location.hash);
+    if (hash) {
+      const el = document.querySelector(hash);
       if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }));
     }
-  }, []);
+  }, [hash]);
 
   return (
     <div className={styles.page}>
