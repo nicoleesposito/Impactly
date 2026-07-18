@@ -83,6 +83,7 @@
 }
 
 .navLink {
+  position: relative;
   display: inline-block;
   padding: var(--space-2) 0;
   font-size: 16px;
@@ -92,12 +93,40 @@
   transition: color 200ms ease;
 }
 
-.navLink:hover {
+.navLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 120ms ease;
+}
+
+.navLink:hover,
+.navLinkActive {
   color: var(--color-primary);
+}
+
+.navLink:hover::after,
+.navLinkActive::after {
+  transform: scaleX(1);
 }
 
 .topbarOverlay .navLink {
   color: #ffffff;
+}
+
+/* Same specificity as .navLink:hover / .navLinkActive above, so without
+   these the overlay's white would win on source order alone and the hover/
+   active highlight color would never show while the nav is transparent. */
+.topbarOverlay .navLink:hover,
+.topbarOverlay .navLinkActive {
+  color: var(--color-primary);
 }
 
 .navChevron {

@@ -194,26 +194,21 @@
   box-shadow: var(--shadow-md);
 }
 
-/* Wraps the About us photo in a taller white panel, the same way
-   .productImageWrap does for Product overview's image, so the container
-   reads bigger than the text card without stretching or cropping the
-   photo itself. */
+/* A taller container than the plain 4:3 .splitImage crop, with the photo
+   filling it completely (object-fit: cover, no letterboxing) so the
+   container reads bigger without any visible gap around the image. */
 .aboutImageWrap {
-  aspect-ratio: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-10) 0;
-  background: var(--color-surface);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
 .aboutImage {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-lg);
+  height: 100%;
   object-fit: cover;
-  box-shadow: var(--shadow-md);
 }
 
 /* Wraps the product-overview image in a taller white panel so the image

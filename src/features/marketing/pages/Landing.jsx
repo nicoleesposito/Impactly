@@ -87,7 +87,7 @@ export default function Landing() {
       <MarketingNav />
 
       {/* ── Hero ────────────────────────────────────────── */}
-      <section id="home" className={styles.hero}>
+      <section id="home" data-nav-hero className={styles.hero}>
         <video
           className={styles.heroVideo}
           src="/videos/hero-banner.mp4"

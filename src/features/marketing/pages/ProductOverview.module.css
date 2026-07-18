@@ -15,21 +15,40 @@
   scroll-margin-top: 64px;
 }
 
-.header {
+/* ── Hero (full-bleed photo, same treatment as the Landing hero) ──── */
+.hero {
+  position: relative;
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   align-items: center;
-  /* The nav is position: fixed and no longer reserves flow space, so this
-     first section needs its own top clearance to sit below it (64px is the
-     nav's compact height — this page never shows the enlarged hero-overlay
-     variant, since it has no #home section). */
-  padding: calc(var(--space-12) + 64px) 0 var(--space-12);
+  justify-content: center;
+  padding: var(--space-12) var(--space-6);
   text-align: center;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('/images/product-overview-hero.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .headerInner {
+  position: relative;
+  z-index: 2;
   /* Matches MarketingNav's inner max-width (1200px) so this content
      shares the exact same centred column as the navbar above it. */
   max-width: 1200px;
@@ -42,12 +61,15 @@
   font-size: var(--text-3xl);
   font-weight: var(--font-weight-bold);
   line-height: 1.15;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .intro {
   margin-top: var(--space-3);
   font-size: var(--text-lg);
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   line-height: 1.6;
 }
 
@@ -60,21 +82,47 @@
   padding: var(--space-12) 0;
 }
 
-.grid {
+.gridInner {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
   padding: 0 var(--space-6);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  text-align: center;
+}
+
+.gridIntro {
+  max-width: 640px;
+  margin: var(--space-3) auto 0;
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Flexbox (not grid) so that a partial last row — e.g. 7 cards wrapping
+   into rows of 4 and 3 — centers itself instead of hugging the left edge,
+   which grid's row-based layout can't do on its own. */
+.grid {
+  margin-top: var(--space-8);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--space-4);
 }
 
+.gridCtas {
+  margin-top: var(--space-8);
+  display: flex;
+  justify-content: center;
+}
+
 .card {
+  flex: 1 1 260px;
+  max-width: 300px;
   padding: var(--space-6);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  text-align: left;
 }
 
 .cardIcon {
@@ -177,12 +225,8 @@
     scroll-margin-top: 72px;
   }
 
-  .header {
-    padding-top: calc(var(--space-12) + 72px);
-  }
-
   .headerInner,
-  .grid,
+  .gridInner,
   .popiaInner,
   .pricingInner,
   .ctaInner {
