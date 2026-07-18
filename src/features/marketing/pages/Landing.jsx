@@ -124,7 +124,7 @@ export default function Landing() {
         <div className={styles.heroOverlay} aria-hidden="true" />
 
         <div className={styles.heroContent}>
-          <h1 className={styles.h1}>Your daily NGO impact measuring tool, all in one place</h1>
+          <h1 className={styles.h1}>NGO Attendance & Funder Reporting Application</h1>
           <div className={styles.heroDivider} aria-hidden="true" />
           <p className={styles.subhead}>
             Track attendance, manage beneficiaries and report to funders, all in one place.
