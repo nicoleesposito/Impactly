@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '../../../constants/routes.js';
-import { ChevronRight, Check } from '../../../components/icons.jsx';
+import { ChevronLeft, ChevronRight, Check } from '../../../components/icons.jsx';
 import { CAPABILITIES } from '../data/capabilities.js';
 import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
@@ -66,6 +66,72 @@ const PLANS = [
     cta: 'Get started',
   },
 ];
+
+// Auto-advances through the app screenshots, pausing on hover so a visitor
+// who stops to look at a slide isn't fighting the timer.
+function TrustCarousel({ slides }) {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return undefined;
+    const id = setInterval(() => {
+      setCurrent((c) => (c + 1) % slides.length);
+    }, 3500);
+    return () => clearInterval(id);
+  }, [paused, slides.length]);
+
+  return (
+    <div
+      className={styles.carousel}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className={styles.carouselViewport}>
+        <div
+          className={styles.carouselTrack}
+          style={{ transform: `translateX(-${current * 100}%)` }}
+        >
+          {slides.map(({ src, alt }) => (
+            <div key={src} className={styles.carouselSlide}>
+              <img className={styles.carouselImage} src={src} alt={alt} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className={`${styles.carouselArrow} ${styles.carouselArrowPrev}`}
+        aria-label="Previous screenshot"
+        onClick={() => setCurrent((c) => (c - 1 + slides.length) % slides.length)}
+      >
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        type="button"
+        className={`${styles.carouselArrow} ${styles.carouselArrowNext}`}
+        aria-label="Next screenshot"
+        onClick={() => setCurrent((c) => (c + 1) % slides.length)}
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      <div className={styles.carouselDots}>
+        {slides.map((slide, i) => (
+          <button
+            key={slide.src}
+            type="button"
+            className={`${styles.carouselDot} ${i === current ? styles.carouselDotActive : ''}`}
+            aria-label={`Go to screenshot ${i + 1}`}
+            aria-current={i === current}
+            onClick={() => setCurrent(i)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function ProductOverview() {
   const { hash } = useLocation();
@@ -148,11 +214,7 @@ export default function ProductOverview() {
             src="/images/trust/trust-annotated.webp"
             alt="Impactly home screen annotated with callouts explaining programmes at a glance, key metrics, upcoming tasks, notifications and one-tap attendance capture"
           />
-          <div className={styles.trustShowcaseGrid}>
-            {TRUST_SCREENSHOTS.map(({ src, alt }) => (
-              <img key={src} className={styles.trustShowcaseThumb} src={src} alt={alt} />
-            ))}
-          </div>
+          <TrustCarousel slides={TRUST_SCREENSHOTS} />
         </div>
       </section>
 

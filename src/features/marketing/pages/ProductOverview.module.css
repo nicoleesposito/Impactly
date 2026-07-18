@@ -187,18 +187,79 @@
   background: none;
 }
 
-.trustShowcaseGrid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-4);
+.carousel {
+  position: relative;
+  max-width: 280px;
+  width: 100%;
 }
 
-.trustShowcaseThumb {
+.carouselViewport {
+  overflow: hidden;
+}
+
+.carouselTrack {
+  display: flex;
+  transition: transform 450ms ease;
+}
+
+.carouselSlide {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.carouselImage {
   display: block;
-  height: 360px;
+  height: 440px;
   width: auto;
-  background: none;
+  max-width: 100%;
+}
+
+.carouselArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.carouselArrow:hover {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.carouselArrowPrev {
+  left: -14px;
+}
+
+.carouselArrowNext {
+  right: -14px;
+}
+
+.carouselDots {
+  margin-top: var(--space-4);
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.carouselDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-border);
+}
+
+.carouselDotActive {
+  background: var(--color-primary);
 }
 
 /* ── Pricing (centred intro + two plan cards) ──────────── */
@@ -436,7 +497,19 @@
     text-align: left;
   }
 
-  .trustShowcaseThumb {
-    height: 440px;
+  .carousel {
+    max-width: 340px;
+  }
+
+  .carouselImage {
+    height: 540px;
+  }
+
+  .carouselArrowPrev {
+    left: -56px;
+  }
+
+  .carouselArrowNext {
+    right: -56px;
   }
 }
