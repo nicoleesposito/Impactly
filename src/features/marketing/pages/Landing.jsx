@@ -43,28 +43,32 @@ const CHALLENGES = [
 
 const FAQ = [
   {
+    q: 'Why should I choose Impactly?',
+    a: 'Impactly was built in direct partnership with a real South African NGO, not designed in a vacuum and hoped it would fit. Every screen has been tested with the field staff, programme managers and administrators who actually use it day to day, so the workflows match how NGOs really operate, not how software vendors assume they do. Instead of stitching together paper registers, a spreadsheet and a WhatsApp group, you get one connected system for attendance tracking, beneficiary management and funder reporting — built specifically as an impact measuring and management tool for non-profits, not a generic business app repurposed for the sector. You can start on the free plan today, export your data at any time with no lock-in, and scale up only once you actually need to.',
+  },
+  {
     q: 'Does Impactly work on a phone?',
-    a: 'Yes. Impactly is built mobile-first, for field staff capturing attendance from a phone, not a desk.',
+    a: 'Yes. Impactly is built mobile-first, for field staff capturing attendance from a phone in the field, not sitting at a desk. Every core workflow, including marking attendance, adding a beneficiary, or checking today’s numbers, works cleanly on a small screen with one-tap actions, so your team isn’t fighting a desktop layout squeezed onto a phone.',
   },
   {
     q: 'Do I need IT support to set it up?',
-    a: 'No. Setup takes around 30 minutes and walks you through creating your organisation, adding your first programmes, and inviting your team. No technical background is needed.',
+    a: 'No. Setup takes around 30 minutes and walks you through creating your organisation, adding your first programmes, and inviting your team. No technical background is needed, and there’s no server to configure or software to install. If you get stuck, our onboarding flow explains each step in plain language, and you can always reach out through the contact form below.',
   },
   {
     q: 'What happens to our data?',
-    a: 'Your data is stored per organisation and only accessible to your team. We’re building Impactly with South African NGOs and POPIA in mind. Read more on our data handling page (coming soon).',
+    a: 'Your data is stored per organisation and only accessible to your team, with every organisation’s beneficiaries, funders, grants and staff records fully scoped and separated from every other organisation on the platform. Impactly is being built with South African NGOs and POPIA in mind, and we’re documenting exactly how data is handled as the platform matures. POPIA compliance is ultimately a shared operational responsibility between Impactly and your organisation, not something either party owns alone.',
   },
   {
     q: 'Can we import our existing spreadsheet?',
-    a: 'Yes. You can import beneficiaries, funders and grants from a CSV file during setup or at any time from Organisation settings.',
+    a: 'Yes. You can import beneficiaries, funders and grants from a CSV file during setup or at any time from Organisation settings, so switching from spreadsheets doesn’t mean starting from zero. Map your existing columns to Impactly’s fields, review the import before it’s saved, and your historical records carry over instead of being re-typed by hand.',
   },
   {
     q: 'What does it cost?',
-    a: 'Pricing is being finalised, with details coming soon. Create an account to be notified.',
+    a: 'Impactly has a Free plan covering up to 300 beneficiaries with core programme management, attendance tracking and basic reporting, and a Pro plan at R499/month with unlimited programmes, up to 500 beneficiaries, unlimited reports and exports, and priority support. Every organisation also gets a free 1-month Pro trial with unlimited beneficiaries when they sign up, so you can try the full toolkit before deciding what you need long term.',
   },
   {
     q: 'Can we export our data if we leave?',
-    a: 'Yes. Every organisation can export all of its data, including beneficiaries, funders, grants and staff, to CSV at any time, no questions asked.',
+    a: 'Yes. Every organisation can export all of its data, including beneficiaries, funders, grants and staff, to CSV at any time, no questions asked. There’s no lock-in and no waiting period — if Impactly stops being the right tool for your organisation, your records leave with you, fully intact.',
   },
 ];
 
