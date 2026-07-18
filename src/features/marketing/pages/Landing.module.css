@@ -74,8 +74,6 @@
 .heroContent {
   position: relative;
   z-index: 2;
-  /* Matches MarketingNav's inner max-width (1200px) so the hero content
-     shares the exact same centred column as the navbar above it. */
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
