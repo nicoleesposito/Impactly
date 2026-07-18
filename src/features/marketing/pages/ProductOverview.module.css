@@ -513,3 +513,34 @@
     right: -56px;
   }
 }
+
+@media (min-width: 1024px) {
+  .trustShowcase {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+  }
+
+  .trustShowcaseMain {
+    width: auto;
+    max-width: 45%;
+    height: 460px;
+  }
+
+  .carousel {
+    max-width: 260px;
+  }
+
+  .carouselImage {
+    height: 420px;
+  }
+
+  .trustShowcase .carouselArrowPrev {
+    left: -14px;
+  }
+
+  .trustShowcase .carouselArrowNext {
+    right: -14px;
+  }
+}
