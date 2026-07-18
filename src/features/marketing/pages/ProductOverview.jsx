@@ -24,6 +24,18 @@ const TRUST_SCREENSHOTS = [
     src: '/images/trust/trust-grants-tracker.webp',
     alt: 'Impactly grants tracker screen showing open applications, pending decisions and amount awarded',
   },
+  {
+    src: '/images/trust/trust-more-menu.webp',
+    alt: 'Impactly more menu showing funding, settings and support options',
+  },
+  {
+    src: '/images/trust/trust-schedule-report.webp',
+    alt: 'Impactly schedule a report screen with report details, schedule and delivery channel options',
+  },
+  {
+    src: '/images/trust/trust-student-profile.webp',
+    alt: 'Impactly student profile screen showing enrolled programmes, personal details and story content',
+  },
 ];
 
 const PLANS = [

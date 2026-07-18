@@ -182,10 +182,9 @@
 .trustShowcaseMain {
   display: block;
   width: 100%;
-  max-width: 520px;
+  max-width: 720px;
   height: auto;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  background: none;
 }
 
 .trustShowcaseGrid {
@@ -197,10 +196,9 @@
 
 .trustShowcaseThumb {
   display: block;
-  height: 280px;
+  height: 360px;
   width: auto;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
+  background: none;
 }
 
 /* ── Pricing (centred intro + two plan cards) ──────────── */
@@ -439,6 +437,6 @@
   }
 
   .trustShowcaseThumb {
-    height: 360px;
+    height: 440px;
   }
 }
