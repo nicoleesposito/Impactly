@@ -112,7 +112,7 @@ export default function MarketingNav() {
             <img
               className={styles.wordmarkLogo}
               src={overlay ? '/images/logo-white.png' : '/images/logo.png'}
-              alt=""
+              alt="Impactly logo"
             />
             Impactly
           </a>
