@@ -1,10 +1,11 @@
 import { RouterProvider } from 'react-router-dom';
 import { AppProviders } from './context/index.jsx';
 import { router } from './routes/index.jsx';
-import { initGA4, trackPageView } from './lib/ga4.js';
+import { trackPageView } from './lib/ga4.js';
 
-initGA4();
-trackPageView(window.location.pathname, document.title);
+// The static gtag snippet in index.html sends the first page_view on
+// initial load automatically. This only needs to cover subsequent
+// client-side navigations, since the SPA shell never reloads for those.
 let lastTrackedPath = window.location.pathname;
 router.subscribe((state) => {
   if (state.location.pathname === lastTrackedPath) return;
