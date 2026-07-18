@@ -20,12 +20,15 @@
 }
 
 /* ── Anchor scroll offset for the sticky nav ─────────── */
-#home,
-#about-us,
-#product-overview,
-#impact,
-#contact-us,
-#faq {
+/* :global is required — these ids are set directly in JSX, not run
+   through CSS Modules, so a bare #id selector here would get hashed
+   into a name that never matches the real DOM element. */
+:global(#home),
+:global(#about-us),
+:global(#product-overview),
+:global(#impact),
+:global(#contact-us),
+:global(#faq) {
   scroll-margin-top: 64px;
 }
 
@@ -487,12 +490,12 @@
     font-size: 48px;
   }
 
-  #home,
-  #about-us,
-  #product-overview,
-  #impact,
-  #contact-us,
-  #faq {
+  :global(#home),
+  :global(#about-us),
+  :global(#product-overview),
+  :global(#impact),
+  :global(#contact-us),
+  :global(#faq) {
     scroll-margin-top: 72px;
   }
 
@@ -510,6 +513,16 @@
     flex: 1 1 50%;
     margin: 0 0 0 -64px;
     padding: var(--space-8);
+  }
+
+  /* Give the product diagram more of the row than the default 50/50
+     split, so it renders larger. */
+  :global(#product-overview) .splitImage {
+    flex: 1 1 60%;
+  }
+
+  :global(#product-overview) .splitCard {
+    flex: 1 1 40%;
   }
 
   .splitReverse .splitInner {
