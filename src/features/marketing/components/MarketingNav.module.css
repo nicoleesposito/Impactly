@@ -1,10 +1,24 @@
 /* ── Top bar ─────────────────────────────────────────── */
+/* Fixed (not sticky) so it can float transparently over a hero section —
+   .topbarOverlay is toggled on while that hero is in view. Pages without a
+   hero never get that class, so they just see the normal solid bar; their
+   first section carries compensating top padding (see e.g.
+   ProductOverview.module.css .header) to make up for the bar no longer
+   reserving space in normal flow. */
 .topbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.topbarOverlay {
+  background: transparent;
+  box-shadow: none;
 }
 
 .topbarInner {
@@ -15,6 +29,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--space-3) var(--space-4);
+  transition: padding 200ms ease;
 }
 
 .wordmark {
@@ -26,12 +41,21 @@
   font-size: var(--text-base);
   color: var(--color-primary);
   white-space: nowrap;
+  transition: color 200ms ease, font-size 200ms ease;
+}
+
+/* Color-only on mobile — the enlarged sizing below is desktop-only
+   (min-width: 768px) since a bigger logo/wordmark/CTA together don't fit
+   next to the hamburger toggle on narrow viewports. */
+.topbarOverlay .wordmark {
+  color: #ffffff;
 }
 
 .wordmarkLogo {
   display: block;
   height: 28px;
   width: auto;
+  transition: height 200ms ease;
 }
 
 /* ── Desktop nav ─────────────────────────────────────── */
@@ -57,10 +81,15 @@
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
   white-space: nowrap;
+  transition: color 200ms ease;
 }
 
 .navLink:hover {
   color: var(--color-primary);
+}
+
+.topbarOverlay .navLink {
+  color: #ffffff;
 }
 
 .navChevron {
@@ -132,6 +161,7 @@
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
   white-space: nowrap;
+  transition: padding 200ms ease, font-size 200ms ease;
 }
 
 .logIn:hover {
@@ -147,6 +177,7 @@
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   white-space: nowrap;
+  transition: padding 200ms ease, font-size 200ms ease;
 }
 
 .topCta:hover {
@@ -161,14 +192,26 @@
   height: 36px;
   border-radius: var(--radius-md);
   color: var(--color-text);
+  transition: color 200ms ease;
 }
 
 .navToggle:hover {
   background: var(--color-border);
 }
 
+.topbarOverlay .navToggle {
+  color: #ffffff;
+}
+
 /* ── Mobile nav panel ────────────────────────────────── */
+/* Positioned below the (fixed) compact bar height — this panel only shows
+   at widths where the bar is always in its compact 64px-tall form. */
 .navMobile {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  z-index: 99;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
@@ -207,6 +250,14 @@
     padding: var(--space-4) var(--space-6);
   }
 
+  /* Matches the taller enlarged bar the overlay gets at this breakpoint
+     (see .topbarOverlay .topbarInner above) so the mobile menu panel —
+     still reachable here, the hamburger toggle only disappears at
+     1024px — lines up flush underneath instead of leaving a gap. */
+  .topbarOverlay + .navMobile {
+    top: 96px;
+  }
+
   .wordmark {
     font-size: var(--text-lg);
   }
@@ -214,6 +265,28 @@
   .topCta {
     padding: var(--space-2) var(--space-4);
     font-size: var(--text-sm);
+  }
+
+  .topbarOverlay .topbarInner {
+    padding: var(--space-5) var(--space-6);
+  }
+
+  .topbarOverlay .wordmark {
+    font-size: var(--text-xl);
+  }
+
+  .topbarOverlay .wordmarkLogo {
+    height: 44px;
+  }
+
+  .topbarOverlay .logIn {
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-base);
+  }
+
+  .topbarOverlay .topCta {
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-base);
   }
 }
 

@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../constants/routes.js';
 import { Menu, Close, ChevronDown } from '../../../components/icons.jsx';
 import styles from './MarketingNav.module.css';
+
+// True while the page has a hero (id="home") and it's still in view — the nav
+// renders as a large, transparent overlay on top of it. Pages without a hero
+// (e.g. Product overview) never enter this state, so the nav stays in its
+// normal compact/solid form there.
+function heroInView() {
+  const hero = document.getElementById('home');
+  if (!hero) return false;
+  return hero.getBoundingClientRect().bottom > 80;
+}
 
 // Anchor links target sections on the Landing page ("/"). Prefixing with "/"
 // means they still resolve correctly when clicked from a different page
@@ -27,13 +37,36 @@ const NAV_LINKS = [
 
 export default function MarketingNav() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [overlay, setOverlay] = useState(heroInView);
+
+  useEffect(() => {
+    // The lazy useState initializer above runs before this component's own
+    // markup (rendered by the page as a sibling, e.g. Landing's #home
+    // section) has committed to the real DOM, so document.getElementById
+    // can't see it yet on that very first call — re-check now that it has.
+    function update() {
+      setOverlay(heroInView());
+    }
+    update();
+    if (!document.getElementById('home')) return undefined;
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   return (
     <>
-      <header className={styles.topbar}>
+      <header className={`${styles.topbar} ${overlay ? styles.topbarOverlay : ''}`}>
         <div className={styles.topbarInner}>
           <a href="/#home" className={styles.wordmark}>
-            <img className={styles.wordmarkLogo} src="/images/logo.png" alt="" />
+            <img
+              className={styles.wordmarkLogo}
+              src={overlay ? '/images/logo-white.png' : '/images/logo.png'}
+              alt=""
+            />
             Impactly
           </a>
 

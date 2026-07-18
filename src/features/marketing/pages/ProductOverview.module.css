@@ -21,7 +21,11 @@
   min-height: 100dvh;
   display: flex;
   align-items: center;
-  padding: var(--space-12) 0;
+  /* The nav is position: fixed and no longer reserves flow space, so this
+     first section needs its own top clearance to sit below it (64px is the
+     nav's compact height — this page never shows the enlarged hero-overlay
+     variant, since it has no #home section). */
+  padding: calc(var(--space-12) + 64px) 0 var(--space-12);
   text-align: center;
 }
 
@@ -171,6 +175,10 @@
   :global(#popia),
   :global(#pricing) {
     scroll-margin-top: 72px;
+  }
+
+  .header {
+    padding-top: calc(var(--space-12) + 72px);
   }
 
   .headerInner,
