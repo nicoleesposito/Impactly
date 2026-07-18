@@ -171,7 +171,7 @@ export default function ProductOverview() {
         <div className={styles.heroBg} aria-hidden="true" />
         <div className={styles.heroOverlay} aria-hidden="true" />
         <div className={styles.headerInner}>
-          <h1 className={styles.h1}>NGO Impact Management Software</h1>
+          <h1 className={styles.h1}>The complete NGO impact management software</h1>
           <p className={styles.intro}>
             From attendance tracking to funder reporting software, every capability your
             programme needs lives in one place.
