@@ -94,8 +94,8 @@
 }
 
 .heroDivider {
-  width: 80px;
-  height: 2px;
+  width: 140px;
+  height: 3px;
   margin: var(--space-5) auto;
   background: #ffffff;
 }
@@ -121,7 +121,9 @@
 .primaryCta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
+  min-width: 220px;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
   background: var(--color-primary);
@@ -134,6 +136,10 @@
 }
 
 .secondaryCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
   border: 1.5px solid var(--color-border);
@@ -159,6 +165,12 @@
   align-items: center;
   padding: var(--space-12) var(--space-6);
   background: var(--color-surface-tint);
+}
+
+/* About us is the section directly under the hero — white instead of the
+   pink tint the other .split section (Product overview) keeps. */
+:global(#about-us) {
+  background: var(--color-surface);
 }
 
 .splitInner {
@@ -239,7 +251,9 @@
 .splitCta {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
+  min-width: 220px;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
   background: var(--color-primary);
@@ -370,6 +384,9 @@
   -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--shadow-lg);
   text-align: center;
+  /* Inherited by every text element in the card (heading, body, labels,
+     thanks message) so it all reads clearly over the photo background. */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .contactCard .h2 {
@@ -413,13 +430,18 @@
 }
 
 .contactSubmit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   align-self: center;
+  min-width: 220px;
   margin-top: var(--space-2);
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
   background: var(--color-primary);
   color: var(--color-on-primary);
   font-weight: var(--font-weight-semibold);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .contactSubmit:hover {
@@ -448,9 +470,14 @@
   padding: 0 var(--space-6);
 }
 
+:global(#faq) .h2 {
+  text-align: center;
+}
+
 .faqList {
   display: flex;
   flex-direction: column;
+  margin-top: var(--space-8);
 }
 
 .faqItem {
@@ -509,24 +536,6 @@
   margin: 0;
 }
 
-/* ── Final CTA (full width, inner content centred) ─────── */
-.finalCta {
-  width: 100%;
-  padding: var(--space-6) 0 var(--space-12);
-  text-align: center;
-}
-
-.finalCtaInner {
-  max-width: 720px;
-  margin: 0 auto;
-  width: 100%;
-  padding: 0 var(--space-6);
-}
-
-.finalCta .primaryCta {
-  margin-top: var(--space-4);
-}
-
 /* ── Desktop ─────────────────────────────────────────── */
 @media (min-width: 768px) {
   .h1 {
@@ -545,17 +554,12 @@
   }
 
   .splitCard,
-  .contactCard,
   .impactInner {
     text-align: left;
   }
 
   .splitCtas {
     justify-content: flex-start;
-  }
-
-  .contactSubmit {
-    align-self: flex-start;
   }
 
   :global(#home),
@@ -620,8 +624,7 @@
   .split,
   .impactInner,
   .contactGrid,
-  .faqInner,
-  .finalCtaInner {
+  .faqInner {
     padding-left: var(--space-8);
     padding-right: var(--space-8);
   }

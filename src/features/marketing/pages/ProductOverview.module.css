@@ -6,6 +6,15 @@
   color: var(--color-text);
 }
 
+/* :global is required — these ids are set directly in JSX, not run through
+   CSS Modules, so a bare #id selector here would get hashed into a name
+   that never matches the real DOM element. */
+:global(#features),
+:global(#popia),
+:global(#pricing) {
+  scroll-margin-top: 64px;
+}
+
 .header {
   width: 100%;
   min-height: 100vh;
@@ -156,6 +165,12 @@
 @media (min-width: 768px) {
   .h1 {
     font-size: 2.75rem;
+  }
+
+  :global(#features),
+  :global(#popia),
+  :global(#pricing) {
+    scroll-margin-top: 72px;
   }
 
   .headerInner,

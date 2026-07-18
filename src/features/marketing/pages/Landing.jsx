@@ -100,7 +100,7 @@ export default function Landing() {
         <div className={styles.heroOverlay} aria-hidden="true" />
 
         <div className={styles.heroContent}>
-          <h3 className={styles.h1}>Your daily NGO impact measuring tool — all in one place</h3>
+          <h3 className={styles.h1}>Your daily NGO impact measuring tool, all in one place</h3>
           <div className={styles.heroDivider} aria-hidden="true" />
           <h2 className={styles.subhead}>
             South Africa&rsquo;s NGO impact management application for attendance, beneficiary
@@ -211,15 +211,22 @@ export default function Landing() {
           <div className={styles.contactCard}>
             <h3 className={styles.h2}>Get in touch about our NGO application</h3>
             <p className={styles.contactBody}>
-              Have a question about Impactly, or want a walkthrough for your organisation?
-              Reach out and our team will get back to you.
+              Have a question about Impactly? Reach out and our team will get back to you.
             </p>
 
             {contactSent ? (
               <p className={styles.contactThanks}>Thanks — we’ll be in touch soon.</p>
             ) : (
               <form className={styles.contactForm} onSubmit={handleContactSubmit}>
-                <label className={styles.contactLabel} htmlFor="contact-email">Email address</label>
+                <label className={styles.contactLabel} htmlFor="contact-name">Name</label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  required
+                  className={styles.contactInput}
+                  placeholder="Your name"
+                />
+                <label className={styles.contactLabel} htmlFor="contact-email">Email</label>
                 <input
                   id="contact-email"
                   type="email"
@@ -245,7 +252,7 @@ export default function Landing() {
       {/* ── FAQ (accordion) ─────────────────────────────── */}
       <section id="faq" className={styles.faq}>
         <div className={styles.faqInner}>
-          <h3 className={styles.h2}>Frequently asked questions about our impact application</h3>
+          <h3 className={styles.h2}>Frequently Asked Questions</h3>
           <div className={styles.faqList}>
             {FAQ.map(({ q, a }, i) => {
               const isOpen = openFaq === i;
@@ -279,16 +286,6 @@ export default function Landing() {
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* ── Final CTA ───────────────────────────────────── */}
-      <section className={styles.finalCta}>
-        <div className={styles.finalCtaInner}>
-          <h3 className={styles.h2}>Ready to make an impact for your NGO?</h3>
-          <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
-            Create your account <ChevronRight size={16} />
-          </Link>
         </div>
       </section>
 

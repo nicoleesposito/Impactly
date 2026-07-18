@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../constants/routes.js';
-import { BrandMark, Menu, Close } from '../../../components/icons.jsx';
+import { BrandMark, Menu, Close, ChevronDown } from '../../../components/icons.jsx';
 import styles from './MarketingNav.module.css';
 
 // Anchor links target sections on the Landing page ("/"). Prefixing with "/"
@@ -11,10 +11,18 @@ import styles from './MarketingNav.module.css';
 const NAV_LINKS = [
   { href: '/#home', label: 'Home' },
   { href: '/#about-us', label: 'About us' },
-  { to: ROUTES.productOverview, label: 'Product overview' },
+  {
+    to: ROUTES.productOverview,
+    label: 'Product Overview',
+    dropdown: [
+      { to: `${ROUTES.productOverview}#features`, label: 'Features' },
+      { to: `${ROUTES.productOverview}#pricing`, label: 'Pricing' },
+      { to: `${ROUTES.productOverview}#popia`, label: 'POPIA Compliance' },
+    ],
+  },
   { href: '/#impact', label: 'Impact' },
   { href: '/#contact-us', label: 'Contact us' },
-  { href: '/#faq', label: 'FAQ' },
+  { href: '/#faq', label: 'FAQs' },
 ];
 
 export default function MarketingNav() {
@@ -34,9 +42,25 @@ export default function MarketingNav() {
               {NAV_LINKS.map((link) => (
                 <li key={link.label} className={styles.navItem}>
                   {link.to ? (
-                    <Link to={link.to} className={styles.navLink}>{link.label}</Link>
+                    <Link to={link.to} className={styles.navLink}>
+                      {link.label}
+                      {link.dropdown && (
+                        <span className={styles.navChevron} aria-hidden="true">
+                          <ChevronDown size={14} />
+                        </span>
+                      )}
+                    </Link>
                   ) : (
                     <a href={link.href} className={styles.navLink}>{link.label}</a>
+                  )}
+                  {link.dropdown && (
+                    <ul className={styles.dropdownPanel}>
+                      {link.dropdown.map((item) => (
+                        <li key={item.label}>
+                          <Link to={item.to} className={styles.dropdownLink}>{item.label}</Link>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </li>
               ))}

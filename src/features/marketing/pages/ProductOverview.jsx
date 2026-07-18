@@ -12,6 +12,16 @@ export default function ProductOverview() {
     document.title = 'Impactly | Platform Capabilities for NGOs';
   }, []);
 
+  // If the page loads (or is client-navigated to) with a section hash in the
+  // URL — e.g. arriving from the nav's Product Overview dropdown — scroll to
+  // that section once content has laid out.
+  useEffect(() => {
+    if (window.location.hash) {
+      const el = document.querySelector(window.location.hash);
+      if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }));
+    }
+  }, []);
+
   return (
     <div className={styles.page}>
       <MarketingNav />
@@ -26,7 +36,7 @@ export default function ProductOverview() {
         </div>
       </section>
 
-      <section className={styles.gridSection}>
+      <section id="features" className={styles.gridSection}>
         <div className={styles.grid}>
           {CAPABILITIES.map(({ Icon, title, body }) => (
             <div key={title} className={styles.card}>
@@ -38,7 +48,7 @@ export default function ProductOverview() {
         </div>
       </section>
 
-      <section className={styles.popia}>
+      <section id="popia" className={styles.popia}>
         <div className={styles.popiaInner}>
           <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
           <p className={styles.popiaBody}>
@@ -50,7 +60,7 @@ export default function ProductOverview() {
         </div>
       </section>
 
-      <section className={styles.pricing}>
+      <section id="pricing" className={styles.pricing}>
         <div className={styles.pricingInner}>
           <h2 className={styles.h2}>Transparent pricing for NGO software</h2>
           <p className={styles.pricingBody}>
