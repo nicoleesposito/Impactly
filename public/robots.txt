@@ -18,4 +18,4 @@ Disallow: /settings
 Disallow: /notifications
 Disallow: /more
 
-Sitemap: https://impactly.app/sitemap.xml
+Sitemap: https://impactly-tebelo.netlify.app/sitemap.xml
