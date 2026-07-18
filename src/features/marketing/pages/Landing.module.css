@@ -194,6 +194,28 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Wraps the About us photo in a taller white panel, the same way
+   .productImageWrap does for Product overview's image, so the container
+   reads bigger than the text card without stretching or cropping the
+   photo itself. */
+.aboutImageWrap {
+  aspect-ratio: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-10) 0;
+  background: var(--color-surface);
+}
+
+.aboutImage {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+}
+
 /* Wraps the product-overview image in a taller white panel so the image
    container reads bigger than the text card beside it, without altering
    the image's own rendered size — the extra height is pure white padding
@@ -364,15 +386,13 @@
   margin: 0 auto;
   width: 100%;
   padding: 0 var(--space-6);
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-.contactSpacer {
-  display: none;
+  display: flex;
+  justify-content: center;
 }
 
 .contactCard {
+  width: 100%;
+  max-width: 640px;
   padding: var(--space-8);
   border-radius: var(--radius-lg);
   background: #00000063;
@@ -609,14 +629,8 @@
   }
 
   .contactGrid {
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: var(--space-6);
     min-height: 480px;
-  }
-
-  .contactSpacer {
-    display: block;
+    align-items: center;
   }
 
   .hero,

@@ -108,9 +108,8 @@ export default function Landing() {
           </h2>
           <div className={styles.heroCtas}>
             <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
-              Create your account <ChevronRight size={16} />
+              Get Started <ChevronRight size={16} />
             </Link>
-            <Link to={ROUTES.signIn} className={styles.secondaryCta}>Log in</Link>
           </div>
         </div>
       </section>
@@ -118,11 +117,13 @@ export default function Landing() {
       {/* ── About us (two-column, image overlap) ────────── */}
       <section id="about-us" className={styles.split}>
         <div className={styles.splitInner}>
-          <img
-            className={styles.splitImage}
-            src="/images/about-us.jpg"
-            alt="Two students at a school desk exploring photos together on a laptop"
-          />
+          <div className={`${styles.splitImage} ${styles.aboutImageWrap}`}>
+            <img
+              className={styles.aboutImage}
+              src="/images/about-us.jpg"
+              alt="Two students at a school desk exploring photos together on a laptop"
+            />
+          </div>
           <div className={styles.splitCard}>
             <h3 className={styles.h2}>Application that puts your beneficiaries first</h3>
             <p className={styles.splitBody}>
@@ -207,7 +208,6 @@ export default function Landing() {
       <section id="contact-us" className={styles.contactSection}>
         <div className={styles.contactBg} aria-hidden="true" style={{ backgroundImage: CONTACT_IMAGE }} />
         <div className={styles.contactGrid}>
-          <div className={styles.contactSpacer} aria-hidden="true" />
           <div className={styles.contactCard}>
             <h3 className={styles.h2}>Get in touch about our NGO application</h3>
             <p className={styles.contactBody}>

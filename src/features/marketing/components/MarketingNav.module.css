@@ -38,17 +38,21 @@
   gap: var(--space-2);
   flex-shrink: 0;
   font-weight: var(--font-weight-bold);
-  font-size: var(--text-base);
+  font-size: 28px;
   color: var(--color-primary);
   white-space: nowrap;
   transition: color 200ms ease, font-size 200ms ease;
 }
 
-/* Color-only on mobile — the enlarged sizing below is desktop-only
-   (min-width: 768px) since a bigger logo/wordmark/CTA together don't fit
-   next to the hamburger toggle on narrow viewports. */
+/* Hero overlay: logo stacked above the name, at its own (unchanged) text
+   size — the enlarged 90px logo and stacked layout apply at every width
+   since stacking (rather than sitting side-by-side) keeps it from
+   overflowing narrow viewports. */
 .topbarOverlay .wordmark {
+  flex-direction: column;
+  gap: var(--space-1);
   color: #ffffff;
+  font-size: 16px;
 }
 
 .wordmarkLogo {
@@ -56,6 +60,10 @@
   height: 40px;
   width: auto;
   transition: height 200ms ease;
+}
+
+.topbarOverlay .wordmarkLogo {
+  height: 90px;
 }
 
 /* ── Desktop nav ─────────────────────────────────────── */
@@ -258,10 +266,6 @@
     top: 96px;
   }
 
-  .wordmark {
-    font-size: var(--text-lg);
-  }
-
   .topCta {
     padding: var(--space-2) var(--space-4);
     font-size: var(--text-sm);
@@ -273,10 +277,6 @@
 
   .topbarOverlay .wordmark {
     font-size: var(--text-xl);
-  }
-
-  .topbarOverlay .wordmarkLogo {
-    height: 60px;
   }
 
   .topbarOverlay .logIn {

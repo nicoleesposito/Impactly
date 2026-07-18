@@ -23,6 +23,12 @@
   color: var(--color-primary);
 }
 
+.footerLogoImg {
+  display: block;
+  height: 90px;
+  width: auto;
+}
+
 .footerSocials {
   display: flex;
   align-items: center;

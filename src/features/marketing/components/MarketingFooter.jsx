@@ -1,4 +1,4 @@
-import { BrandMark, Facebook, Instagram, LinkedIn, XLogo } from '../../../components/icons.jsx';
+import { Facebook, Instagram, LinkedIn, XLogo } from '../../../components/icons.jsx';
 import styles from './MarketingFooter.module.css';
 
 const SOCIALS = [
@@ -13,7 +13,7 @@ export default function MarketingFooter() {
     <footer className={styles.footer}>
       <div className={styles.footerTop}>
         <span className={styles.footerLogo}>
-          <BrandMark size={28} />
+          <img className={styles.footerLogoImg} src="/images/logo.png" alt="" />
           Impactly
         </span>
 
