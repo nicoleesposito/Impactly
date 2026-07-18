@@ -28,6 +28,12 @@
   white-space: nowrap;
 }
 
+.wordmarkLogo {
+  display: block;
+  height: 28px;
+  width: auto;
+}
+
 /* ── Desktop nav ─────────────────────────────────────── */
 .navDesktop {
   display: none;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../../../constants/routes.js';
-import { BrandMark, Menu, Close, ChevronDown } from '../../../components/icons.jsx';
+import { Menu, Close, ChevronDown } from '../../../components/icons.jsx';
 import styles from './MarketingNav.module.css';
 
 // Anchor links target sections on the Landing page ("/"). Prefixing with "/"
@@ -33,7 +33,7 @@ export default function MarketingNav() {
       <header className={styles.topbar}>
         <div className={styles.topbarInner}>
           <a href="/#home" className={styles.wordmark}>
-            <BrandMark size={28} />
+            <img className={styles.wordmarkLogo} src="/images/logo.png" alt="" />
             Impactly
           </a>
 

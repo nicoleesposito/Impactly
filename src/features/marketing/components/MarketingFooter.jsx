@@ -1,4 +1,4 @@
-import { BrandMark, Mail, Phone, Facebook, Instagram, LinkedIn, XLogo } from '../../../components/icons.jsx';
+import { BrandMark, Facebook, Instagram, LinkedIn, XLogo } from '../../../components/icons.jsx';
 import styles from './MarketingFooter.module.css';
 
 const SOCIALS = [
@@ -16,19 +16,6 @@ export default function MarketingFooter() {
           <BrandMark size={28} />
           Impactly
         </span>
-
-        <ul className={styles.footerContact}>
-          <li>
-            <Mail size={16} aria-hidden="true" />
-            {/* TODO: replace with a real support inbox once the domain is live */}
-            <a href="mailto:hello@impactly.co.za">hello@impactly.co.za</a>
-          </li>
-          <li>
-            <Phone size={16} aria-hidden="true" />
-            {/* TODO: replace with a real contact number */}
-            <span>+27 21 XXX XXXX</span>
-          </li>
-        </ul>
 
         <ul className={styles.footerSocials}>
           {SOCIALS.map(({ Icon, label }) => (
