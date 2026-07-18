@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
-import { Mail, Phone, ChevronRight, ChevronDown } from '../../../components/icons.jsx';
+import { Mail, Phone, ChevronRight, ChevronDown, PaperLost, SpreadsheetLock, ScatteredChats } from '../../../components/icons.jsx';
 import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './Landing.module.css';
@@ -14,15 +14,15 @@ const CONTACT_IMAGE = 'linear-gradient(135deg, #3ba55d, #6366f1, #a02b3f)';
 const CHALLENGES = [
   {
     text: 'Paper registers that never make it back to the office.',
-    image: 'linear-gradient(135deg, #a02b3f, #d94e6b)',
+    Icon: PaperLost,
   },
   {
     text: 'Spreadsheets that lock up the moment one person leaves.',
-    image: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+    Icon: SpreadsheetLock,
   },
   {
     text: 'Programme updates scattered across WhatsApp threads.',
-    image: 'linear-gradient(135deg, #3ba55d, #6366f1)',
+    Icon: ScatteredChats,
   },
 ];
 
@@ -177,10 +177,12 @@ export default function Landing() {
 
           <h3 className={styles.h3}>Common challenges in NGO record keeping</h3>
           <div className={styles.challengeGrid}>
-            {CHALLENGES.map(({ text, image }) => (
+            {CHALLENGES.map(({ text, Icon }) => (
               <div key={text} className={styles.challengeBox}>
                 <p className={styles.challengeText}>{text}</p>
-                <div className={styles.challengeImage} aria-hidden="true" style={{ backgroundImage: image }} />
+                <div className={styles.challengeImage} aria-hidden="true">
+                  <Icon size={48} />
+                </div>
               </div>
             ))}
           </div>

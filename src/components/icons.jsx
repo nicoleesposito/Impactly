@@ -347,6 +347,45 @@ export function XLogo({ size = 18 }) {
   );
 }
 
+// Challenge icons — used on the marketing landing page's "Common challenges
+// in NGO record keeping" cards.
+export function PaperLost({ size = 40 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 3h9l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M15 3v4h4" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M8 11h5M8 14h8M8 17h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="18.5" cy="18.5" r="4" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M17 20l3-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function SpreadsheetLock({ size = 40 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="14" rx="1.5" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M3 9h18M9 4v14" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M14 9v9" stroke="currentColor" strokeWidth="1.6" />
+      <rect x="14.5" y="13.5" width="8" height="7" rx="1.3" fill="var(--color-surface)" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M16.3 13.5v-1.8a2.2 2.2 0 0 1 4.4 0v1.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="18.5" cy="16.8" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function ScatteredChats({ size = 40 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M2.5 6.5a2 2 0 0 1 2-2H12a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H8l-3 2.6V12.5H4.5a2 2 0 0 1-2-2v-4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M13.5 13a2 2 0 0 0 2 2h1l2.4 2.1V15h1.1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-2.5" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <circle cx="5.5" cy="8.5" r="0.9" fill="currentColor" />
+      <circle cx="8.5" cy="8.5" r="0.9" fill="currentColor" />
+      <circle cx="11.5" cy="8.5" r="0.9" fill="currentColor" />
+    </svg>
+  );
+}
+
 // Brand mark — three nodes connected in a triangle (the Impactly logo).
 export function BrandMark({ size = 96 }) {
   return (
