@@ -5,6 +5,8 @@ import { ChevronLeft, ChevronRight, Check } from '../../../components/icons.jsx'
 import { CAPABILITIES } from '../data/capabilities.js';
 import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
+import { trackEvent } from '../../../lib/ga4.js';
+import { setPageMeta } from '../../../lib/seo.js';
 import styles from './ProductOverview.module.css';
 
 const TRUST_SCREENSHOTS = [
@@ -137,7 +139,11 @@ export default function ProductOverview() {
   const { hash } = useLocation();
 
   useEffect(() => {
-    document.title = 'Impactly | Platform Capabilities for NGOs';
+    setPageMeta({
+      title: 'Impactly | Platform Capabilities for NGOs',
+      description: 'Explore every Impactly capability: attendance tracking, beneficiary management, funder reporting, scheduled reports, data import/export and role-based access.',
+      path: ROUTES.productOverview,
+    });
   }, []);
 
   // Scroll to the matching section whenever the hash changes — both on
@@ -165,17 +171,17 @@ export default function ProductOverview() {
         <div className={styles.heroBg} aria-hidden="true" />
         <div className={styles.heroOverlay} aria-hidden="true" />
         <div className={styles.headerInner}>
-          <h2 className={styles.h1}>The complete NGO impact management software</h2>
-          <h3 className={styles.intro}>
+          <h1 className={styles.h1}>The complete NGO impact management software</h1>
+          <p className={styles.intro}>
             From attendance tracking to funder reporting software, every capability your
             programme needs lives in one place.
-          </h3>
+          </p>
         </div>
       </section>
 
       <section id="features" className={styles.gridSection}>
         <div className={styles.gridInner}>
-          <h3 className={styles.h2}>Everything included in your NGO reporting application</h3>
+          <h2 className={styles.h2}>Everything included in your NGO reporting application</h2>
           <p className={styles.gridIntro}>
             Explore every tool built into Impactly, from day-to-day attendance capture to
             year-end funder reporting.
@@ -184,13 +190,17 @@ export default function ProductOverview() {
             {CAPABILITIES.map(({ Icon, title, body }) => (
               <div key={title} className={styles.card}>
                 <span className={styles.cardIcon} aria-hidden="true"><Icon size={26} /></span>
-                <h4 className={styles.cardTitle}>{title}</h4>
+                <h3 className={styles.cardTitle}>{title}</h3>
                 <p className={styles.cardBody}>{body}</p>
               </div>
             ))}
           </div>
           <div className={styles.gridCtas}>
-            <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+            <Link
+              to={ROUTES.onboardingAccount}
+              className={styles.primaryCta}
+              onClick={() => trackEvent('cta_click', { cta_id: 'features' })}
+            >
               Get started <ChevronRight size={16} />
             </Link>
           </div>
@@ -199,7 +209,7 @@ export default function ProductOverview() {
 
       <section id="trust" className={styles.trust}>
         <div className={styles.trustInner}>
-          <h3 className={styles.h2}>Built and tested with a real NGO</h3>
+          <h2 className={styles.h2}>Built and tested with a real NGO</h2>
           <p className={styles.trustBody}>
             Impactly is being built in direct partnership with Tebelo Tech Hub, a South
             African community development NGO running literacy, digital skills and youth
@@ -242,7 +252,13 @@ export default function ProductOverview() {
                     </li>
                   ))}
                 </ul>
-                <Link to={ROUTES.onboardingAccount} className={styles.planCta}>{cta}</Link>
+                <Link
+                  to={ROUTES.onboardingAccount}
+                  className={styles.planCta}
+                  onClick={() => trackEvent('cta_click', { cta_id: `plan_${name.toLowerCase()}` })}
+                >
+                  {cta}
+                </Link>
               </div>
             ))}
           </div>
@@ -261,7 +277,11 @@ export default function ProductOverview() {
               shared between Impactly and your organisation.
             </p>
             <div className={styles.popiaCtas}>
-              <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+              <Link
+                to={ROUTES.onboardingAccount}
+                className={styles.primaryCta}
+                onClick={() => trackEvent('cta_click', { cta_id: 'popia' })}
+              >
                 Get started <ChevronRight size={16} />
               </Link>
             </div>
@@ -272,7 +292,11 @@ export default function ProductOverview() {
       <section className={styles.cta}>
         <div className={styles.ctaInner}>
           <h2 className={styles.h2}>Ready to bring this to your NGO?</h2>
-          <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+          <Link
+            to={ROUTES.onboardingAccount}
+            className={styles.primaryCta}
+            onClick={() => trackEvent('cta_click', { cta_id: 'closing' })}
+          >
             Create your account <ChevronRight size={16} />
           </Link>
         </div>

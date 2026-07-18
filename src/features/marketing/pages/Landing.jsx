@@ -5,6 +5,8 @@ import { ROUTES } from '../../../constants/routes.js';
 import { ChevronRight, ChevronDown } from '../../../components/icons.jsx';
 import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
+import { trackEvent } from '../../../lib/ga4.js';
+import { setPageMeta } from '../../../lib/seo.js';
 import styles from './Landing.module.css';
 
 const CONTACT_IMAGE = "url('/images/contact-us.jpg')";
@@ -72,7 +74,11 @@ export default function Landing() {
   const [contactSent, setContactSent] = useState(false);
 
   useEffect(() => {
-    document.title = 'Impactly | NGO Attendance & Funder Reporting Application (SA)';
+    setPageMeta({
+      title: 'Impactly | NGO Attendance & Funder Reporting Application (SA)',
+      description: 'Track attendance, manage beneficiaries and report to funders in one place. NGO impact management software built with a South African NGO.',
+      path: '/',
+    });
   }, []);
 
   // If the page loads (or is client-navigated to) with a section hash in the
@@ -90,6 +96,7 @@ export default function Landing() {
   function handleContactSubmit(e) {
     e.preventDefault();
     setContactSent(true);
+    trackEvent('contact_form_submit');
   }
 
   // Render marketing content immediately; only redirect once we positively
@@ -106,6 +113,8 @@ export default function Landing() {
         <video
           className={styles.heroVideo}
           src="/videos/hero-banner.mp4"
+          poster="/images/hero-poster.jpg"
+          preload="metadata"
           autoPlay
           loop
           muted
@@ -115,15 +124,19 @@ export default function Landing() {
         <div className={styles.heroOverlay} aria-hidden="true" />
 
         <div className={styles.heroContent}>
-          <h3 className={styles.h1}>Your daily NGO impact measuring tool, all in one place</h3>
+          <h1 className={styles.h1}>Your daily NGO impact measuring tool, all in one place</h1>
           <div className={styles.heroDivider} aria-hidden="true" />
-          <h2 className={styles.subhead}>
+          <p className={styles.subhead}>
             Track attendance, manage beneficiaries and report to funders, all in one place.
             Built with a South African NGO, for NGOs who don’t have time to fight their
             tools.
-          </h2>
+          </p>
           <div className={styles.heroCtas}>
-            <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+            <Link
+              to={ROUTES.onboardingAccount}
+              className={styles.primaryCta}
+              onClick={() => trackEvent('cta_click', { cta_id: 'hero' })}
+            >
               Get Started <ChevronRight size={16} />
             </Link>
           </div>
@@ -141,14 +154,14 @@ export default function Landing() {
             />
           </div>
           <div className={styles.splitCard}>
-            <h3 className={styles.h2}>Application that puts your beneficiaries first</h3>
+            <h2 className={styles.h2}>Application that puts your beneficiaries first</h2>
             <p className={styles.splitBody}>
               Impactly exists to help NGOs spend less time on admin and more time on the
               people they serve. From classrooms to community centres, our all-in-one
               platform replaces scattered spreadsheets and paperwork with one connected
               system built around your mission.
             </p>
-            <h4 className={styles.h3}>Built for people who run programmes, not systems</h4>
+            <h3 className={styles.h3}>Built for people who run programmes, not systems</h3>
             <p className={styles.splitBody}>
               Impactly is for NGO field staff, programme managers and administrators at
               small to mid-sized organisations. No dedicated IT team. No time for a steep
@@ -156,7 +169,11 @@ export default function Landing() {
               a shared spreadsheet and a WhatsApp group, this is for you.
             </p>
             <div className={styles.splitCtas}>
-              <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
+              <Link
+                to={ROUTES.onboardingAccount}
+                className={styles.splitCta}
+                onClick={() => trackEvent('cta_click', { cta_id: 'about_us' })}
+              >
                 Get started today <ChevronRight size={16} />
               </Link>
             </div>
@@ -175,7 +192,7 @@ export default function Landing() {
             />
           </div>
           <div className={styles.splitCard}>
-            <h3 className={styles.h2}>The complete toolkit for NGO programme management</h3>
+            <h2 className={styles.h2}>The complete toolkit for NGO programme management</h2>
             <p className={styles.splitBody}>
               From attendance tracking to funder reporting, Impactly brings every part of
               running your programme into one seamless platform. Spend less time switching
@@ -184,13 +201,17 @@ export default function Landing() {
             <ul className={styles.benefitList}>
               {BENEFITS.map(({ title, text }) => (
                 <li key={title}>
-                  <h4 className={styles.benefitTitle}>{title}</h4>
+                  <h3 className={styles.benefitTitle}>{title}</h3>
                   <p className={styles.benefitText}>{text}</p>
                 </li>
               ))}
             </ul>
             <div className={styles.splitCtas}>
-              <Link to={ROUTES.productOverview} className={styles.splitCta}>
+              <Link
+                to={ROUTES.productOverview}
+                className={styles.splitCta}
+                onClick={() => trackEvent('cta_click', { cta_id: 'product_overview_view_all' })}
+              >
                 View all capabilities <ChevronRight size={16} />
               </Link>
             </div>
@@ -201,7 +222,7 @@ export default function Landing() {
       {/* ── Impact ──────────────────────────────────────── */}
       <section id="impact" className={styles.impact}>
         <div className={styles.impactInner}>
-          <h3 className={styles.h2}>Making a measurable impact for NGOs</h3>
+          <h2 className={styles.h2}>Making a measurable impact for NGOs</h2>
 
           <p className={styles.impactIntro}>
             Most non-profits still rely on paper registers, spreadsheets, and scattered
@@ -235,7 +256,11 @@ export default function Landing() {
           </blockquote>
 
           <div className={styles.impactCtas}>
-            <a href="#contact-us" className={styles.splitCta}>
+            <a
+              href="#contact-us"
+              className={styles.splitCta}
+              onClick={() => trackEvent('cta_click', { cta_id: 'impact_get_in_touch' })}
+            >
               Get In Touch <ChevronRight size={16} />
             </a>
           </div>
@@ -247,7 +272,7 @@ export default function Landing() {
         <div className={styles.contactBg} aria-hidden="true" style={{ backgroundImage: CONTACT_IMAGE }} />
         <div className={styles.contactGrid}>
           <div className={styles.contactCard}>
-            <h3 className={styles.h2}>Get in touch about our NGO application</h3>
+            <h2 className={styles.h2}>Get in touch about our NGO application</h2>
             <p className={styles.contactBody}>
               Have a question about Impactly? Reach out and our team will get back to you.
             </p>
@@ -290,7 +315,7 @@ export default function Landing() {
       {/* ── FAQ (accordion) ─────────────────────────────── */}
       <section id="faq" className={styles.faq}>
         <div className={styles.faqInner}>
-          <h3 className={styles.h2}>Frequently Asked Questions</h3>
+          <h2 className={styles.h2}>Frequently Asked Questions</h2>
           <div className={styles.faqList}>
             {FAQ.map(({ q, a }, i) => {
               const isOpen = openFaq === i;

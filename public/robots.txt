@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Disallow: /onboarding/
+Disallow: /signin
+Disallow: /forgot-password
+Disallow: /auth/
+Disallow: /home
+Disallow: /attendance
+Disallow: /students
+Disallow: /reports
+Disallow: /funders
+Disallow: /grants
+Disallow: /staff
+Disallow: /templates
+Disallow: /programmes
+Disallow: /help
+Disallow: /settings
+Disallow: /notifications
+Disallow: /more
+
+Sitemap: https://impactly.app/sitemap.xml
