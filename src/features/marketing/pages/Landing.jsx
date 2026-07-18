@@ -7,9 +7,7 @@ import MarketingNav from '../components/MarketingNav.jsx';
 import MarketingFooter from '../components/MarketingFooter.jsx';
 import styles from './Landing.module.css';
 
-// Placeholder section image: brand-colour gradient standing in for real
-// photography until we have an actual image to drop in.
-const CONTACT_IMAGE = 'linear-gradient(135deg, #3ba55d, #6366f1, #a02b3f)';
+const CONTACT_IMAGE = "url('/images/contact-us.jpg')";
 
 const CHALLENGES = [
   {
@@ -185,6 +183,12 @@ export default function Landing() {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className={styles.impactCtas}>
+            <a href="#contact-us" className={styles.splitCta}>
+              Get In Touch <ChevronRight size={16} />
+            </a>
           </div>
         </div>
       </section>
