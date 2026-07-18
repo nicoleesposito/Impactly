@@ -9,6 +9,21 @@ import styles from './Landing.module.css';
 
 const CONTACT_IMAGE = "url('/images/contact-us.jpg')";
 
+const BENEFITS = [
+  {
+    title: 'Attendance tracking',
+    text: 'Mark who showed up in one tap. No more paper registers that never make it back to the office.',
+  },
+  {
+    title: 'Beneficiary management',
+    text: 'One record per person, not five spreadsheets. Nothing lost when a staff member leaves.',
+  },
+  {
+    title: 'Funder reporting',
+    text: 'Reports build themselves from data you’ve already captured. No more reconstructing a term’s worth of work from memory before a deadline.',
+  },
+];
+
 const CHALLENGES = [
   {
     text: 'Paper registers that never make it back to the office.',
@@ -103,14 +118,28 @@ export default function Landing() {
           <h3 className={styles.h1}>Your daily NGO impact measuring tool, all in one place</h3>
           <div className={styles.heroDivider} aria-hidden="true" />
           <h2 className={styles.subhead}>
-            South Africa&rsquo;s NGO impact management application for attendance, beneficiary
-            management and funder reporting.
+            Track attendance, manage beneficiaries and report to funders, all in one place.
+            Built with a South African NGO, for NGOs who don’t have time to fight their
+            tools.
           </h2>
           <div className={styles.heroCtas}>
             <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
               Get Started <ChevronRight size={16} />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ── Who it's for ─────────────────────────────────── */}
+      <section id="who-its-for" className={styles.whoFor}>
+        <div className={styles.whoForInner}>
+          <h3 className={styles.h2}>Built for people who run programmes, not systems</h3>
+          <p className={styles.whoForBody}>
+            Impactly is for NGO field staff, programme managers and administrators at
+            small to mid-sized organisations. No dedicated IT team. No time for a steep
+            learning curve. If you’re currently running your programme out of a notebook,
+            a shared spreadsheet and a WhatsApp group, this is for you.
+          </p>
         </div>
       </section>
 
@@ -132,12 +161,6 @@ export default function Landing() {
               platform replaces scattered spreadsheets and paperwork with one connected
               system built around your mission.
             </p>
-            <h4 className={styles.h3}>Built in partnership with South African NGOs</h4>
-            <p className={styles.splitBody}>
-              Impactly is being built and tested in partnership with a South African NGO
-              through the Tebelo Tech Hub design partnership.
-            </p>
-            {/* TODO: replace with a real partner quote and logo once Tebelo sign-off is confirmed */}
             <div className={styles.splitCtas}>
               <Link to={ROUTES.onboardingAccount} className={styles.splitCta}>
                 Get started today <ChevronRight size={16} />
@@ -164,12 +187,33 @@ export default function Landing() {
               running your programme into one seamless platform. Spend less time switching
               between tools, and more time creating impact.
             </p>
+            <ul className={styles.benefitList}>
+              {BENEFITS.map(({ title, text }) => (
+                <li key={title}>
+                  <h4 className={styles.benefitTitle}>{title}</h4>
+                  <p className={styles.benefitText}>{text}</p>
+                </li>
+              ))}
+            </ul>
             <div className={styles.splitCtas}>
               <Link to={ROUTES.productOverview} className={styles.splitCta}>
                 View all capabilities <ChevronRight size={16} />
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Trust signals ─────────────────────────────────── */}
+      <section id="trust" className={styles.trust}>
+        <div className={styles.trustInner}>
+          <h3 className={styles.h2}>Built and tested with a real NGO</h3>
+          <p className={styles.trustBody}>
+            Impactly is being built in direct partnership with Tebelo Tech Hub, a South
+            African community development NGO running literacy, digital skills and youth
+            development programmes. Every screen has been tested with the people who’ll
+            actually use it: field staff, programme managers and administrators.
+          </p>
         </div>
       </section>
 

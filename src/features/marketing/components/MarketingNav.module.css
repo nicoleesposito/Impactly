@@ -121,12 +121,8 @@
   color: #ffffff;
 }
 
-/* Same specificity as .navLink:hover / .navLinkActive above, so without
-   these the overlay's white would win on source order alone and the hover/
-   active highlight color would never show while the nav is transparent. */
-.topbarOverlay .navLink:hover,
-.topbarOverlay .navLinkActive {
-  color: var(--color-primary);
+.topbarOverlay .navLink::after {
+  background: #ffffff;
 }
 
 .navChevron {
