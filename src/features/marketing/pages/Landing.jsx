@@ -126,14 +126,14 @@ export default function Landing() {
             alt="Two students at a school desk exploring photos together on a laptop"
           />
           <div className={styles.splitCard}>
-            <h2 className={styles.h2}>Software that puts your mission first</h2>
+            <h3 className={styles.h2}>Mobile-first NGO software built around your mission</h3>
             <p className={styles.splitBody}>
               Impactly exists to help NGOs spend less time on admin and more time on the
               people they serve. From classrooms to community centres, our all-in-one
               platform replaces scattered spreadsheets and paperwork with one connected
               system built around your mission.
             </p>
-            <h3 className={styles.h3}>Built in partnership with South African NGOs</h3>
+            <h4 className={styles.h3}>Built in partnership with South African NGOs</h4>
             <p className={styles.splitBody}>
               Impactly is being built and tested in partnership with a South African NGO
               through the Tebelo Tech Hub design partnership.
@@ -159,7 +159,7 @@ export default function Landing() {
             />
           </div>
           <div className={styles.splitCard}>
-            <h2 className={styles.h2}>The complete toolkit for modern NGO programme management</h2>
+            <h2 className={styles.h2}>The NGO impact management software behind every programme</h2>
             <p className={styles.splitBody}>
               From attendance tracking to funder reporting, Impactly brings every part of
               running your programme into one seamless platform. Spend less time switching
@@ -177,9 +177,9 @@ export default function Landing() {
       {/* ── Impact ──────────────────────────────────────── */}
       <section id="impact" className={styles.impact}>
         <div className={styles.impactInner}>
-          <h2 className={styles.h2}>Making a measurable impact for NGOs</h2>
+          <h3 className={styles.h2}>Real impact measurement for NGOs, made simple</h3>
 
-          <h3 className={styles.h3}>Common challenges in NGO record keeping</h3>
+          <h4 className={styles.h3}>Common challenges in NGO record keeping</h4>
           <div className={styles.challengeGrid}>
             {CHALLENGES.map(({ text, icon }) => (
               <div key={text} className={styles.challengeBox}>
@@ -205,7 +205,7 @@ export default function Landing() {
         <div className={styles.contactGrid}>
           <div className={styles.contactSpacer} aria-hidden="true" />
           <div className={styles.contactCard}>
-            <h2 className={styles.h2}>Get in touch with Impactly</h2>
+            <h2 className={styles.h2}>Let&rsquo;s put your NGO impact management software to work</h2>
             <p className={styles.contactBody}>
               Have a question about Impactly, or want a walkthrough for your organisation?
               Reach out and our team will get back to you.
@@ -253,7 +253,7 @@ export default function Landing() {
       {/* ── FAQ (accordion) ─────────────────────────────── */}
       <section id="faq" className={styles.faq}>
         <div className={styles.faqInner}>
-          <h2 className={styles.h2}>Frequently asked questions about Impactly</h2>
+          <h3 className={styles.h2}>Frequently asked questions about our NGO reporting application</h3>
           <div className={styles.faqList}>
             {FAQ.map(({ q, a }, i) => {
               const isOpen = openFaq === i;
@@ -293,7 +293,7 @@ export default function Landing() {
       {/* ── Final CTA ───────────────────────────────────── */}
       <section className={styles.finalCta}>
         <div className={styles.finalCtaInner}>
-          <h2 className={styles.h2}>Ready to make an impact for your NGO?</h2>
+          <h3 className={styles.h2}>Ready to simplify beneficiary tracking for your NGO?</h3>
           <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
             Create your account <ChevronRight size={16} />
           </Link>
