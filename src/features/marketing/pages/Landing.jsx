@@ -100,8 +100,12 @@ export default function Landing() {
         <div className={styles.heroOverlay} aria-hidden="true" />
 
         <div className={styles.heroContent}>
-          <h1 className={styles.h1}>Attendance, beneficiary management and funder reporting in one place</h1>
-          <p className={styles.subhead}>
+          <h2 className={styles.h1}>Powerful NGO impact management software — all in one place</h2>
+          <h2 className={styles.subhead}>
+            South Africa&rsquo;s NGO impact management software for attendance, beneficiary
+            management and funder reporting.
+          </h2>
+          <p className={styles.heroTagline}>
             Up and running in under 30 minutes, no IT support needed.
           </p>
           <div className={styles.heroCtas}>
@@ -147,11 +151,13 @@ export default function Landing() {
       {/* ── Product overview (two-column, links to subpage) */}
       <section id="product-overview" className={`${styles.split} ${styles.splitReverse}`}>
         <div className={styles.splitInner}>
-          <img
-            className={`${styles.splitImage} ${styles.productImage}`}
-            src="/images/product-overview.webp"
-            alt="Impactly dashboard on a phone, annotated with callouts explaining programmes at a glance, key metrics, upcoming tasks, notifications, one-tap attendance capture, smarter reporting and attendance analysis"
-          />
+          <div className={`${styles.splitImage} ${styles.productImageWrap}`}>
+            <img
+              className={styles.productImage}
+              src="/images/product-overview.webp"
+              alt="Impactly dashboard on a phone, annotated with callouts explaining programmes at a glance, key metrics, upcoming tasks, notifications, one-tap attendance capture, smarter reporting and attendance analysis"
+            />
+          </div>
           <div className={styles.splitCard}>
             <h2 className={styles.h2}>The complete toolkit for modern NGO programme management</h2>
             <p className={styles.splitBody}>
