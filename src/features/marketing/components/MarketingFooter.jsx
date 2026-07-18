@@ -30,7 +30,7 @@ export default function MarketingFooter() {
       </div>
 
       <div className={styles.footerBottom}>
-        <span>&copy; {new Date().getFullYear()} Impactly</span>
+        <span>Created for Sand Dollar Design</span>
       </div>
     </footer>
   );

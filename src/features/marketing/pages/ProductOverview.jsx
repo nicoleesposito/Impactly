@@ -251,8 +251,7 @@ export default function ProductOverview() {
 
       <section id="popia" className={styles.popia}>
         <div className={styles.popiaInner}>
-          {/* TODO: swap for a real image once one is available */}
-          <div className={styles.popiaImage} aria-hidden="true" />
+          <img className={styles.popiaImage} src="/images/popia-flag.jpg" alt="South African flag" />
           <div className={styles.popiaCard}>
             <h2 className={styles.h2}>Built with POPIA compliance in mind</h2>
             <p className={styles.popiaBody}>
@@ -261,6 +260,11 @@ export default function ProductOverview() {
               handled as we go. POPIA compliance is ultimately an operational responsibility
               shared between Impactly and your organisation.
             </p>
+            <div className={styles.popiaCtas}>
+              <Link to={ROUTES.onboardingAccount} className={styles.primaryCta}>
+                Get started <ChevronRight size={16} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
