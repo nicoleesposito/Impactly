@@ -221,6 +221,19 @@ export default function Landing() {
             ))}
           </div>
 
+          <blockquote className={styles.impactQuote}>
+            <p className={styles.impactQuoteText}>
+              “One of the children was not feeling well, so we had to notify a parent.
+              However, the number I had did not go through. People change their contact
+              details from time to time, so we had to go through the file to find
+              alternative numbers, but the programme director had taken the file over the
+              school holidays and did not bring it back. There was not much we could do.
+              We had to drive to the child’s home, not knowing whether the parent would be
+              there. But fortunately for us, the parent was at home.”
+            </p>
+            <cite className={styles.impactQuoteCite}>— Tebelo Tech Hub staff member</cite>
+          </blockquote>
+
           <div className={styles.impactCtas}>
             <a href="#contact-us" className={styles.splitCta}>
               Get In Touch <ChevronRight size={16} />

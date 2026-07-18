@@ -375,6 +375,32 @@
   object-fit: contain;
 }
 
+.impactQuote {
+  max-width: 700px;
+  margin: var(--space-8) auto 0;
+  padding: var(--space-6);
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.impactQuoteText {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.impactQuoteCite {
+  display: block;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  font-style: normal;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
 /* ── Contact us (full-bleed background image, two column) ── */
 .contactSection {
   position: relative;
@@ -584,7 +610,8 @@
   .splitBody,
   .challengeText,
   .contactBody,
-  .impactIntro {
+  .impactIntro,
+  .impactQuoteText {
     font-size: 18px;
   }
 
