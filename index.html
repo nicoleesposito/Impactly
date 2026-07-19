@@ -57,55 +57,167 @@
     <!-- Static fallback content: this is a client-rendered React app, so
          without this, crawlers and SEO tools that don't execute JavaScript
          (unlike Googlebot) see an empty page — no H1, no text, no links.
-         React's render() call replaces everything inside #root the moment
-         the app mounts, so real visitors see this only for a brief instant
-         before the interactive page takes over. -->
+         This mirrors the real Landing page content verbatim (not a
+         summary) so it's the same content either way, not different
+         content shown to crawlers vs users. React's render() call replaces
+         everything inside #root the moment the app mounts, so real
+         visitors see this only for a brief instant before the interactive
+         page takes over.
+
+         Maintenance note: this is hand-duplicated from Landing.jsx, not
+         generated from it — if that file's copy changes, this block needs
+         updating too or the two will drift out of sync. -->
     <div id="root">
+      <nav aria-label="Primary">
+        <a href="/#home">Impactly</a>
+        <a href="/#home">Home</a>
+        <a href="/#about-us">About us</a>
+        <a href="/product-overview">Product Overview</a>
+        <a href="/#impact">Impact</a>
+        <a href="/#contact-us">Contact us</a>
+        <a href="/#faq">FAQs</a>
+        <a href="/signin">Log in</a>
+        <a href="/onboarding/account">Create your account</a>
+      </nav>
+
       <h1>Your daily NGO impact measuring tool, all in one place</h1>
       <p>
-        Impactly is your daily NGO impact measuring tool — track attendance, manage
-        beneficiaries and report to funders, all in one place. Impactly is NGO impact
-        management software built to help non-profits spend less time on admin and more
-        time on the people they serve, built in direct partnership with a South African
-        NGO, for NGOs who don’t have time to fight their tools.
+        Track attendance, manage beneficiaries and report to funders, all in one place. Built
+        with a South African NGO, for NGOs who don’t have time to fight their tools.
       </p>
+      <p><a href="/onboarding/account">Get Started</a></p>
+
+      <h2>Application that puts your beneficiaries first</h2>
+      <p>
+        Impactly exists to help NGOs spend less time on admin and more time on the people they
+        serve. From classrooms to community centres, our all-in-one platform replaces
+        scattered spreadsheets and paperwork with one connected system built around your
+        mission.
+      </p>
+      <h3>Built for people who run programmes, not systems</h3>
       <p>
         Impactly is for NGO field staff, programme managers and administrators at small to
-        mid-sized organisations. No dedicated IT team, no steep learning curve. If you’re
-        currently running your programme out of a notebook, a shared spreadsheet and a
-        WhatsApp group, Impactly replaces all of it with one connected system.
+        mid-sized organisations. No dedicated IT team. No time for a steep learning curve. If
+        you’re currently running your programme out of a notebook, a shared spreadsheet and a
+        WhatsApp group, this is for you.
       </p>
+      <p><a href="/onboarding/account">Get started today</a></p>
+
+      <h2>The complete toolkit for NGO programme management</h2>
       <p>
-        The platform brings attendance tracking, beneficiary management and funder reporting
-        into a single toolkit. Mark who showed up in one tap, keep one record per beneficiary
-        instead of five spreadsheets, and let funder reports build themselves from data
-        you’ve already captured.
+        From attendance tracking to funder reporting, Impactly brings every part of running
+        your programme into one seamless platform. Spend less time switching between tools,
+        and more time creating impact.
       </p>
+      <h3>Attendance tracking</h3>
+      <p>Mark who showed up in one tap. No more paper registers that never make it back to the office.</p>
+      <h3>Beneficiary management</h3>
+      <p>One record per person, not five spreadsheets. Nothing lost when a staff member leaves.</p>
+      <h3>Funder reporting</h3>
+      <p>Reports build themselves from data you’ve already captured. No more reconstructing a term’s worth of work from memory before a deadline.</p>
+      <p><a href="/product-overview">View all capabilities</a></p>
+
+      <h2>Making a measurable impact for NGOs</h2>
       <p>
-        Most non-profits still rely on paper registers, spreadsheets and scattered WhatsApp
+        Most non-profits still rely on paper registers, spreadsheets, and scattered WhatsApp
         messages to keep their programmes running. These outdated tools make it difficult to
         report accurately to funders, and they put years of beneficiary records at risk every
-        time a staff member leaves. Impactly was built to solve exactly these challenges for
-        non-government organisations across South Africa.
+        time a staff member leaves. These are the challenges we hear about most from
+        non-government-organisations across South Africa.
       </p>
+      <p>Paper registers that never make it back to the office.</p>
+      <p>Spreadsheets that lock up the moment one person leaves.</p>
+      <p>Programme updates scattered across WhatsApp threads.</p>
+      <blockquote>
+        <p>
+          “One of the children was not feeling well, so we had to notify a parent. However,
+          the number I had did not go through. People change their contact details from time
+          to time, so we had to go through the file to find alternative numbers, but the
+          programme director had taken the file over the school holidays and did not bring it
+          back. There was not much we could do. We had to drive to the child’s home, not
+          knowing whether the parent would be there. But fortunately for us, the parent was
+          at home.”
+        </p>
+        <cite>— Tebelo Tech Hub staff member</cite>
+      </blockquote>
+      <p><a href="#contact-us">Get In Touch</a></p>
+
+      <h2>Get in touch about our NGO application</h2>
+      <p>Have a question about Impactly? Reach out and our team will get back to you.</p>
+      <p>Name. Email. Message. Send message.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <h3>Why should I choose Impactly?</h3>
       <p>
-        Impactly is an NGO impact management application built with South Africa’s POPIA in
-        mind — your organisation’s data, including beneficiaries, funders, grants and staff,
-        is scoped to your organisation only. All organisations get a free 1-month Pro trial
-        with unlimited beneficiaries; after the trial, plans supporting more than 300
-        beneficiaries require a paid subscription. See full
-        <a href="/product-overview#pricing">pricing</a> and
-        <a href="/product-overview#popia">POPIA compliance</a> details, or check the
-        <a href="#faq">frequently asked questions</a>.
+        Impactly was built in direct partnership with a real South African NGO, not designed
+        in a vacuum and hoped it would fit. Every screen has been tested with the field staff,
+        programme managers and administrators who actually use it day to day, so the
+        workflows match how NGOs really operate, not how software vendors assume they do.
+        Instead of stitching together paper registers, a spreadsheet and a WhatsApp group, you
+        get one connected system for attendance tracking, beneficiary management and funder
+        reporting — built specifically as an impact measuring and management tool for
+        non-profits, not a generic business application repurposed for the sector. You can
+        start on the free plan today, export your data at any time with no lock-in, and scale
+        up only once you actually need to.
       </p>
+      <h3>Does Impactly work on a phone?</h3>
       <p>
-        Learn more about <a href="#about-us">Impactly</a>, explore the full
-        <a href="/product-overview">product overview</a>, read about our
-        <a href="#impact">impact</a>, or <a href="#contact-us">contact us</a> with any
-        questions. Ready to get started? <a href="/onboarding/account">Create your account</a>
-        today — it takes around 30 minutes and walks you through setting up your organisation,
-        adding your first programmes, and inviting your team.
+        Yes. Impactly is built mobile-first, for field staff capturing attendance from a phone
+        in the field, not sitting at a desk. Every core workflow, including marking
+        attendance, adding a beneficiary, or checking today’s numbers, works cleanly on a
+        small screen with one-tap actions, so your team isn’t fighting a desktop layout
+        squeezed onto a phone.
       </p>
+      <h3>Do I need IT support to set it up?</h3>
+      <p>
+        No. Setup takes around 30 minutes and walks you through creating your organisation,
+        adding your first programmes, and inviting your team. No technical background is
+        needed, and there’s no server to configure or software to install. If you get stuck,
+        our onboarding flow explains each step in plain language, and you can always reach out
+        through the contact form.
+      </p>
+      <h3>What happens to our data?</h3>
+      <p>
+        Your data is stored per organisation and only accessible to your team, with every
+        organisation’s beneficiaries, funders, grants and staff records fully scoped and
+        separated from every other organisation on the platform. Impactly is being built with
+        South African NGOs and POPIA in mind, and we’re documenting exactly how data is
+        handled as the platform matures. POPIA compliance is ultimately a shared operational
+        responsibility between Impactly and your organisation, not something either party owns
+        alone.
+      </p>
+      <h3>Can we import our existing spreadsheet?</h3>
+      <p>
+        Yes. You can import beneficiaries, funders and grants from a CSV file during setup or
+        at any time from Organisation settings, so switching from spreadsheets doesn’t mean
+        starting from zero. Map your existing columns to Impactly’s fields, review the import
+        before it’s saved, and your historical records carry over instead of being re-typed by
+        hand.
+      </p>
+      <h3>What does it cost?</h3>
+      <p>
+        Impactly has a Free plan covering up to 300 beneficiaries with core programme
+        management, attendance tracking and basic reporting, and a Pro plan at R499/month with
+        unlimited programmes, up to 500 beneficiaries, unlimited reports and exports, and
+        priority support. Every organisation also gets a free 1-month Pro trial with unlimited
+        beneficiaries when they sign up, so you can try the full toolkit before deciding what
+        you need long term. See full <a href="/product-overview#pricing">pricing</a> and
+        <a href="/product-overview#popia">POPIA compliance</a> details on the
+        <a href="/product-overview">product overview</a> page.
+      </p>
+      <h3>Can we export our data if we leave?</h3>
+      <p>
+        Yes. Every organisation can export all of its data, including beneficiaries, funders,
+        grants and staff, to CSV at any time, no questions asked. There’s no lock-in and no
+        waiting period — if Impactly stops being the right tool for your organisation, your
+        records leave with you, fully intact.
+      </p>
+
+      <footer>
+        <p>Impactly</p>
+        <p>Created for Sand Dollar Design</p>
+        <p>&copy; Impactly</p>
+      </footer>
     </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
