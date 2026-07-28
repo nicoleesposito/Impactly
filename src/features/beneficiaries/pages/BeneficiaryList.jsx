@@ -24,6 +24,9 @@ export default function BeneficiaryList() {
 
   const label = beneficiaryLabel || 'Beneficiaries';
   const programmes = org?.programmes ?? [];
+  const subtitle = [org?.name, `${beneficiaries.length} ${label.toLowerCase()}`]
+    .filter(Boolean)
+    .join(' · ');
 
   // Filter by active programme pill
   const programmeFiltered = activeProgramme !== 'all'
@@ -43,8 +46,8 @@ export default function BeneficiaryList() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.heading}>
-          <h1 className={styles.title}>All Beneficiaries</h1>
-          <p className={styles.meta}>Beneficiaries set to &gt; {label}</p>
+          <h1 className={styles.title}>All {label}</h1>
+          <p className={styles.meta}>{subtitle}</p>
         </div>
         <Link to={ROUTES.studentAdd} className={styles.add}>
           <Plus size={16} /> Add
