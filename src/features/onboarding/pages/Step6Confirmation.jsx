@@ -42,36 +42,42 @@ export default function Step6Confirmation() {
   ].filter(Boolean);
 
   async function createOrgAndSeed(orgId) {
-    const promises = [];
+    const results = [];
 
     if (data.beneficiaries.length > 0) {
-      promises.push(
+      results.push(
         supabase.from('beneficiaries').insert(
           data.beneficiaries.map((b) => ({
             org_id: orgId,
-            first_name: b.firstName ?? b.name ?? 'Unknown',
-            last_name: b.lastName ?? null,
-            date_of_birth: b.dob ?? null,
-            gender: b.gender ?? null,
+            first_name: b.firstName || b.name || 'Unknown',
+            last_name: b.lastName || null,
+            // date_of_birth is optional here — an empty string (the field's
+            // default when left blank) is not valid input for a Postgres
+            // date column and would fail this whole multi-row insert.
+            date_of_birth: b.dob || null,
+            gender: b.gender || null,
           })),
         ),
       );
     }
 
     if (data.team.length > 0) {
-      promises.push(
+      results.push(
         supabase.from('staff_invites').insert(
           data.team.map((m) => ({
             org_id: orgId,
             email: m.email,
-            access_level: m.accessLevel ?? 'Staff',
-            role: m.role ?? null,
+            access_level: m.accessLevel || 'Staff',
+            role: m.role || null,
           })),
         ),
       );
     }
 
-    await Promise.all(promises);
+    const settled = await Promise.all(results);
+    settled.forEach(({ error }) => {
+      if (error) console.error('[Step6Confirmation] seeding failed:', error.message);
+    });
   }
 
   async function handleGoToToday() {

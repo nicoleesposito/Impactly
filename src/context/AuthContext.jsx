@@ -47,9 +47,14 @@ export function AuthProvider({ children }) {
       .then(({ data }) => setProfile(data ?? null));
   }, [session?.user?.id]);
 
-  // Exposed so onboarding can force a re-fetch after creating the org
+  // Exposed so onboarding can force a re-fetch right after creating the org.
+  // Reads the live auth user rather than the `session` state above — this is
+  // called immediately after signUp() resolves, before this context's own
+  // onAuthStateChange subscription has necessarily caught up, so `session`
+  // in a closure here could still be stale/null at call time.
   const refreshProfile = useCallback(async () => {
-    const userId = session?.user?.id;
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData?.user?.id;
     if (!userId) return;
     const { data } = await supabase
       .from('profiles')
@@ -57,7 +62,7 @@ export function AuthProvider({ children }) {
       .eq('id', userId)
       .single();
     setProfile(data ?? null);
-  }, [session?.user?.id]);
+  }, []);
 
   const role = profile?.role ?? session?.user?.app_metadata?.role ?? null;
 
