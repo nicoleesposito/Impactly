@@ -161,6 +161,7 @@ export default function AddBeneficiary() {
             aria-label="Last name"
             autoComplete="family-name"
           />
+          <p className={styles.subLabel}>Date of birth</p>
           <div className={styles.dateWrap}>
             <input
               type="date"
@@ -213,6 +214,7 @@ export default function AddBeneficiary() {
             aria-label="Emergency contact name"
             autoComplete="off"
           />
+          <p className={styles.subLabel}>Date of birth (optional)</p>
           <div className={styles.dateWrap}>
             <input
               type="date"

@@ -220,6 +220,7 @@ function Step1Details({ draft, update, programmes }) {
         onChange={update('funder')}
         aria-label="Funder"
       />
+      <p className={styles.fieldLabel}>Due date (optional)</p>
       <div className={styles.dateWrap}>
         <input
           type="date"
