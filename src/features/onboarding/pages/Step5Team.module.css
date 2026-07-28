@@ -1,15 +1,22 @@
 .legend {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--space-2);
-}
-
-.chip {
-  padding: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-1);
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-6);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  list-style: disc;
+}
+
+.legendItem {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
+}
+
+.legendItem strong {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
 }
 
 .addBtn {

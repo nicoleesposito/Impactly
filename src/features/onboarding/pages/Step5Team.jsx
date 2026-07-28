@@ -75,11 +75,14 @@ export default function Step5Team() {
       }
     >
       <ul className={styles.legend}>
-        {INVITE_ROLES.map((r) => (
-          <li key={r.value} className={styles.chip}>
-            {r.label}
-          </li>
-        ))}
+        {INVITE_ROLES.map((r) => {
+          const [name, description] = r.label.split(' - ');
+          return (
+            <li key={r.value} className={styles.legendItem}>
+              <strong>{name}</strong> &mdash; {description}
+            </li>
+          );
+        })}
       </ul>
 
       <TextField
