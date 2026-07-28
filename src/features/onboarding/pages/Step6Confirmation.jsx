@@ -96,12 +96,17 @@ export default function Step6Confirmation() {
     }
 
     if (data.team.length > 0) {
+      // Step5Team.jsx only collects an access level (admin/manager/staff),
+      // stored on each entry as `role` — it's the same 'admin'/'manager'/
+      // 'staff' key InviteStaff.jsx's standalone flow stores directly into
+      // access_level. There's no separate free-text job-title role from
+      // onboarding, so that column is left null here.
       const { error } = await supabase.from('staff_invites').insert(
         data.team.map((m) => ({
           org_id: orgId,
           email: m.email,
-          access_level: m.accessLevel || 'Staff',
-          role: m.role || null,
+          access_level: m.role || 'staff',
+          role: null,
         })),
       );
       if (error) console.error('[Step6Confirmation] seeding team invites failed:', error.message);
