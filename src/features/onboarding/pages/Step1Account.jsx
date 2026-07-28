@@ -76,6 +76,7 @@ export default function Step1Account() {
         value={account.password}
         onChange={update('password')}
         error={errors.password}
+        hint="Must be at least 8 characters"
         autoComplete="new-password"
       />
       <TextField
