@@ -19,6 +19,7 @@ function dbToBeneficiary(row) {
     documentUrls: row.document_urls ?? [],
     storyImageUrls: row.story_image_urls ?? [],
     storyQuotes: row.story_quotes ?? '',
+    photoUrl: row.photo_url ?? null,
     programmeId: row.programme_id ?? null,
     status: row.status ?? 'Active',
     createdAt: row.created_at,
@@ -68,12 +69,17 @@ export function BeneficiariesProvider({ children }) {
       (beneficiary.storyImageFiles ?? []).map((f) => uploadFile('beneficiary-images', f)),
     ).then((urls) => urls.filter(Boolean));
 
+    const photoUrl = beneficiary.photoFile
+      ? await uploadFile('beneficiary-images', beneficiary.photoFile)
+      : null;
+
     const tempId = `temp-${Date.now()}`;
     const optimistic = {
       id: tempId,
       status: 'Active',
       documentUrls: docUrls,
       storyImageUrls: imageUrls,
+      photoUrl,
       ...beneficiary,
     };
     setBeneficiaries((prev) => [...prev, optimistic]);
@@ -93,6 +99,7 @@ export function BeneficiariesProvider({ children }) {
       story_image_urls: imageUrls,
       story_quotes: beneficiary.storyQuotes || null,
       programme_id: beneficiary.programmeId || null,
+      photo_url: photoUrl,
       status: 'Active',
     }).select().single();
 
@@ -110,7 +117,8 @@ export function BeneficiariesProvider({ children }) {
 
   // Update all fields of a beneficiary.
   // Pass storyImageUrls/documentUrls as the URLs to KEEP (after user removals),
-  // plus newImageFiles/newDocFiles for new uploads.
+  // plus newImageFiles/newDocFiles for new uploads. photoUrl is the URL to
+  // KEEP (or null if removed); newPhotoFile replaces it when present.
   const updateBeneficiary = useCallback(async (id, updates) => {
     const newImageUrls = await Promise.all(
       (updates.newImageFiles ?? []).map((f) => uploadFile('beneficiary-images', f)),
@@ -122,11 +130,14 @@ export function BeneficiariesProvider({ children }) {
 
     const finalImageUrls = [...(updates.storyImageUrls ?? []), ...newImageUrls];
     const finalDocUrls = [...(updates.documentUrls ?? []), ...newDocUrls];
+    const finalPhotoUrl = updates.newPhotoFile
+      ? await uploadFile('beneficiary-images', updates.newPhotoFile)
+      : (updates.photoUrl ?? null);
 
     // Optimistic update
     setBeneficiaries((prev) =>
       prev.map((b) => b.id === id
-        ? { ...b, ...updates, storyImageUrls: finalImageUrls, documentUrls: finalDocUrls }
+        ? { ...b, ...updates, storyImageUrls: finalImageUrls, documentUrls: finalDocUrls, photoUrl: finalPhotoUrl }
         : b,
       ),
     );
@@ -147,6 +158,7 @@ export function BeneficiariesProvider({ children }) {
         story_image_urls: finalImageUrls,
         story_quotes: updates.storyQuotes || null,
         programme_id: updates.programmeId || null,
+        photo_url: finalPhotoUrl,
       })
       .eq('id', id)
       .select()

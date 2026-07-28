@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OnboardingShell from '../components/OnboardingShell.jsx';
 import WizardFooter from '../components/WizardFooter.jsx';
 import PersonRow from '../components/PersonRow.jsx';
 import TextField from '../../../components/ui/TextField/index.js';
 import DatePicker from '../../../components/ui/DatePicker/index.js';
+import PhotoUpload from '../../../components/ui/PhotoUpload/index.js';
 import { Upload, ChevronDown } from '../../../components/icons.jsx';
 import { useOnboarding } from '../OnboardingContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
@@ -28,11 +29,31 @@ export default function Step4Beneficiaries() {
   const { data, addBeneficiary, removeBeneficiary } = useOnboarding();
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  // Tracks the latest draft preview for the unmount cleanup below, without
+  // that cleanup closing over a stale (always-null) first-render value.
+  const photoPreviewRef = useRef(null);
+  useEffect(() => { photoPreviewRef.current = photoPreview; }, [photoPreview]);
+
+  // Revoke a still-unadded draft preview when the step unmounts. Once "Add"
+  // is clicked the URL is handed off to the list entry below (ownership
+  // moves to handleRemove) — this must NOT also fire on that handoff, so it
+  // only runs once, on unmount, not on every photoPreview change.
+  useEffect(() => () => {
+    if (photoPreviewRef.current) URL.revokeObjectURL(photoPreviewRef.current);
+  }, []);
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
   function handleDobChange(dob) {
     setForm((f) => ({ ...f, dob }));
+  }
+
+  function handlePhotoSelected(file) {
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
   }
 
   function handleAdd() {
@@ -42,13 +63,26 @@ export default function Step4Beneficiaries() {
     setErrors(next);
     if (Object.keys(next).length) return;
 
+    // photoFile only lives in memory for this tab — OnboardingContext
+    // persists everything else to sessionStorage as JSON, which can't carry
+    // a File across a refresh. Step6Confirmation uploads it once the org
+    // (and its beneficiary rows) actually exist.
     addBeneficiary({
       id: crypto.randomUUID(),
       firstName: form.firstName.trim(),
       lastName: form.lastName.trim(),
       dob: form.dob.trim(),
+      photoFile,
+      photoPreview,
     });
     setForm(EMPTY);
+    setPhotoFile(null);
+    setPhotoPreview(null);
+  }
+
+  function handleRemove(b) {
+    if (b.photoPreview) URL.revokeObjectURL(b.photoPreview);
+    removeBeneficiary(b.id);
   }
 
   const list = data.beneficiaries;
@@ -76,10 +110,11 @@ export default function Step4Beneficiaries() {
               {list.map((b) => (
                 <PersonRow
                   key={b.id}
+                  photoUrl={b.photoPreview}
                   initials={initials(b.firstName, b.lastName)}
                   title={`${b.firstName} ${b.lastName}`}
                   subtitle={formatDob(b.dob)}
-                  onRemove={() => removeBeneficiary(b.id)}
+                  onRemove={() => handleRemove(b)}
                 />
               ))}
             </section>
@@ -101,6 +136,13 @@ export default function Step4Beneficiaries() {
       </div>
 
       <p className={styles.divider}>or add manually</p>
+
+      <PhotoUpload
+        imageUrl={photoPreview}
+        initials={initials(form.firstName, form.lastName)}
+        onFileSelected={handlePhotoSelected}
+        onRemove={photoPreview ? () => { URL.revokeObjectURL(photoPreview); setPhotoFile(null); setPhotoPreview(null); } : undefined}
+      />
 
       <TextField
         label="First name"

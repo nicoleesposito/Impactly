@@ -88,9 +88,13 @@ export default function BeneficiaryList() {
                     to={ROUTES.studentProfile.replace(':id', b.id)}
                     className={styles.row}
                   >
-                    <span className={styles.avatar} aria-hidden="true">
-                      {initials(b)}
-                    </span>
+                    {b.photoUrl ? (
+                      <img src={b.photoUrl} alt="" className={styles.avatarImg} />
+                    ) : (
+                      <span className={styles.avatar} aria-hidden="true">
+                        {initials(b)}
+                      </span>
+                    )}
                     <span className={styles.rowBody}>
                       <span className={styles.rowName}>{fullName(b)}</span>
                       {prog && (

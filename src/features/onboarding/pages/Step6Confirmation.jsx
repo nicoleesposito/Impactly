@@ -8,6 +8,19 @@ import { supabase } from '../../../lib/supabase.js';
 import { ROUTES } from '../../../constants/routes.js';
 import styles from './Step6Confirmation.module.css';
 
+// Same bucket BeneficiariesContext uploads story/profile photos to.
+async function uploadPhoto(file) {
+  const ext = file.name.split('.').pop();
+  const path = `${crypto.randomUUID()}.${ext}`;
+  const { error } = await supabase.storage.from('beneficiary-images').upload(path, file);
+  if (error) {
+    console.error('[Step6Confirmation] photo upload failed:', error.message);
+    return null;
+  }
+  const { data: pub } = supabase.storage.from('beneficiary-images').getPublicUrl(path);
+  return pub.publicUrl;
+}
+
 export default function Step6Confirmation() {
   const navigate = useNavigate();
   const { data, reset } = useOnboarding();
@@ -42,42 +55,57 @@ export default function Step6Confirmation() {
   ].filter(Boolean);
 
   async function createOrgAndSeed(orgId) {
-    const results = [];
-
     if (data.beneficiaries.length > 0) {
-      results.push(
-        supabase.from('beneficiaries').insert(
-          data.beneficiaries.map((b) => ({
-            org_id: orgId,
-            first_name: b.firstName || b.name || 'Unknown',
-            last_name: b.lastName || null,
-            // date_of_birth is optional here — an empty string (the field's
-            // default when left blank) is not valid input for a Postgres
-            // date column and would fail this whole multi-row insert.
-            date_of_birth: b.dob || null,
-            gender: b.gender || null,
-          })),
-        ),
-      );
+      const { data: inserted, error } = await supabase.from('beneficiaries').insert(
+        data.beneficiaries.map((b) => ({
+          org_id: orgId,
+          first_name: b.firstName || b.name || 'Unknown',
+          last_name: b.lastName || null,
+          // date_of_birth is optional here — an empty string (the field's
+          // default when left blank) is not valid input for a Postgres
+          // date column and would fail this whole multi-row insert.
+          date_of_birth: b.dob || null,
+          gender: b.gender || null,
+        })),
+      ).select('id');
+
+      if (error) {
+        console.error('[Step6Confirmation] seeding beneficiaries failed:', error.message);
+      } else {
+        // Photo files only survive in memory for this tab (OnboardingContext
+        // persists everything else to sessionStorage as JSON, which drops
+        // File objects) — upload them now that rows actually exist. A plain
+        // multi-row INSERT ... RETURNING with no upsert/trigger involved
+        // preserves VALUES-list order, so matching rows back to the original
+        // entries positionally is safe.
+        await Promise.all(
+          data.beneficiaries.map(async (b, i) => {
+            if (!(b.photoFile instanceof File)) return;
+            const row = inserted?.[i];
+            if (!row) return;
+            const photoUrl = await uploadPhoto(b.photoFile);
+            if (!photoUrl) return;
+            const { error: photoErr } = await supabase
+              .from('beneficiaries')
+              .update({ photo_url: photoUrl })
+              .eq('id', row.id);
+            if (photoErr) console.error('[Step6Confirmation] photo attach failed:', photoErr.message);
+          }),
+        );
+      }
     }
 
     if (data.team.length > 0) {
-      results.push(
-        supabase.from('staff_invites').insert(
-          data.team.map((m) => ({
-            org_id: orgId,
-            email: m.email,
-            access_level: m.accessLevel || 'Staff',
-            role: m.role || null,
-          })),
-        ),
+      const { error } = await supabase.from('staff_invites').insert(
+        data.team.map((m) => ({
+          org_id: orgId,
+          email: m.email,
+          access_level: m.accessLevel || 'Staff',
+          role: m.role || null,
+        })),
       );
+      if (error) console.error('[Step6Confirmation] seeding team invites failed:', error.message);
     }
-
-    const settled = await Promise.all(results);
-    settled.forEach(({ error }) => {
-      if (error) console.error('[Step6Confirmation] seeding failed:', error.message);
-    });
   }
 
   async function handleGoToToday() {

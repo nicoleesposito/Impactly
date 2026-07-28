@@ -4,6 +4,7 @@ import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { ChevronLeft, Pencil, FileText, Plus, Close } from '../../../components/icons.jsx';
 import DatePicker from '../../../components/ui/DatePicker/index.js';
+import PhotoUpload from '../../../components/ui/PhotoUpload/index.js';
 import styles from './BeneficiaryProfile.module.css';
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
@@ -39,6 +40,11 @@ export default function BeneficiaryProfile() {
   const [newImageFiles, setNewImageFiles] = useState([]);
   const [newImagePreviews, setNewImagePreviews] = useState([]);
   const [newDocFiles, setNewDocFiles] = useState([]);
+  // Photo: keepPhotoUrl is the existing URL (or null if removed);
+  // newPhotoFile/newPhotoPreview are set when the user picks a replacement.
+  const [keepPhotoUrl, setKeepPhotoUrl] = useState(null);
+  const [newPhotoFile, setNewPhotoFile] = useState(null);
+  const [newPhotoPreview, setNewPhotoPreview] = useState(null);
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -84,13 +90,30 @@ export default function BeneficiaryProfile() {
     setNewImageFiles([]);
     setNewImagePreviews([]);
     setNewDocFiles([]);
+    setKeepPhotoUrl(b.photoUrl ?? null);
+    setNewPhotoFile(null);
+    setNewPhotoPreview(null);
     setIsEditing(true);
   }
 
   function cancelEdit() {
     newImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    if (newPhotoPreview) URL.revokeObjectURL(newPhotoPreview);
     setIsEditing(false);
     setForm(null);
+  }
+
+  function handlePhotoSelected(file) {
+    if (newPhotoPreview) URL.revokeObjectURL(newPhotoPreview);
+    setNewPhotoFile(file);
+    setNewPhotoPreview(URL.createObjectURL(file));
+  }
+
+  function removePhoto() {
+    if (newPhotoPreview) URL.revokeObjectURL(newPhotoPreview);
+    setNewPhotoFile(null);
+    setNewPhotoPreview(null);
+    setKeepPhotoUrl(null);
   }
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -136,8 +159,11 @@ export default function BeneficiaryProfile() {
       documentUrls: keepDocUrls,
       newImageFiles,
       newDocFiles,
+      photoUrl: keepPhotoUrl,
+      newPhotoFile,
     });
     newImagePreviews.forEach((url) => URL.revokeObjectURL(url));
+    if (newPhotoPreview) URL.revokeObjectURL(newPhotoPreview);
     setSaving(false);
     setIsEditing(false);
     setForm(null);
@@ -183,6 +209,12 @@ export default function BeneficiaryProfile() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Personal details</h2>
           <div className={styles.editCard}>
+            <PhotoUpload
+              imageUrl={newPhotoPreview || keepPhotoUrl}
+              initials={initials(form)}
+              onFileSelected={handlePhotoSelected}
+              onRemove={(newPhotoPreview || keepPhotoUrl) ? removePhoto : undefined}
+            />
             <input className={styles.editInput} placeholder="First name" value={form.firstName} onChange={update('firstName')} aria-label="First name" />
             <input className={styles.editInput} placeholder="Last name" value={form.lastName} onChange={update('lastName')} aria-label="Last name" />
             <DatePicker label="Date of birth" value={form.dob} onChange={updateDate('dob')} disableFuture />
@@ -349,7 +381,11 @@ export default function BeneficiaryProfile() {
 
       {/* Identity card */}
       <div className={styles.card}>
-        <span className={styles.avatar} aria-hidden="true">{initials(b)}</span>
+        {b.photoUrl ? (
+          <img src={b.photoUrl} alt="" className={styles.avatarImg} />
+        ) : (
+          <span className={styles.avatar} aria-hidden="true">{initials(b)}</span>
+        )}
         <div className={styles.identityBody}>
           <p className={styles.name}>{fullName(b)}</p>
           {b.status && <p className={styles.status}>{b.status}</p>}

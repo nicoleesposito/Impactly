@@ -1,0 +1,68 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.circleWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  display: block;
+}
+
+.initials {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: #2c2226;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.editBtn {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-surface);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.editBtn:hover {
+  background: var(--color-primary-hover);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.removeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.removeBtn:hover {
+  color: var(--color-danger);
+}

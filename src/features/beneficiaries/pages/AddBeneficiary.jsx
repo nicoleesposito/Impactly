@@ -1,14 +1,19 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ChevronLeft } from '../../../components/icons.jsx';
 import DatePicker from '../../../components/ui/DatePicker/index.js';
+import PhotoUpload from '../../../components/ui/PhotoUpload/index.js';
 import styles from './AddBeneficiary.module.css';
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
 const RELATION_OPTIONS = ['Mother', 'Father', 'Guardian', 'Grandparent', 'Sibling', 'Other'];
+
+function initials(first, last) {
+  return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase() || '?';
+}
 
 function PlusIcon() {
   return (
@@ -60,6 +65,9 @@ export default function AddBeneficiary() {
   // Story image files
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
+  // Profile photo
+  const [photoFile, setPhotoFile] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   const docInputRefs = [useRef(null), useRef(null)];
   const imageInputRef = useRef(null);
@@ -68,6 +76,19 @@ export default function AddBeneficiary() {
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
   const updateDate = (key) => (value) => setForm((f) => ({ ...f, [key]: value }));
+
+  // Revoke the preview object URL on swap/unmount so it doesn't leak.
+  useEffect(() => () => { if (photoPreview) URL.revokeObjectURL(photoPreview); }, [photoPreview]);
+
+  function handlePhotoSelected(file) {
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  }
+
+  function handleRemovePhoto() {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+  }
 
   function handleDocChange(index, e) {
     const file = e.target.files[0] ?? null;
@@ -116,6 +137,7 @@ export default function AddBeneficiary() {
       programmeId: form.programmeId || null,
       documentFiles: docFiles.filter(Boolean),
       storyImageFiles: imageFiles,
+      photoFile,
     });
 
     setSubmitting(false);
@@ -136,6 +158,12 @@ export default function AddBeneficiary() {
         {/* Personal details */}
         <fieldset className={styles.card}>
           <legend className={styles.cardTitle}>Personal details</legend>
+          <PhotoUpload
+            imageUrl={photoPreview}
+            initials={initials(form.firstName, form.lastName)}
+            onFileSelected={handlePhotoSelected}
+            onRemove={photoPreview ? handleRemovePhoto : undefined}
+          />
           <input
             className={styles.input}
             placeholder="First name"

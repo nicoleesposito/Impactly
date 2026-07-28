@@ -54,6 +54,14 @@
   letter-spacing: 0.02em;
 }
 
+.avatarImg {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+}
+
 .identityBody {
   flex: 1;
   min-width: 0;
