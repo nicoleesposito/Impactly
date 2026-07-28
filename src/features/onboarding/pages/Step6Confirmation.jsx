@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StepProgress from '../components/StepProgress.jsx';
 import { Check } from '../../../components/icons.jsx';
@@ -11,10 +11,24 @@ import styles from './Step6Confirmation.module.css';
 export default function Step6Confirmation() {
   const navigate = useNavigate();
   const { data, reset } = useOnboarding();
-  const { refreshProfile } = useAuth();
+  const { session, refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [emailPending, setEmailPending] = useState(false);
+  const [readyToEnter, setReadyToEnter] = useState(false);
+
+  // ProtectedRoute gates /home on AuthContext's own session state, which
+  // updates asynchronously via its own onAuthStateChange subscription —
+  // separate from the local session signUp() just returned below. Navigating
+  // immediately after signUp() resolves races that update: if AuthContext
+  // hasn't caught up yet, ProtectedRoute sees session === null and bounces
+  // to sign-in even though the account was created successfully. Waiting
+  // here for AuthContext's session to actually be populated closes that gap.
+  useEffect(() => {
+    if (readyToEnter && session) {
+      navigate(ROUTES.home, { replace: true });
+    }
+  }, [readyToEnter, session, navigate]);
 
   const checklist = [
     'Organisation profile created',
@@ -104,7 +118,7 @@ export default function Step6Confirmation() {
 
       reset();
       setLoading(false);
-      navigate(ROUTES.home);
+      setReadyToEnter(true);
     } else {
       // Email confirmation enabled — save org details for post-confirmation setup.
       sessionStorage.setItem('impactly-pending-org', JSON.stringify({
