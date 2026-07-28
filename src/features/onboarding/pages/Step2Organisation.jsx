@@ -7,15 +7,18 @@ import SelectField from '../../../components/ui/SelectField/index.js';
 import { useOnboarding } from '../OnboardingContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
 import { ORG_TYPES, COUNTRIES, BENEFICIARY_RANGES } from '../../../constants/onboarding.js';
+import { PROGRAMME_SWATCHES } from '../../../constants/programmeSwatches.js';
 import styles from './Step2Organisation.module.css';
 
 export default function Step2Organisation() {
   const navigate = useNavigate();
-  const { data, setOrganisation } = useOnboarding();
+  const { data, setOrganisation, setProgramme } = useOnboarding();
   const org = data.organisation;
+  const programme = data.programme;
   const [errors, setErrors] = useState({});
 
   const update = (field) => (e) => setOrganisation({ [field]: e.target.value });
+  const updateProgramme = (field) => (e) => setProgramme({ [field]: e.target.value });
 
   function validate() {
     const next = {};
@@ -25,6 +28,8 @@ export default function Step2Organisation() {
     if (!org.size) next.size = 'Please select a range';
     if (!org.beneficiaryLabel.trim())
       next.beneficiaryLabel = 'Please enter a label (e.g. Students, Learners, Youth)';
+    if (!programme.name.trim())
+      next.programmeName = 'Please enter a programme name';
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -85,6 +90,51 @@ export default function Step2Organisation() {
         hint={'This is the name of the tab where you can access all the people your organisation supports — it’s the second icon in the bottom navigation, and updates based on what you enter here. You can change it later in Settings. For example, enter “Students” if your organisation supports students.'}
         maxLength={30}
       />
+
+      <p className={styles.programmeIntro}>
+        This is your first programme — any {org.beneficiaryLabel.trim().toLowerCase() || 'beneficiaries'} you
+        add next will automatically join it. Create more anytime from
+        &ldquo;+ Add Programme&rdquo; at the top of the app.
+      </p>
+
+      <fieldset className={styles.card}>
+        <legend className={styles.cardTitle}>Programme details</legend>
+        <input
+          className={styles.input}
+          placeholder="Programme name"
+          value={programme.name}
+          onChange={updateProgramme('name')}
+          aria-label="Programme name"
+        />
+        <textarea
+          className={styles.textarea}
+          placeholder="Description (optional)"
+          value={programme.description}
+          onChange={updateProgramme('description')}
+          aria-label="Description"
+        />
+        {errors.programmeName && (
+          <p className={styles.fieldError} role="alert">{errors.programmeName}</p>
+        )}
+      </fieldset>
+
+      <fieldset className={styles.card}>
+        <legend className={styles.cardTitle}>Colour</legend>
+        <div className={styles.swatchGrid} role="radiogroup" aria-label="Programme colour">
+          {PROGRAMME_SWATCHES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="radio"
+              aria-checked={programme.color === c}
+              aria-label={c}
+              className={`${styles.swatch} ${programme.color === c ? styles.swatchSelected : ''}`}
+              style={{ background: c }}
+              onClick={() => setProgramme({ color: c })}
+            />
+          ))}
+        </div>
+      </fieldset>
     </OnboardingShell>
   );
 }

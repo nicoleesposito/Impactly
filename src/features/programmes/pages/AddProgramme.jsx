@@ -2,18 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { ChevronLeft } from '../../../components/icons.jsx';
+import { PROGRAMME_SWATCHES } from '../../../constants/programmeSwatches.js';
 import styles from './AddProgramme.module.css';
-
-const COLOURS = [
-  '#E05C5C', // red
-  '#E08A3C', // orange
-  '#D4B84A', // yellow
-  '#5CB85C', // green
-  '#4A9FD4', // blue
-  '#7B68C8', // purple
-  '#C468A8', // pink
-  '#4ABFB5', // teal
-];
 
 export default function AddProgramme() {
   const navigate = useNavigate();
@@ -21,7 +11,7 @@ export default function AddProgramme() {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [color, setColor] = useState(COLOURS[0]);
+  const [color, setColor] = useState(PROGRAMME_SWATCHES[0]);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -86,7 +76,7 @@ export default function AddProgramme() {
         <fieldset className={styles.card}>
           <legend className={styles.cardTitle}>Colour</legend>
           <div className={styles.swatchGrid} role="radiogroup" aria-label="Programme colour">
-            {COLOURS.map((c) => (
+            {PROGRAMME_SWATCHES.map((c) => (
               <button
                 key={c}
                 type="button"

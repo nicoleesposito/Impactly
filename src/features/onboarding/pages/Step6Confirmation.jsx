@@ -45,6 +45,7 @@ export default function Step6Confirmation() {
 
   const checklist = [
     'Organisation profile created',
+    data.programme.name.trim() ? `"${data.programme.name.trim()}" programme created` : null,
     data.template ? 'Template applied' : null,
     data.beneficiaries.length > 0
       ? `${data.beneficiaries.length} ${data.beneficiaries.length === 1 ? 'beneficiary' : 'beneficiaries'} added`
@@ -55,6 +56,28 @@ export default function Step6Confirmation() {
   ].filter(Boolean);
 
   async function createOrgAndSeed(orgId) {
+    // Created first so beneficiaries below can be auto-enrolled into it.
+    let programmeId = null;
+    if (data.programme.name.trim()) {
+      const { data: programmeRow, error: programmeError } = await supabase
+        .from('programmes')
+        .insert({
+          org_id: orgId,
+          name: data.programme.name.trim(),
+          description: data.programme.description.trim() || null,
+          color: data.programme.color || null,
+          short_label: data.programme.name.trim().slice(0, 3).toUpperCase(),
+        })
+        .select('id')
+        .single();
+
+      if (programmeError) {
+        console.error('[Step6Confirmation] seeding programme failed:', programmeError.message);
+      } else {
+        programmeId = programmeRow.id;
+      }
+    }
+
     if (data.beneficiaries.length > 0) {
       const { data: inserted, error } = await supabase.from('beneficiaries').insert(
         data.beneficiaries.map((b) => ({
@@ -66,6 +89,7 @@ export default function Step6Confirmation() {
           // date column and would fail this whole multi-row insert.
           date_of_birth: b.dob || null,
           gender: b.gender || null,
+          programme_id: programmeId,
         })),
       ).select('id');
 
@@ -166,6 +190,7 @@ export default function Step6Confirmation() {
         country: data.organisation.country,
         size: data.organisation.size,
         beneficiaryLabel: data.organisation.beneficiaryLabel || 'Students',
+        programme: data.programme,
         beneficiaries: data.beneficiaries,
         team: data.team,
       }));

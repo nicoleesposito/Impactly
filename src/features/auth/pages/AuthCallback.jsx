@@ -44,6 +44,23 @@ export default function AuthCallback() {
           });
 
           if (!orgError && orgId) {
+            // Created first so beneficiaries below can be auto-enrolled into it.
+            let programmeId = null;
+            if (pending.programme?.name?.trim()) {
+              const { data: programmeRow } = await supabase
+                .from('programmes')
+                .insert({
+                  org_id: orgId,
+                  name: pending.programme.name.trim(),
+                  description: pending.programme.description?.trim() || null,
+                  color: pending.programme.color || null,
+                  short_label: pending.programme.name.trim().slice(0, 3).toUpperCase(),
+                })
+                .select('id')
+                .single();
+              programmeId = programmeRow?.id ?? null;
+            }
+
             const promises = [];
 
             if (pending.beneficiaries?.length > 0) {
@@ -51,10 +68,15 @@ export default function AuthCallback() {
                 supabase.from('beneficiaries').insert(
                   pending.beneficiaries.map((b) => ({
                     org_id: orgId,
-                    first_name: b.firstName ?? b.name ?? 'Unknown',
-                    last_name: b.lastName ?? null,
-                    date_of_birth: b.dob ?? null,
-                    gender: b.gender ?? null,
+                    first_name: b.firstName || b.name || 'Unknown',
+                    last_name: b.lastName || null,
+                    date_of_birth: b.dob || null,
+                    gender: b.gender || null,
+                    programme_id: programmeId,
+                    // photoFile can't survive the sessionStorage JSON round-trip
+                    // this pending payload went through, so photos from onboarding
+                    // aren't attached on this path — same as beneficiaries added
+                    // any other way without a photo.
                   })),
                 ),
               );
@@ -66,8 +88,8 @@ export default function AuthCallback() {
                   pending.team.map((m) => ({
                     org_id: orgId,
                     email: m.email,
-                    access_level: m.accessLevel ?? 'Staff',
-                    role: m.role ?? null,
+                    access_level: m.role || 'staff',
+                    role: null,
                   })),
                 ),
               );

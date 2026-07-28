@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { PROGRAMME_SWATCHES } from '../../constants/programmeSwatches.js';
 
 // Holds wizard data across the 6 steps so Back/refresh never loses input
 // (FR-002, EDGE-004). Persisted to sessionStorage for the duration of setup.
@@ -11,6 +12,7 @@ const DEFAULT_DATA = {
   account: { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' },
   organisation: { name: '', type: '', country: '', size: '', beneficiaryLabel: 'Beneficiaries' },
   template: null,
+  programme: { name: '', description: '', color: PROGRAMME_SWATCHES[0] },
   beneficiaries: [],
   team: [],
 };
@@ -47,6 +49,7 @@ export function OnboardingProvider({ children }) {
       setAccount: (patch) => setSection('account', patch),
       setOrganisation: (patch) => setSection('organisation', patch),
       setTemplate: (template) => setData((d) => ({ ...d, template })),
+      setProgramme: (patch) => setSection('programme', patch),
       addBeneficiary: (b) =>
         setData((d) => ({ ...d, beneficiaries: [...d.beneficiaries, b] })),
       removeBeneficiary: (id) =>
