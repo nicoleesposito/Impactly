@@ -1,24 +1,37 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import StatTile from '../../../components/ui/StatTile/index.js';
 import SectionCard from '../components/SectionCard.jsx';
 import EmptyState from '../components/EmptyState.jsx';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
+import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
+import { useReports } from '../../../context/ReportsContext.jsx';
 import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
+import { supabase } from '../../../lib/supabase.js';
 import { ROUTES } from '../../../constants/routes.js';
 import { ArrowRight, FileText, CalendarDays, BarChart } from '../../../components/icons.jsx';
 import styles from './Today.module.css';
 
 // Today dashboard / home (FR-003).
 //
-// This is the "start from scratch" state: structure in place, no data yet.
-// Each section is driven by an array that's empty for a fresh organisation and
-// fills in as the user adds programmes, reports, tasks and attendance — at which
-// point the rows below replace the empty states automatically. These arrays are
-// wired to live Supabase queries in a later section.
-const reports = [];
+// Stats and sections below read from the same tables their own feature pages
+// write to (BeneficiariesContext, ReportsContext, attendance_sessions /
+// attendance_records — see AttendanceMulti.jsx), so this page has no local
+// copy of that data to fall out of sync. "Upcoming tasks & reminders" is the
+// one exception: there's no tasks table or feature anywhere in the schema,
+// so it stays a real (not fabricated) empty state until that's built.
 const tasks = [];
-const attendance = [];
+
+const REPORT_STATUS_LABEL = {
+  'due-soon': 'Due soon',
+  'in-progress': 'In progress',
+  completed: 'Completed',
+};
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 function todayLabel() {
   return new Date().toLocaleDateString(undefined, {
@@ -31,14 +44,34 @@ function todayLabel() {
 export default function Today() {
   const { user } = useAuth();
   const { org } = useOrg();
+  const { beneficiaries } = useBeneficiaries();
+  const { reports } = useReports();
   const { activeProgramme } = useProgrammeFilter();
+  const [sessions, setSessions] = useState([]);
+
+  const date = todayISO();
+  const programmes = org?.programmes ?? [];
+
+  // Today's attendance across all programmes, for the "Present today" stat
+  // and the daily summary table below.
+  useEffect(() => {
+    const orgId = org?.id;
+    if (!orgId) { setSessions([]); return; }
+
+    supabase
+      .from('attendance_sessions')
+      .select('programme_id, attendance_records(present)')
+      .eq('org_id', orgId)
+      .eq('session_date', date)
+      .then(({ data }) => setSessions(data ?? []));
+  }, [org?.id, date]);
 
   const firstName =
     user?.user_metadata?.first_name || user?.user_metadata?.full_name?.split(' ')[0] || 'there';
-  const programmeCount = org?.programmes?.length ?? 0;
+  const programmeCount = programmes.length;
 
   const activeProgrammeName = activeProgramme !== 'all'
-    ? (org?.programmes?.find((p) => p.id === activeProgramme)?.name ?? null)
+    ? (programmes.find((p) => p.id === activeProgramme)?.name ?? null)
     : null;
 
   const metaParts = [
@@ -48,6 +81,24 @@ export default function Today() {
       : `${programmeCount} ${programmeCount === 1 ? 'programme' : 'programmes'}`,
     todayLabel(),
   ].filter(Boolean);
+
+  const totalBeneficiaries = beneficiaries.length;
+
+  const presentToday = sessions.reduce(
+    (sum, s) => sum + (s.attendance_records ?? []).filter((r) => r.present).length,
+    0,
+  );
+
+  const reportsDue = reports.filter((r) => r.status !== 'completed').length;
+  const recentReports = reports.slice(0, 5);
+
+  const attendanceRows = programmes.map((p) => {
+    const session = sessions.find((s) => s.programme_id === p.id);
+    const expected = beneficiaries.filter((b) => b.programmeId === p.id && b.status === 'Active').length;
+    const present = session ? (session.attendance_records ?? []).filter((r) => r.present).length : 0;
+    const rate = expected > 0 ? Math.round((present / expected) * 100) : 0;
+    return { id: p.id, programme: p.name, expected, present, rate };
+  });
 
   return (
     <div className={styles.page}>
@@ -63,29 +114,29 @@ export default function Today() {
 
       <section className={styles.stats} aria-label="Summary">
         <StatTile label="Active programs" value={programmeCount} />
-        <StatTile label="Present today" value="0" />
-        <StatTile label="Total beneficiaries" value="0" />
-        <StatTile label="Reports due" value="0" />
+        <StatTile label="Present today" value={presentToday} />
+        <StatTile label="Total beneficiaries" value={totalBeneficiaries} />
+        <StatTile label="Reports due" value={reportsDue} />
       </section>
 
       <SectionCard
         title="Recent report activity"
-        action={reports.length > 0 && <ViewAll to={ROUTES.reports} />}
+        action={recentReports.length > 0 && <ViewAll to={ROUTES.reports} />}
       >
-        {reports.length === 0 ? (
+        {recentReports.length === 0 ? (
           <EmptyState
             icon={<FileText />}
             title="No reports yet"
             hint="Reports you create will appear here."
           />
         ) : (
-          reports.map((r) => (
+          recentReports.map((r) => (
             <div key={r.id} className={styles.row}>
               <span className={styles.rowIcon}>
                 <FileText />
               </span>
               <span className={styles.rowLabel}>{r.title}</span>
-              <span className={styles.rowMeta}>{r.status}</span>
+              <span className={styles.rowMeta}>{REPORT_STATUS_LABEL[r.status] ?? r.status}</span>
             </div>
           ))
         )}
@@ -116,9 +167,9 @@ export default function Today() {
 
       <SectionCard
         title="Daily attendance summary"
-        action={attendance.length > 0 && <ViewAll to={ROUTES.attendance} />}
+        action={attendanceRows.length > 0 && <ViewAll to={ROUTES.attendance} />}
       >
-        {attendance.length === 0 ? (
+        {attendanceRows.length === 0 ? (
           <EmptyState
             icon={<BarChart />}
             title="No attendance recorded"
@@ -135,7 +186,7 @@ export default function Today() {
               </tr>
             </thead>
             <tbody>
-              {attendance.map((a) => (
+              {attendanceRows.map((a) => (
                 <tr key={a.id}>
                   <td>{a.programme}</td>
                   <td>{a.expected}</td>
