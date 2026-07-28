@@ -18,6 +18,7 @@
 }
 
 .title {
+  flex: 1;
   font-size: var(--text-2xl);
   font-weight: var(--font-weight-bold);
 }

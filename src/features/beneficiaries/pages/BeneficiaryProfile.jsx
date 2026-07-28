@@ -159,6 +159,24 @@ export default function BeneficiaryProfile() {
           <h1 className={styles.title}>Edit profile</h1>
         </header>
 
+        {/* Programme */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Programme</h2>
+          <div className={styles.editCard}>
+            <div className={styles.editSelectWrap}>
+              <select
+                className={`${styles.editSelect} ${!form.programmeId ? styles.editPlaceholder : ''}`}
+                value={form.programmeId}
+                onChange={update('programmeId')}
+                aria-label="Linked programme"
+              >
+                <option value="">No programme</option>
+                {programmes.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+            </div>
+          </div>
+        </section>
+
         {/* Personal details */}
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Personal details</h2>
@@ -203,24 +221,6 @@ export default function BeneficiaryProfile() {
               >
                 <option value="">Relation (optional)</option>
                 {RELATION_OPTIONS.map((r) => <option key={r} value={r}>{r}</option>)}
-              </select>
-            </div>
-          </div>
-        </section>
-
-        {/* Programme */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Programme</h2>
-          <div className={styles.editCard}>
-            <div className={styles.editSelectWrap}>
-              <select
-                className={`${styles.editSelect} ${!form.programmeId ? styles.editPlaceholder : ''}`}
-                value={form.programmeId}
-                onChange={update('programmeId')}
-                aria-label="Linked programme"
-              >
-                <option value="">No programme</option>
-                {programmes.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </div>
           </div>
@@ -346,6 +346,9 @@ export default function BeneficiaryProfile() {
           <ChevronLeft size={24} />
         </button>
         <h1 className={styles.title}>Student profile</h1>
+        <button type="button" className={styles.editBtn} onClick={startEdit} aria-label="Edit profile">
+          <Pencil size={16} /> Edit
+        </button>
       </header>
 
       {/* Identity card */}
@@ -355,9 +358,6 @@ export default function BeneficiaryProfile() {
           <p className={styles.name}>{fullName(b)}</p>
           {b.status && <p className={styles.status}>{b.status}</p>}
         </div>
-        <button type="button" className={styles.editBtn} onClick={startEdit} aria-label="Edit profile">
-          <Pencil size={16} /> Edit
-        </button>
       </div>
 
       {/* Enrolled programs */}
