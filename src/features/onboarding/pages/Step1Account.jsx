@@ -5,16 +5,26 @@ import WizardFooter from '../components/WizardFooter.jsx';
 import TextField from '../../../components/ui/TextField/index.js';
 import { useOnboarding } from '../OnboardingContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
+import { supabase } from '../../../lib/supabase.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_TAKEN_MESSAGE = 'An account with this email already exists. Sign in instead.';
 
 export default function Step1Account() {
   const navigate = useNavigate();
   const { data, setAccount } = useOnboarding();
   const account = data.account;
   const [errors, setErrors] = useState({});
+  const [checkingEmail, setCheckingEmail] = useState(false);
 
   const update = (field) => (e) => setAccount({ [field]: e.target.value });
+
+  function updateEmail(e) {
+    setAccount({ email: e.target.value });
+    // A previously-flagged "already registered" error refers to the old
+    // value — clear it so it doesn't linger once the user starts editing.
+    setErrors((prev) => (prev.email ? { ...prev, email: undefined } : prev));
+  }
 
   function validate() {
     const next = {};
@@ -29,8 +39,39 @@ export default function Step1Account() {
     return Object.keys(next).length === 0;
   }
 
-  function handleContinue() {
-    if (validate()) navigate(ROUTES.onboardingOrganisation);
+  // Read-only check against auth.users via a security-definer RPC (email_available,
+  // migration 0016) — lets duplicate emails surface here instead of only at Step 6's
+  // signUp() call, after the whole wizard has been filled out. Fails open: if the
+  // check itself errors (network, RPC not deployed yet), we don't block onboarding —
+  // signUp() at Step 6 remains the final safety net either way.
+  async function checkEmailAvailable(email) {
+    setCheckingEmail(true);
+    const { data: available, error } = await supabase.rpc('email_available', { p_email: email });
+    setCheckingEmail(false);
+    if (error) {
+      console.error('[Step1Account] email availability check failed:', error.message);
+      return true;
+    }
+    return available !== false;
+  }
+
+  async function handleEmailBlur() {
+    const email = account.email.trim();
+    if (!EMAIL_RE.test(email)) return;
+    const available = await checkEmailAvailable(email);
+    if (!available) {
+      setErrors((prev) => ({ ...prev, email: EMAIL_TAKEN_MESSAGE }));
+    }
+  }
+
+  async function handleContinue() {
+    if (!validate()) return;
+    const available = await checkEmailAvailable(account.email.trim());
+    if (!available) {
+      setErrors((prev) => ({ ...prev, email: EMAIL_TAKEN_MESSAGE }));
+      return;
+    }
+    navigate(ROUTES.onboardingOrganisation);
   }
 
   return (
@@ -40,7 +81,12 @@ export default function Step1Account() {
       title="Create your account"
       subtitle="Up and running in under 30 minutes - no IT support needed"
       footer={
-        <WizardFooter onBack={() => navigate(ROUTES.signIn)} onContinue={handleContinue} />
+        <WizardFooter
+          onBack={() => navigate(ROUTES.signIn)}
+          onContinue={handleContinue}
+          continueLabel={checkingEmail ? 'Checking…' : 'Continue'}
+          continueDisabled={checkingEmail}
+        />
       }
       below={
         <>
@@ -66,7 +112,8 @@ export default function Step1Account() {
         label="Email"
         type="email"
         value={account.email}
-        onChange={update('email')}
+        onChange={updateEmail}
+        onBlur={handleEmailBlur}
         error={errors.email}
         autoComplete="email"
       />
