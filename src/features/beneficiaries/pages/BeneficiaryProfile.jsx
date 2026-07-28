@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { ChevronLeft, Pencil, FileText, Plus, Close } from '../../../components/icons.jsx';
+import DatePicker from '../../../components/ui/DatePicker/index.js';
 import styles from './BeneficiaryProfile.module.css';
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
@@ -93,6 +94,7 @@ export default function BeneficiaryProfile() {
   }
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  const updateDate = (key) => (value) => setForm((f) => ({ ...f, [key]: value }));
 
   function handleImagesChange(e) {
     const files = Array.from(e.target.files);
@@ -183,10 +185,7 @@ export default function BeneficiaryProfile() {
           <div className={styles.editCard}>
             <input className={styles.editInput} placeholder="First name" value={form.firstName} onChange={update('firstName')} aria-label="First name" />
             <input className={styles.editInput} placeholder="Last name" value={form.lastName} onChange={update('lastName')} aria-label="Last name" />
-            <div className={styles.editFieldGroup}>
-              <label className={styles.editLabel}>Date of birth</label>
-              <input type="date" className={styles.editInput} value={form.dob} onChange={update('dob')} aria-label="Date of birth" />
-            </div>
+            <DatePicker label="Date of birth" value={form.dob} onChange={updateDate('dob')} disableFuture />
             <div className={styles.editSelectWrap}>
               <select
                 className={`${styles.editSelect} ${!form.gender ? styles.editPlaceholder : ''}`}
@@ -208,10 +207,7 @@ export default function BeneficiaryProfile() {
           <h2 className={styles.sectionTitle}>Emergency contact</h2>
           <div className={styles.editCard}>
             <input className={styles.editInput} placeholder="Full name" value={form.emergencyContactName} onChange={update('emergencyContactName')} aria-label="Emergency contact name" />
-            <div className={styles.editFieldGroup}>
-              <label className={styles.editLabel}>Date of birth</label>
-              <input type="date" className={styles.editInput} value={form.emergencyContactDob} onChange={update('emergencyContactDob')} aria-label="Emergency contact date of birth" />
-            </div>
+            <DatePicker label="Date of birth (optional)" value={form.emergencyContactDob} onChange={updateDate('emergencyContactDob')} disableFuture />
             <div className={styles.editSelectWrap}>
               <select
                 className={`${styles.editSelect} ${!form.emergencyContactRelation ? styles.editPlaceholder : ''}`}

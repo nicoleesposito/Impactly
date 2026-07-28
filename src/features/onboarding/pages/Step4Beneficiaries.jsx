@@ -4,6 +4,7 @@ import OnboardingShell from '../components/OnboardingShell.jsx';
 import WizardFooter from '../components/WizardFooter.jsx';
 import PersonRow from '../components/PersonRow.jsx';
 import TextField from '../../../components/ui/TextField/index.js';
+import DatePicker from '../../../components/ui/DatePicker/index.js';
 import { Upload, ChevronDown } from '../../../components/icons.jsx';
 import { useOnboarding } from '../OnboardingContext.jsx';
 import { ROUTES } from '../../../constants/routes.js';
@@ -15,12 +16,11 @@ function initials(first, last) {
   return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
 }
 
-// Auto-inserts slashes: 4 digits → yyyy, 6 digits → yyyy/mm, 8 digits → yyyy/mm/dd
-function formatDob(raw) {
-  const digits = raw.replace(/\D/g, '').slice(0, 8);
-  if (digits.length <= 4) return digits;
-  if (digits.length <= 6) return `${digits.slice(0, 4)}/${digits.slice(4)}`;
-  return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
+function formatDob(iso) {
+  if (!iso) return undefined;
+  const d = new Date(`${iso}T00:00:00`);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 export default function Step4Beneficiaries() {
@@ -31,8 +31,8 @@ export default function Step4Beneficiaries() {
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  function handleDobChange(e) {
-    setForm((f) => ({ ...f, dob: formatDob(e.target.value) }));
+  function handleDobChange(dob) {
+    setForm((f) => ({ ...f, dob }));
   }
 
   function handleAdd() {
@@ -78,7 +78,7 @@ export default function Step4Beneficiaries() {
                   key={b.id}
                   initials={initials(b.firstName, b.lastName)}
                   title={`${b.firstName} ${b.lastName}`}
-                  subtitle={b.dob || undefined}
+                  subtitle={formatDob(b.dob)}
                   onRemove={() => removeBeneficiary(b.id)}
                 />
               ))}
@@ -114,12 +114,11 @@ export default function Step4Beneficiaries() {
         onChange={update('lastName')}
         error={errors.lastName}
       />
-      <TextField
+      <DatePicker
         label="Date of birth"
-        placeholder="yyyy/mm/dd"
         value={form.dob}
         onChange={handleDobChange}
-        inputMode="numeric"
+        disableFuture
       />
 
       <button type="button" className={styles.addBtn} onClick={handleAdd}>

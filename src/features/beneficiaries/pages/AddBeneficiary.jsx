@@ -4,21 +4,11 @@ import { useBeneficiaries } from '../../../context/BeneficiariesContext.jsx';
 import { useOrg } from '../../../context/OrgContext.jsx';
 import { useProgrammeFilter } from '../../../context/ProgrammeFilterContext.jsx';
 import { ChevronLeft } from '../../../components/icons.jsx';
+import DatePicker from '../../../components/ui/DatePicker/index.js';
 import styles from './AddBeneficiary.module.css';
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
 const RELATION_OPTIONS = ['Mother', 'Father', 'Guardian', 'Grandparent', 'Sibling', 'Other'];
-
-function CalendarIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
-}
 
 function PlusIcon() {
   return (
@@ -77,6 +67,7 @@ export default function AddBeneficiary() {
   const [submitting, setSubmitting] = useState(false);
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  const updateDate = (key) => (value) => setForm((f) => ({ ...f, [key]: value }));
 
   function handleDocChange(index, e) {
     const file = e.target.files[0] ?? null;
@@ -161,17 +152,12 @@ export default function AddBeneficiary() {
             aria-label="Last name"
             autoComplete="family-name"
           />
-          <p className={styles.subLabel}>Date of birth</p>
-          <div className={styles.dateWrap}>
-            <input
-              type="date"
-              className={styles.input}
-              value={form.dob}
-              onChange={update('dob')}
-              aria-label="Date of birth"
-            />
-            <span className={styles.calIcon} aria-hidden="true"><CalendarIcon /></span>
-          </div>
+          <DatePicker
+            label="Date of birth"
+            value={form.dob}
+            onChange={updateDate('dob')}
+            disableFuture
+          />
           <div className={styles.selectWrap}>
             <select
               className={`${styles.select} ${!form.gender ? styles.placeholder : ''}`}
@@ -214,17 +200,12 @@ export default function AddBeneficiary() {
             aria-label="Emergency contact name"
             autoComplete="off"
           />
-          <p className={styles.subLabel}>Date of birth (optional)</p>
-          <div className={styles.dateWrap}>
-            <input
-              type="date"
-              className={styles.input}
-              value={form.emergencyContactDob}
-              onChange={update('emergencyContactDob')}
-              aria-label="Emergency contact date of birth"
-            />
-            <span className={styles.calIcon} aria-hidden="true"><CalendarIcon /></span>
-          </div>
+          <DatePicker
+            label="Date of birth (optional)"
+            value={form.emergencyContactDob}
+            onChange={updateDate('emergencyContactDob')}
+            disableFuture
+          />
           <div className={styles.selectWrap}>
             <select
               className={`${styles.select} ${!form.emergencyContactRelation ? styles.placeholder : ''}`}
