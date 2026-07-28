@@ -1,14 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes.js';
+import { useOrg } from '../../context/OrgContext.jsx';
 import styles from './Sidebar.module.css';
-
-// Desktop-only left navigation (hidden on mobile via CSS).
-const PRIMARY = [
-  { to: ROUTES.home, label: 'Home' },
-  { to: ROUTES.students, label: 'Students' },
-  { to: ROUTES.attendance, label: 'Attendance' },
-  { to: ROUTES.reports, label: 'Reports' },
-];
 
 const MANAGE = [
   { to: ROUTES.staff, label: 'Staff' },
@@ -39,11 +32,20 @@ function Section({ heading, items }) {
 }
 
 export default function Sidebar() {
+  const { beneficiaryLabel } = useOrg();
+
+  const primary = [
+    { to: ROUTES.home, label: 'Home' },
+    { to: ROUTES.students, label: beneficiaryLabel },
+    { to: ROUTES.attendance, label: 'Attendance' },
+    { to: ROUTES.reports, label: 'Reports' },
+  ];
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>Impactly</div>
       <nav className={styles.nav}>
-        <Section items={PRIMARY} />
+        <Section items={primary} />
         <Section heading="MANAGE" items={MANAGE} />
         <Section heading="ADMIN" items={ADMIN} />
       </nav>

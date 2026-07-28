@@ -82,6 +82,7 @@ export default function Step2Organisation() {
         value={org.beneficiaryLabel}
         onChange={update('beneficiaryLabel')}
         error={errors.beneficiaryLabel}
+        hint={'This is the name of the tab where you can access all the people your organisation supports — it’s the second icon in the bottom navigation, and updates based on what you enter here. You can change it later in Settings. For example, enter “Students” if your organisation supports students.'}
         maxLength={30}
       />
     </OnboardingShell>

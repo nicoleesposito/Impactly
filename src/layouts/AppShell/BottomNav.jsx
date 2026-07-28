@@ -1,20 +1,23 @@
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes.js';
+import { useOrg } from '../../context/OrgContext.jsx';
 import { Home, Users, ClipboardCheck, FileText, MoreHorizontal } from '../../components/icons.jsx';
 import styles from './BottomNav.module.css';
 
-const ITEMS = [
-  { to: ROUTES.home,       label: 'Home',       Icon: Home },
-  { to: ROUTES.students,   label: 'Students',   Icon: Users },
-  { to: ROUTES.attendance, label: 'Attendance', Icon: ClipboardCheck, fab: true },
-  { to: ROUTES.reports,    label: 'Reports',    Icon: FileText },
-  { to: ROUTES.more,       label: 'More',       Icon: MoreHorizontal },
-];
-
 export default function BottomNav() {
+  const { beneficiaryLabel } = useOrg();
+
+  const items = [
+    { to: ROUTES.home,       label: 'Home',            Icon: Home },
+    { to: ROUTES.students,   label: beneficiaryLabel,  Icon: Users },
+    { to: ROUTES.attendance, label: 'Attendance',       Icon: ClipboardCheck, fab: true },
+    { to: ROUTES.reports,    label: 'Reports',          Icon: FileText },
+    { to: ROUTES.more,       label: 'More',             Icon: MoreHorizontal },
+  ];
+
   return (
     <nav className={styles.nav} aria-label="Primary">
-      {ITEMS.map((item) => (
+      {items.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
