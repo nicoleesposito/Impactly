@@ -49,7 +49,11 @@
   width: 100%;
   min-height: 100vh;
   min-height: 100dvh;
-  padding: var(--space-12) var(--space-6);
+  /* Extra top padding (beyond the vertical rhythm --space-12 gives every
+     other side) clears the fixed, floating nav bar overlaying this hero —
+     without it, the vertically-centered title can render underneath the
+     bar's logo/wordmark on short viewports instead of below it. */
+  padding: 140px var(--space-6) var(--space-12);
   text-align: center;
   overflow: hidden;
   background: var(--color-bg);
@@ -598,6 +602,12 @@
 
 /* ── Desktop ─────────────────────────────────────────── */
 @media (min-width: 768px) {
+  .hero {
+    /* The overlay nav's logo/padding grow at this same breakpoint
+       (MarketingNav.module.css), so it needs more clearance here too. */
+    padding-top: 200px;
+  }
+
   .h1 {
     font-size: 60px;
   }

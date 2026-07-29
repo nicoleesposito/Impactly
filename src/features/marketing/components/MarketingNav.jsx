@@ -157,7 +157,7 @@ export default function MarketingNav() {
               aria-expanded={mobileNavOpen}
               onClick={() => setMobileNavOpen((o) => !o)}
             >
-              {mobileNavOpen ? <Close size={22} /> : <Menu size={22} />}
+              {mobileNavOpen ? <Close size={30} /> : <Menu size={30} />}
             </button>
           </div>
         </div>

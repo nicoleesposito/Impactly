@@ -222,8 +222,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   color: var(--color-text);
   transition: color 200ms ease;
@@ -239,10 +239,12 @@
 
 /* ── Mobile nav panel ────────────────────────────────── */
 /* Positioned below the (fixed) compact bar height — this panel only shows
-   at widths where the bar is always in its compact 64px-tall form. */
+   at widths where the bar is always in its compact 72px-tall form (the
+   48px navToggle plus its 12px top/bottom padding is the tallest content
+   at this width, taller than the 40px compact logo). */
 .navMobile {
   position: fixed;
-  top: 64px;
+  top: 72px;
   left: 0;
   right: 0;
   z-index: 99;
