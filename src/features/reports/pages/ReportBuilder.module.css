@@ -413,10 +413,24 @@
 }
 
 /* ── Navigation ───────────────────────────────────── */
+/* Fixed above the site's bottom nav — .page's padding-bottom (below)
+   reserves room for this so scrolled step content never renders behind
+   it. Previously this was `margin-top: auto`, which only pushes an
+   element down within a flex parent that's actually taller than its
+   content; .page here never is, so it was a no-op — the buttons just sat
+   wherever the current step's content happened to end, in a different
+   spot per step, instead of anchored to the bottom of the screen like
+   NewReport.jsx's equivalent .footer already does correctly. */
 .navRow {
+  position: fixed;
+  bottom: var(--bottom-nav-height);
+  left: 0;
+  right: 0;
   display: flex;
   gap: var(--space-3);
-  margin-top: auto;
+  padding: var(--space-4);
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
 }
 
 .btnBack {
