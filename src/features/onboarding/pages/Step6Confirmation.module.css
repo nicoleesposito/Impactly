@@ -4,14 +4,25 @@
   flex-direction: column;
   gap: var(--space-8);
   padding-top: var(--space-8);
+  min-height: 0;
 }
 
+/* Scrollable — the wizard's outer wrapper is a fixed 100dvh with
+   overflow: hidden (see OnboardingLayout.module.css), so on short
+   viewports this content (badge, checklist, the "Go to today" button)
+   needs its own scroll region or it's simply unreachable, cut off with
+   no way to get to it. Every other step gets this via OnboardingShell's
+   .scrollArea; this page doesn't use that shell, so it needs its own. */
 .body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: var(--space-3);
+  padding-bottom: var(--space-6);
 }
 
 .badge {
