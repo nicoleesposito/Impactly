@@ -89,7 +89,7 @@ export default function SignIn() {
           </button>
 
           <Link to={ROUTES.onboardingAccount} className={styles.create}>
-            New to Impactly? <strong>Create an Account!</strong>
+            New user? <strong>Sign up now</strong>
           </Link>
         </>
       ) : (
@@ -132,7 +132,7 @@ export default function SignIn() {
           </Link>
 
           <Link to={ROUTES.onboardingAccount} className={styles.create}>
-            New to Impactly? <strong>Create an Account!</strong>
+            New user? <strong>Sign up now</strong>
           </Link>
         </>
       )}
