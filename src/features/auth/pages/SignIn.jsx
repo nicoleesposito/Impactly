@@ -88,9 +88,9 @@ export default function SignIn() {
             Sign in with Google <ChevronRight />
           </button>
 
-          <p className={styles.create}>
-            New user? <Link to={ROUTES.onboardingAccount}>Sign up now</Link>
-          </p>
+          <Link to={ROUTES.onboardingAccount} className={styles.create}>
+            New to Impactly? <strong>Create an Account!</strong>
+          </Link>
         </>
       ) : (
         <>
@@ -131,9 +131,9 @@ export default function SignIn() {
             Forgot password?
           </Link>
 
-          <p className={styles.create}>
-            New user? <Link to={ROUTES.onboardingAccount}>Sign up now</Link>
-          </p>
+          <Link to={ROUTES.onboardingAccount} className={styles.create}>
+            New to Impactly? <strong>Create an Account!</strong>
+          </Link>
         </>
       )}
 

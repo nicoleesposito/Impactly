@@ -102,15 +102,16 @@
 }
 
 .create {
-  text-align: center;
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-base);
 }
 
-.create a {
+.create strong {
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
-  text-decoration: underline;
 }
 
 .emailLocked {
