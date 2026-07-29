@@ -1,6 +1,8 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes.js';
 import { useOrg } from '../../context/OrgContext.jsx';
+import { supabase } from '../../lib/supabase.js';
+import { LogOut } from '../../components/icons.jsx';
 import styles from './Sidebar.module.css';
 
 const MANAGE = [
@@ -32,6 +34,7 @@ function Section({ heading, items }) {
 }
 
 export default function Sidebar() {
+  const navigate = useNavigate();
   const { beneficiaryLabel } = useOrg();
 
   const primary = [
@@ -41,6 +44,11 @@ export default function Sidebar() {
     { to: ROUTES.reports, label: 'Reports' },
   ];
 
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    navigate(ROUTES.signIn, { replace: true });
+  }
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.brand}>Impactly</div>
@@ -49,6 +57,10 @@ export default function Sidebar() {
         <Section heading="MANAGE" items={MANAGE} />
         <Section heading="ADMIN" items={ADMIN} />
       </nav>
+      <button type="button" className={styles.logoutBtn} onClick={handleLogout}>
+        <LogOut size={18} />
+        Logout
+      </button>
     </aside>
   );
 }
