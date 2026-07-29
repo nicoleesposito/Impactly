@@ -10,6 +10,11 @@
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
   z-index: 10;
+  /* Promotes this to its own compositor layer — without it, mobile Safari
+     can visually detach fixed elements from the viewport during an active
+     touch-scroll (they lag/float, then snap back once scrolling stops). */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .item {

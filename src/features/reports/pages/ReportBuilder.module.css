@@ -431,6 +431,11 @@
   padding: var(--space-4);
   background: var(--color-bg);
   border-top: 1px solid var(--color-border);
+  /* Same compositor-layer fix as BottomNav.module.css .nav — this bar is
+     now stacked directly above it, doubling the surface area for mobile
+     Safari's fixed-element-detaches-during-scroll glitch. */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .btnBack {
