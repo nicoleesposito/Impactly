@@ -104,14 +104,20 @@ export default function MarketingNav() {
     return `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`;
   }
 
+  // While the mobile menu is open, force the solid/dark-on-white bar style
+  // even if the hero is still in view — otherwise the bar stays transparent
+  // and the hero video shows through behind the logo/close icon, above the
+  // opaque white dropdown panel underneath it.
+  const showOverlay = overlay && !mobileNavOpen;
+
   return (
     <>
-      <header className={`${styles.topbar} ${overlay ? styles.topbarOverlay : ''}`}>
+      <header className={`${styles.topbar} ${showOverlay ? styles.topbarOverlay : ''}`}>
         <div className={styles.topbarInner}>
           <a href="/#home" className={styles.wordmark}>
             <img
               className={styles.wordmarkLogo}
-              src={overlay ? '/images/logo-white.png' : '/images/logo.png'}
+              src={showOverlay ? '/images/logo-white.png' : '/images/logo.png'}
               alt="Impactly logo"
             />
             Impactly
@@ -194,6 +200,15 @@ export default function MarketingNav() {
                 onClick={() => setMobileNavOpen(false)}
               >
                 Log in
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={ROUTES.onboardingAccount}
+                className={styles.navMobileCta}
+                onClick={() => setMobileNavOpen(false)}
+              >
+                Create your account
               </Link>
             </li>
           </ul>
