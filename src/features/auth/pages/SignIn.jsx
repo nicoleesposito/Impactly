@@ -130,6 +130,10 @@ export default function SignIn() {
           <Link to={ROUTES.forgotPassword} className={styles.forgot}>
             Forgot password?
           </Link>
+
+          <Link to={ROUTES.onboardingAccount} className={styles.create}>
+            New to Impactly? <strong>Create an Account!</strong>
+          </Link>
         </>
       )}
 
