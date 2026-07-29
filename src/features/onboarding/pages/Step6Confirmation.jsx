@@ -29,6 +29,10 @@ export default function Step6Confirmation() {
   const [error, setError] = useState('');
   const [emailPending, setEmailPending] = useState(false);
   const [readyToEnter, setReadyToEnter] = useState(false);
+  // Set once signUp() + create_organisation() succeed, so a retry after a
+  // partial seeding failure doesn't call signUp() again with an email that
+  // now already exists.
+  const [accountCreated, setAccountCreated] = useState(false);
 
   // ProtectedRoute gates /home on AuthContext's own session state, which
   // updates asynchronously via its own onAuthStateChange subscription —
@@ -55,7 +59,13 @@ export default function Step6Confirmation() {
       : null,
   ].filter(Boolean);
 
+  // Returns a list of human-readable warnings for anything that failed to
+  // save, instead of only logging to the console — a silent failure here
+  // previously meant onboarding looked successful (checklist, "Go to
+  // today") while beneficiaries/programme/invites just never existed.
   async function createOrgAndSeed(orgId) {
+    const warnings = [];
+
     // Created first so beneficiaries below can be auto-enrolled into it.
     let programmeId = null;
     if (data.programme.name.trim()) {
@@ -73,6 +83,7 @@ export default function Step6Confirmation() {
 
       if (programmeError) {
         console.error('[Step6Confirmation] seeding programme failed:', programmeError.message);
+        warnings.push(`Your programme couldn't be saved (${programmeError.message}).`);
       } else {
         programmeId = programmeRow.id;
       }
@@ -95,6 +106,9 @@ export default function Step6Confirmation() {
 
       if (error) {
         console.error('[Step6Confirmation] seeding beneficiaries failed:', error.message);
+        warnings.push(
+          `Your beneficiaries couldn't be saved (${error.message}). You can add them again from the Beneficiaries tab.`,
+        );
       } else {
         // Photo files only survive in memory for this tab (OnboardingContext
         // persists everything else to sessionStorage as JSON, which drops
@@ -102,20 +116,27 @@ export default function Step6Confirmation() {
         // multi-row INSERT ... RETURNING with no upsert/trigger involved
         // preserves VALUES-list order, so matching rows back to the original
         // entries positionally is safe.
-        await Promise.all(
+        const photoFailures = await Promise.all(
           data.beneficiaries.map(async (b, i) => {
-            if (!(b.photoFile instanceof File)) return;
+            if (!(b.photoFile instanceof File)) return false;
             const row = inserted?.[i];
-            if (!row) return;
+            if (!row) return false;
             const photoUrl = await uploadPhoto(b.photoFile);
-            if (!photoUrl) return;
+            if (!photoUrl) return true;
             const { error: photoErr } = await supabase
               .from('beneficiaries')
               .update({ photo_url: photoUrl })
               .eq('id', row.id);
-            if (photoErr) console.error('[Step6Confirmation] photo attach failed:', photoErr.message);
+            if (photoErr) {
+              console.error('[Step6Confirmation] photo attach failed:', photoErr.message);
+              return true;
+            }
+            return false;
           }),
         );
+        if (photoFailures.some(Boolean)) {
+          warnings.push('One or more beneficiary photos couldn\'t be saved — you can add them again from their profile.');
+        }
       }
     }
 
@@ -133,11 +154,25 @@ export default function Step6Confirmation() {
           role: null,
         })),
       );
-      if (error) console.error('[Step6Confirmation] seeding team invites failed:', error.message);
+      if (error) {
+        console.error('[Step6Confirmation] seeding team invites failed:', error.message);
+        warnings.push(`Your team invites couldn't be saved (${error.message}).`);
+      }
     }
+
+    return warnings;
   }
 
   async function handleGoToToday() {
+    // The account + org already exist from a previous click that hit a
+    // seeding warning below — don't call signUp() again with an email
+    // that's now registered. Just finish up.
+    if (accountCreated) {
+      reset();
+      setReadyToEnter(true);
+      return;
+    }
+
     setError('');
     setLoading(true);
 
@@ -175,12 +210,23 @@ export default function Step6Confirmation() {
         return;
       }
 
-      await createOrgAndSeed(orgId);
+      setAccountCreated(true);
+
+      const warnings = await createOrgAndSeed(orgId);
       // Reload profile so OrgContext picks up the new org_id
       await refreshProfile();
+      setLoading(false);
+
+      if (warnings.length > 0) {
+        // Stay on this screen so the warning is actually seen — the button
+        // now finishes up without re-running signUp() (see accountCreated
+        // check above). data isn't reset() yet either, so nothing entered
+        // is lost from view while they read this.
+        setError(warnings.join(' '));
+        return;
+      }
 
       reset();
-      setLoading(false);
       setReadyToEnter(true);
     } else {
       // Email confirmation enabled — save org details for post-confirmation setup.
@@ -251,14 +297,14 @@ export default function Step6Confirmation() {
         <div className={styles.taskCard}>
           <p className={styles.taskTitle}>Your first task is waiting</p>
           <p className={styles.taskHint}>Capture today&rsquo;s attendance</p>
-          {error && <p className={styles.ctaError}>{error}</p>}
+          {error && <p className={styles.ctaError} role="alert">{error}</p>}
           <button
             type="button"
             className={styles.cta}
             onClick={handleGoToToday}
             disabled={loading}
           >
-            {loading ? 'Setting up…' : 'Go to today'}
+            {loading ? 'Setting up…' : accountCreated ? 'Continue anyway' : 'Go to today'}
           </button>
         </div>
       </div>
