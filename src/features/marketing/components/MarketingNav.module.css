@@ -63,7 +63,7 @@
 }
 
 .topbarOverlay .wordmarkLogo {
-  height: 90px;
+  height: 52px;
 }
 
 /* ── Desktop nav ─────────────────────────────────────── */
@@ -203,6 +203,7 @@
 }
 
 .topCta {
+  display: none;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   background: var(--color-primary);
@@ -304,6 +305,10 @@
     font-size: var(--text-xl);
   }
 
+  .topbarOverlay .wordmarkLogo {
+    height: 90px;
+  }
+
   .topbarOverlay .logIn {
     padding: var(--space-3) var(--space-5);
     font-size: var(--text-base);
@@ -325,6 +330,10 @@
   }
 
   .logIn {
+    display: inline-flex;
+  }
+
+  .topCta {
     display: inline-flex;
   }
 
