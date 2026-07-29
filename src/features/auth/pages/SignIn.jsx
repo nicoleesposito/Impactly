@@ -88,9 +88,9 @@ export default function SignIn() {
             Sign in with Google <ChevronRight />
           </button>
 
-          <Link to={ROUTES.onboardingAccount} className={styles.create}>
-            New user? <strong>Sign up now</strong>
-          </Link>
+          <p className={styles.create}>
+            New user? <Link to={ROUTES.onboardingAccount}>Sign up now</Link>
+          </p>
         </>
       ) : (
         <>
@@ -131,9 +131,9 @@ export default function SignIn() {
             Forgot password?
           </Link>
 
-          <Link to={ROUTES.onboardingAccount} className={styles.create}>
-            New user? <strong>Sign up now</strong>
-          </Link>
+          <p className={styles.create}>
+            New user? <Link to={ROUTES.onboardingAccount}>Sign up now</Link>
+          </p>
         </>
       )}
 
